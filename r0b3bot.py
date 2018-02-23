@@ -2,6 +2,9 @@
 
 import discord
 from discord.ext import commands
+import urllib.request
+import random
+import os
 
 bot = commands.Bot(command_prefix='$', description='A bot that greets the user back.')
 
@@ -54,7 +57,16 @@ async def holyshit(ctx):
 #
 @bot.command()
 async def printpic(ctx):
-    await ctx.send("http://10.3.0.137:8080/?action=snapshot")
+    file_name = random.randrange(1,10000)
+    full_file_name = str(file_name) + '.jpg'
+    urllib.request.urlretrieve("http://10.3.0.137:8080/?action=snapshot", full_file_name)
+
+    file = discord.File(full_file_name, filename=full_file_name)
+    await ctx.send("3D Printer Status", file=file)
+
+    #with open(full_file_name, 'rb') as f:
+    #    await client.send(ctx,f)
+    os.remove(full_file_name)
 
 @bot.command()
 async def info(ctx):
