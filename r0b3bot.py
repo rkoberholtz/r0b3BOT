@@ -5,6 +5,7 @@ from discord.ext import commands
 import urllib.request
 import random
 import os
+import octoapi
 
 bot = commands.Bot(command_prefix='$', description='A bot that greets the user back.')
 
@@ -59,6 +60,18 @@ async def printpic(ctx):
     #with open(full_file_name, 'rb') as f:
     #    await client.send(ctx,f)
     os.remove(full_file_name)
+    
+    print_completion = get_completeion()
+    print_time = get_printTime()
+    print_timeleft = get_printTimeLeft()
+    print_time = ((print_time / 60) / 60)
+    print_timeleft = ((print_timeleft / 60) / 60)
+
+    embed = discord.Embed(title="R0b3's 3D Printer Status", description="Current Job Status", color=0x333657)
+    embed.add_field(name="Percent Complete: ", value=str(print_completion))
+    embed.add_field(name="Hours Elapsed: ", value=str(print_time))
+    embed.add_field(name="Hours Remaining: ", value=str(print_timeleft))
+    await ctx.send(embed=embed)
 
 @bot.command()
 async def info(ctx):
