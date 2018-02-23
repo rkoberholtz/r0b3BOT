@@ -67,7 +67,7 @@ async def printpic(ctx):
     print_time = ((print_time / 60) / 60)
     print_timeleft = ((print_timeleft / 60) / 60)
 
-    embed = discord.Embed(title="R0b3's 3D Printer Status", description="Current Job Status", color=0x333657)
+    embed = discord.Embed(title="R0b3's 3D Printer Status", description="", color=0xF5A623)
     embed.add_field(name="Percent Complete: ", value=str(print_completion))
     embed.add_field(name="Hours Elapsed: ", value=str(print_time))
     embed.add_field(name="Hours Remaining: ", value=str(print_timeleft))
