@@ -56,7 +56,7 @@ class OctoPrint_API(object):
 		return (self.config["OctoPrint_URL"] + "/api/")
 		
 	def _load_config(self):
-		home_dir = os.path.expanduser("~")
+		home_dir = os.path.expanduser("")
 		config_path = os.path.join(home_dir, ".octoapi.conf")
 		try:
 			config_file = open(config_path)
@@ -334,13 +334,13 @@ def retrieve(**kwargs):
 # ------------------------------------------------------------------------------------------------
 
 def _main():
-	print(get_completion())
+	#print(get_completion())
 	#print(get_connection_dict())
 	#print(get_files_dict())
 	#print(get_job_dict())
 	#print(get_printer_dict())
-	print(get_printTime())
-	print(get_printTimeLeft())
+	#print(get_printTime())
+	#print(get_printTimeLeft())
 	#print(get_users_dict())
 	#print(get_version_dict())
 	#print(post_cancel())
