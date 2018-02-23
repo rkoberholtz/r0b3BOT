@@ -32,6 +32,9 @@ async def multiply(ctx, a: int, b: int):
 async def greetings(ctx):
     await ctx.send(":smiley: :wave: Hello there!")
 
+#
+# Giphy Commands
+#
 @bot.command()
 async def cat(ctx):
     await ctx.send("https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif")
@@ -39,6 +42,12 @@ async def cat(ctx):
 @bot.command()
 async def explain(ctx):
     await ctx.send("https://media.giphy.com/media/A8NNZlVuA1LoY/giphy.gif")
+
+@bot.command()
+async def holyshit(ctx):
+    await ctx.send("https://media.giphy.com/media/QcGTswMKyBNgA/giphy.gif")
+
+###
 
 @bot.command()
 async def info(ctx):
