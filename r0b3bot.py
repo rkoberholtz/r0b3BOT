@@ -37,6 +37,10 @@ async def cat(ctx):
     await ctx.send("https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif")
 
 @bot.command()
+async def explain(ctx):
+    await ctx.send("https://media.giphy.com/media/A8NNZlVuA1LoY/giphy.gif")
+
+@bot.command()
 async def info(ctx):
     embed = discord.Embed(title="R0b3BOT", description="Derpy Derp of a Bot", color=0xeee657)
           
