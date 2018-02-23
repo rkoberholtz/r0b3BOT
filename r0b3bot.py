@@ -61,15 +61,33 @@ async def printpic(ctx):
     #    await client.send(ctx,f)
     os.remove(full_file_name)
     
-    print_completion = round(octoapi.get_completion(), 2)
+    try:
+        print_completion = round(octoapi.get_completion(), 2)
+    except:
+        print_completion = "Unknown"
+
     print_seconds = octoapi.get_printTime()
     print_secondsleft = octoapi.get_printTimeLeft()
 
-    print_hours = int(((print_seconds / 60) / 60))
-    print_hoursleft = int(((print_secondsleft / 60) / 60))
+    try:
+        print_hours = int(((print_seconds / 60) / 60))
+    except:
+        print_hours = "Unknown"
+
+    try:
+        print_hoursleft = int(((print_secondsleft / 60) / 60))
+    except:
+        print_hoursleft = "Unknown"
     
-    print_min = int(((print_seconds / 60) - (print_hours * 60)))
-    print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
+    try:
+        print_min = int(((print_seconds / 60) - (print_hours * 60)))
+    except:
+        print_min = "Unknown"
+    
+    try:
+        print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
+    except:
+        print_minleft = "Unknown"
 
     time_elapsed = "%s Hours %s Minutes" % (print_hours, print_min)
     time_remaining = "%s Hours %s Minutes" % (print_hoursleft, print_minleft)
