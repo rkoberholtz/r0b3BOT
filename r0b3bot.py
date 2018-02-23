@@ -61,7 +61,7 @@ async def printpic(ctx):
     #    await client.send(ctx,f)
     os.remove(full_file_name)
     
-    print_completion = octoapi.get_completeion()
+    print_completion = octoapi.get_completion()
     print_time = octoapi.get_printTime()
     print_timeleft = octoapi.get_printTimeLeft()
     print_time = ((print_time / 60) / 60)
