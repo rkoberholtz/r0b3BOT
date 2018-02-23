@@ -24,14 +24,6 @@ async def on_command_error(error, ctx):
     print(error)
 
 @bot.command()
-async def add(ctx, a: int, b: int):
-    await ctx.send(a+b)
-
-@bot.command()
-async def multiply(ctx, a: int, b: int):
-    await ctx.send(a*b)
-
-@bot.command()
 async def greetings(ctx):
     await ctx.send(":smiley: :wave: Hello there!")
 
@@ -88,8 +80,7 @@ bot.remove_command('help')
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
-    embed.add_field(name="$add X Y", value="Gives the addition of **X** and **Y**", inline=False)
-    embed.add_field(name="$multiply X Y", value="Gives the multiplication of **X** and **Y**", inline=False)
+    embed.add_field(name="$printpic", value="Takes snapshot of Rich's 3D printer and uploads to channel", inline=False)
     embed.add_field(name="$greetings", value="Gives a nice greet message", inline=False)
     embed.add_field(name="$cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
