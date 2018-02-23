@@ -62,15 +62,22 @@ async def printpic(ctx):
     os.remove(full_file_name)
     
     print_completion = octoapi.get_completion()
-    print_time = octoapi.get_printTime()
-    print_timeleft = octoapi.get_printTimeLeft()
-    print_time = ((print_time / 60) / 60)
-    print_timeleft = ((print_timeleft / 60) / 60)
+    print_seconds = octoapi.get_printTime()
+    print_secondsleft = octoapi.get_printTimeLeft()
+
+    print_hours = int(((print_seconds / 60) / 60))
+    print_hoursleft = int(((print_secondsleft / 60) / 60))
+    
+    print_min = int(((print_seconds / 60) - (print_hours * 60)))
+    print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
+
+    time_elapsed = "%s Hours %s Minutes" % (print_hours, print_min)
+    time_remaining = "%s Hours %s Minutes" % (print_hoursleft, print_minleft)
 
     embed = discord.Embed(title="R0b3's 3D Printer Status", description="", color=0xF5A623)
     embed.add_field(name="Percent Complete: ", value=str(print_completion))
-    embed.add_field(name="Hours Elapsed: ", value=str(print_time))
-    embed.add_field(name="Hours Remaining: ", value=str(print_timeleft))
+    embed.add_field(name="Time Elapsed: ", value=time_elapsed)
+    embed.add_field(name="Time Remaining: ", value=time_remaining)
     await ctx.send(embed=embed)
 
 @bot.command()
