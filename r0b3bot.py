@@ -56,40 +56,45 @@ async def printpic(ctx):
 
     file = discord.File(full_file_name, filename=full_file_name)
     await ctx.send("3D Printer Status", file=file)
-
-    #with open(full_file_name, 'rb') as f:
-    #    await client.send(ctx,f)
+    
+    # Remove the Image File now that it is no longer needed
     os.remove(full_file_name)
    
-    try:
-        print_filename = octoapi.get_printFileName()
-    except:
-        print_filename = "Unknown"
+    # Get the name of the file currently being printed
+    print_filename = octoapi.get_printFileName()
 
     try:
+        # Try to get the % of Completion
         print_completion = round(octoapi.get_completion(), 2)
     except:
         print_completion = "Unknown"
 
+    # Get the current print time in seconds
     print_seconds = octoapi.get_printTime()
+
+    # Get the time remaining for current print job in seconds
     print_secondsleft = octoapi.get_printTimeLeft()
 
     try:
+        # Try to convert seconds to hours
         print_hours = int(((print_seconds / 60) / 60))
     except:
         print_hours = "Unknown"
 
     try:
+        # Try to convert seconds left to hours left
         print_hoursleft = int(((print_secondsleft / 60) / 60))
     except:
         print_hoursleft = "Unknown"
     
     try:
+        # Using the total number of minutes minus the total number of whole hours to get the minutes remaining
         print_min = int(((print_seconds / 60) - (print_hours * 60)))
     except:
         print_min = "Unknown"
     
     try:
+        # Same as above but for the minutes left in print job
         print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
     except:
         print_minleft = "Unknown"
