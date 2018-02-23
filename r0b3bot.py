@@ -49,6 +49,13 @@ async def holyshit(ctx):
 
 ###
 
+#
+# OctoPrint Commands
+#
+@bot.command()
+async def printpic(ctx):
+    await ctx.send("http://10.3.0.137:8080/?action=snapshot")
+
 @bot.command()
 async def info(ctx):
     embed = discord.Embed(title="R0b3BOT", description="Derpy Derp of a Bot", color=0xeee657)
