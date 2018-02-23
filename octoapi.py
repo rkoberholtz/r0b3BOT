@@ -135,7 +135,7 @@ def get_printTimeLeft():
 	return get_job_dict()["progress"]["printTimeLeft"]
 
 def get_printFileName():
-        return get_job_dict()["file"]["name"]
+        return get_job_dict()["job"]["file"]["name"]
 
 def get_sd_dict():
 	kwargs = {"url": "printer/sd"}

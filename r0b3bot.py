@@ -62,7 +62,7 @@ async def printpic(ctx):
     os.remove(full_file_name)
    
     try:
-        print_filename = octoapi.print_FileName()
+        print_filename = octoapi.get_printFileName()
     except:
         print_filename = "Unknown"
 
@@ -98,8 +98,7 @@ async def printpic(ctx):
     time_remaining = "%s Hours %s Minutes" % (print_hoursleft, print_minleft)
     #print_completion = "%s%" % (print_completion)
 
-    embed = discord.Embed(title="R0b3's 3D Printer Status", description="", color=0xF5A623)
-    embed.add_field(name="Job File: ", value=print_filename)
+    embed = discord.Embed(title="R0b3's 3D Printer Status", description="File Name: " + print_filename, color=0xF5A623)
     embed.add_field(name="Percent Complete: ", value=str(print_completion))
     embed.add_field(name="Time Elapsed: ", value=time_elapsed)
     embed.add_field(name="Time Remaining: ", value=time_remaining)
