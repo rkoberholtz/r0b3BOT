@@ -12,6 +12,11 @@ async def on_ready():
     print(bot.user.id)
     print('------')
 
+@bot.event
+async def on_command_error(error, ctx):
+    print('Oopsie, I found an error...')
+    print(error)
+
 @bot.command()
 async def add(ctx, a: int, b: int):
     await ctx.send(a+b)
