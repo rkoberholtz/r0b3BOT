@@ -15,6 +15,9 @@ async def on_ready():
 @bot.event
 async def on_command_error(error, ctx):
     print('Oopsie, I found an error...')
+    print('Command:')
+    print(ctx)
+    print('Error:')
     print(error)
 
 @bot.command()
