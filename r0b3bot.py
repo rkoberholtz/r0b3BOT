@@ -79,7 +79,7 @@ async def info(ctx):
     embed.add_field(name="Server count", value=f"{len(bot.guilds)}")
 
     # give users a link to invite thsi bot to their server
-    embed.add_field(name="Invite", value="[Invite link](https://discordapp.com/api/oauth2/authorize?client_id=416312716677087233&permissions=18432&scope=bot)")
+    embed.add_field(name="Invite", value="[Invite link](https://discordapp.com/api/oauth2/authorize?client_id=416312716677087233&permissions=51264&scope=bot)")
 
     await ctx.send(embed=embed)
 
