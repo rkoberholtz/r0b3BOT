@@ -7,7 +7,7 @@ import random
 import os
 import octoapi
 
-bot = commands.Bot(command_prefix='$', description='A bot that greets the user back.')
+bot = commands.Bot(command_prefix='$', description='A Super-Awesome Bot, for fun people')
 
 @bot.event
 async def on_ready():
@@ -55,7 +55,7 @@ async def printpic(ctx):
     urllib.request.urlretrieve("http://10.3.0.137:8080/?action=snapshot", full_file_name)
 
     file = discord.File(full_file_name, filename=full_file_name)
-    await ctx.send("3D Printer Status", file=file)
+    await ctx.send("3D Printer Snapshot:", file=file)
     
     # Remove the Image File now that it is no longer needed
     os.remove(full_file_name)
@@ -129,7 +129,7 @@ bot.remove_command('help')
 async def help(ctx):
     embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
     embed.add_field(name="$printpic", value="Takes snapshot of Rich's 3D printer and uploads to channel", inline=False)
-    embed.add_field(name="$explain", value="Displays Dalex EXPLAIN gif", inline=False)
+    embed.add_field(name="$explain", value="Displays Dalek EXPLAIN gif", inline=False)
     embed.add_field(name="$holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
     embed.add_field(name="$greetings", value="Gives a nice greet message", inline=False)
     embed.add_field(name="$cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
