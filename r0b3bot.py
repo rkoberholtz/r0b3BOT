@@ -60,7 +60,11 @@ async def printpic(ctx):
 async def printstat(ctx):
     
     turned_on_light = False
-    work_lights = remote.get_state(hassapi, 'switch.work_lights')
+    try:
+        work_lights = remote.get_state(hassapi, 'switch.work_lights')
+    except:
+        work_lights = "Unknown"
+
     if work_lights.state == 'off':
         turned_on_light = True
         try:
@@ -128,7 +132,7 @@ async def printstat(ctx):
     printer_bed = "%s°C" % (octoapi.get_printer_dict()["temperature"]["bed"]["actual"])
     printer_hotend = "%s°C" % (octoapi.get_printer_dict()["temperature"]["tool0"]["actual"])
 
-    embed = discord.Embed(title="R0b3's 3D Printer Status", description="File Name: " + print_filename, color=0xF5A623)
+    embed = discord.Embed(title="R0b3's 3D Printer Status", description="Current Job: " + print_filename, color=0xF5A623)
     embed.add_field(name="Percent Complete: ", value=str(print_completion) + "%")
     embed.add_field(name="Time Elapsed: ", value=time_elapsed)
     embed.add_field(name="Time Remaining: ", value=time_remaining)
