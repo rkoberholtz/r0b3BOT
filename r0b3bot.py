@@ -6,8 +6,12 @@ import urllib.request
 import random
 import os
 import octoapi
+import homeassistant.remote as remote
+import time
 
 bot = commands.Bot(command_prefix='$', description='A Super-Awesome Bot, for fun people')
+
+hassapi = remote.API('10.4.0.55', 'Power340!')
 
 @bot.event
 async def on_ready():
@@ -50,9 +54,24 @@ async def holyshit(ctx):
 #
 @bot.command()
 async def printpic(ctx):
+    
+    turned_on_light = False
+    work_lights = remote.get_state(hassapi, 'switch.work_lights')
+    if work_lights.state == 'off':
+        turned_on_light = True
+        try:
+            remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format('switch.work_lights')})
+        except:
+            pass
+        await ctx.send("Woah, it's pretty dark Rich's basement... Give me a few secs to turn on a light.")
+        time.sleep(3)
+
     file_name = random.randrange(1,10000)
     full_file_name = str(file_name) + '.jpg'
     urllib.request.urlretrieve("http://10.3.0.137:8080/?action=snapshot", full_file_name)
+
+    if turned_on_light:
+        remote.call_service(hassapi, 'switch', 'turn_off', {'entity_id':'{}'.format('switch.work_lights')})
 
     file = discord.File(full_file_name, filename=full_file_name)
     await ctx.send("3D Printer Snapshot:", file=file)
