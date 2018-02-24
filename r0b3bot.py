@@ -102,10 +102,15 @@ async def printpic(ctx):
     time_elapsed = "%s Hours %s Minutes" % (print_hours, print_min)
     time_remaining = "%s Hours %s Minutes" % (print_hoursleft, print_minleft)
 
+    printer_bed = "%s°C" % (octoapi.get_printer_dict()["temperature"]["bed"]["actual"])
+    printer_hotend = "%s°C" % (octoapi.get_printer_dict()["temperature"]["tool0"]["actual"])
+
     embed = discord.Embed(title="R0b3's 3D Printer Status", description="File Name: " + print_filename, color=0xF5A623)
     embed.add_field(name="Percent Complete: ", value=str(print_completion) + "%")
     embed.add_field(name="Time Elapsed: ", value=time_elapsed)
     embed.add_field(name="Time Remaining: ", value=time_remaining)
+    embed.add_field(name="Bed Temp.: ", value=printer_bed)
+    embed.add_field(name="Hotend Temp.: ", value=printer_hotend)
     await ctx.send(embed=embed)
 
 @bot.command()
