@@ -54,6 +54,10 @@ async def holyshit(ctx):
 #
 @bot.command()
 async def printpic(ctx):
+    await ctx.send("Oops, $printpic has been changed to $printstat")
+
+@bot.command()
+async def printstat(ctx):
     
     turned_on_light = False
     work_lights = remote.get_state(hassapi, 'switch.work_lights')
@@ -152,7 +156,8 @@ bot.remove_command('help')
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
-    embed.add_field(name="$printpic", value="Takes snapshot of Rich's 3D printer and uploads to channel", inline=False)
+    embed.add_field(name="$printpic", value="deprecated, use $printstat instead", inline=False)
+    embed.add_field(name="$printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
     embed.add_field(name="$explain", value="Displays Dalek EXPLAIN gif", inline=False)
     embed.add_field(name="$holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
     embed.add_field(name="$greetings", value="Gives a nice greet message", inline=False)
