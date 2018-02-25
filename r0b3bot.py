@@ -71,7 +71,7 @@ async def printstat(ctx):
             remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format('switch.work_lights')})
         except:
             pass
-        await ctx.send("Woah, it's pretty dark in Rich's basement... Give me a couple secs to turn on a light.")
+        await ctx.send("Woah, it's pretty dark in R0b3's basement... Give me a couple secs to turn on a light.")
         time.sleep(3)
 
     file_name = random.randrange(1,10000)
