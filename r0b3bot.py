@@ -85,7 +85,8 @@ async def printstat(ctx):
         work_lights = remote.get_state(hassapi, 'switch.work_lights')
     except:
         # We weren't able to get the status.  Display this text to the chat channel
-        await ctx.send("Hmm, I can't tell if the light is on... oh well"
+        await ctx.send("Hmm, I can't tell if the light is on... oh well")
+        work_lights = "Unknown"
 
     # If the light is off, let's turn it on before we take a picture
     if work_lights.state == 'off':
