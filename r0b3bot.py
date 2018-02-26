@@ -22,6 +22,7 @@ except:
 
 HASS_API_KEY = config.get('bot-config', 'hass_api_key')
 HASS_IP_ADDRESS = config.get('bot-config', 'hass_ip_address')
+HASS_LIGHT = config.get('bot-config', 'hass_light')
 
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
 
@@ -76,28 +77,40 @@ async def printpic(ctx):
 @bot.command()
 async def printstat(ctx):
     
+    # We haven't yet changed the state of the light, setting this to False
     turned_on_light = False
+
+    # Try to get the status of the 3D printer light
     try:
         work_lights = remote.get_state(hassapi, 'switch.work_lights')
     except:
-        work_lights = "Unknown"
+        # We weren't able to get the status.  Display this text to the chat channel
+        await ctx.send("Hmm, I can't tell if the light is on... oh well"
 
+    # If the light is off, let's turn it on before we take a picture
     if work_lights.state == 'off':
         turned_on_light = True
         try:
-            remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format('switch.work_lights')})
+            # REST API call to home assistant to turn the light off.
+            remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
         except:
+            # Do nothing is this fails
             pass
         await ctx.send("Woah, it's pretty dark in R0b3's basement... Give me a couple secs to turn on a light.")
         time.sleep(3)
 
+    # Randomly generate a filename to save the image to
     file_name = random.randrange(1,10000)
     full_file_name = str(file_name) + '.jpg'
+
+    # Get an image from OctoPrint and save it
     urllib.request.urlretrieve("http://%s:8080/?action=snapshot" % (OCTOPRINT_IP_ADDRESS), full_file_name)
 
+    # If we turned on the light, let's be nice and turn it back off
     if turned_on_light:
         remote.call_service(hassapi, 'switch', 'turn_off', {'entity_id':'{}'.format('switch.work_lights')})
 
+    # Send the image to the chat channel
     file = discord.File(full_file_name, filename=full_file_name)
     await ctx.send("3D Printer Snapshot:", file=file)
     
