@@ -8,10 +8,27 @@ import os
 import octoapi
 import homeassistant.remote as remote
 import time
+import configparser
 
 bot = commands.Bot(command_prefix='$', description='A Super-Awesome Bot, for fun people')
 
-hassapi = remote.API('10.4.0.55', 'Power340!')
+config = configparser.RawConfigParser()
+configFilePath = r'bot_config.conf'
+
+try:
+    config.read(configFilePath)
+except:
+    print("Error loading config!  Please check config file 'bot-config.conf'")
+
+HASS_API_KEY = config.get('bot-config', 'hass_api_key')
+HASS_IP_ADDRESS = config.get('bot-config', 'hass_ip_address')
+
+OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
+
+DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+
+
+hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
 async def on_ready():
@@ -76,7 +93,7 @@ async def printstat(ctx):
 
     file_name = random.randrange(1,10000)
     full_file_name = str(file_name) + '.jpg'
-    urllib.request.urlretrieve("http://10.3.0.137:8080/?action=snapshot", full_file_name)
+    urllib.request.urlretrieve("http://%s:8080/?action=snapshot" % (OCTOPRINT_IP_ADDRESS), full_file_name)
 
     if turned_on_light:
         remote.call_service(hassapi, 'switch', 'turn_off', {'entity_id':'{}'.format('switch.work_lights')})
@@ -171,4 +188,4 @@ async def help(ctx):
 
     await ctx.send(embed=embed)
 
-bot.run('NDE2MzEyNzE2Njc3MDg3MjMz.DXCuVg.djVGXmyd7r7XWo_NbKOVcBsv55k')
+bot.run(DISCORD_AUTH_TOKEN)
