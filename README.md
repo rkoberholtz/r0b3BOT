@@ -1,7 +1,7 @@
 *** This project lives @ https://gitlab.rickelobe.com/Rich/R0b3BOT ***
 
 # Description
-This is Rich's Discord Bot.  It's creation was basically a challenge posed a coworker who said "Hey, you can write Discord Bots in Python... Make one to display your 3D printer status!".
+This is R0b3's Discord Bot.  It's creation was basically a challenge posed a coworker who said "Hey, you can write Discord Bots in Python... Make one to display your 3D printer status!".
 
 # Requirements
 1. discord.py version 1.0.0a or greater<br>
