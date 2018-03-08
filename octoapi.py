@@ -164,8 +164,9 @@ def get_version_dict():
 def is_printing():
 	return get_printer_dict()["state"]["flags"]["printing"]
 
-def is_poerational():
+def is_operational():
         return get_printer_dict()["state"]["flags"]["operational"]
+
 def issue(**kwargs):
 	op = OctoPrint_API()
 	return op.post(**kwargs)

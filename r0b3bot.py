@@ -9,6 +9,7 @@ import octoapi
 import homeassistant.remote as remote
 import time
 import configparser
+import json
 
 bot = commands.Bot(command_prefix='$', description='A Super-Awesome Bot, for fun people')
 
@@ -122,9 +123,14 @@ async def printstat(ctx):
     os.remove(full_file_name)
    
     print("- Connecting to OctoPrint API")
-    print("-- IS_PRINTING: %s" % (octoapi.is_printing()))
-    print("-- IS_OPERATIONAL: %s" % (octoapi.is_operational()))
-    if octoapi.is_printing() and octoapi.is_operational():
+    # Testing OctoPrint API Status.  If printer is off, I won't receive JSON data.
+    try:
+        operational = json.loads(octoapi.get_printer_dict())
+    except:
+        # Printer is Offline
+        operational = False
+    
+    if operational:
         print("- 3D Printer is on and printing, getting details")
 
         # Get the name of the file currently being printed
