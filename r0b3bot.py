@@ -81,7 +81,7 @@ async def printstat(ctx):
     turned_on_light = False
 
     # No Data from Printer?
-    NoData = True
+    NoData = False
 
     # Try to get the status of the 3D printer light
     try:
@@ -121,59 +121,76 @@ async def printstat(ctx):
     # Remove the Image File now that it is no longer needed
     os.remove(full_file_name)
    
-    # Get the name of the file currently being printed
-    try:
-        print_filename = octoapi.get_printFileName()
-    except:
-        #If there's no file data, we know nothing is being printed or the printer is offline
-        NoData = True
-        print_filename = "None"
+    print("- Connecting to OctoPrint API")
+    print("-- IS_PRINTING: %s" % (octoapi.is_printing()))
+    print("-- IS_OPERATIONAL: %s" % (octoapi.is_operational()))
+    if octoapi.is_printing() and octoapi.is_operational():
+        print("- 3D Printer is on and printing, getting details")
 
-    try:
-        # Try to get the % of Completion
-        print_completion = round(octoapi.get_completion(), 2)
-    except:
-        print_completion = "Unknown"
+        # Get the name of the file currently being printed
+        try:
+            print("-- Getting Filename")
+            print_filename = octoapi.get_printFileName()
+        except:
+            print_filename = ""
 
-    # Get the current print time in seconds
-    print_seconds = octoapi.get_printTime()
+        try:
+            print("-- Getting % Completion")
+            # Try to get the % of Completion
+            print_completion = round(octoapi.get_completion(), 2)
+        except:
+            print_completion = "Unknown"
 
-    # Get the time remaining for current print job in seconds
-    print_secondsleft = octoapi.get_printTimeLeft()
+        # Get the current print time in seconds
+        try:
+            print("-- Getting Seconds Elapsed")
+            print_seconds = octoapi.get_printTime()
+        except:
+            print("Unable to get Seconds data from OctoPrint")
 
-    try:
-        # Try to convert seconds to hours
-        print_hours = int(((print_seconds / 60) / 60))
-    except:
-        print_hours = "Unknown"
+        # Get the time remaining for current print job in seconds
+        try:
+            print("-- Getting Seconds Left")
+            print_secondsleft = octoapi.get_printTimeLeft()
+        except:
+            print("Unable to get Seconds Left from OctoPrint")
 
-    try:
-        # Try to convert seconds left to hours left
-        print_hoursleft = int(((print_secondsleft / 60) / 60))
-    except:
-        print_hoursleft = "Unknown"
+        try:
+            print("-- Converting Seconds to Hours")
+            # Try to convert seconds to hours
+            print_hours = int(((print_seconds / 60) / 60))
+        except:
+            print_hours = "Unknown"
+
+        try:
+            print("-- Converting Seconds left to Hours left")
+            # Try to convert seconds left to hours left
+            print_hoursleft = int(((print_secondsleft / 60) / 60))
+        except:
+            print_hoursleft = "Unknown"
     
-    try:
-        # Using the total number of minutes minus the total number of whole hours to get the minutes remaining
-        print_min = int(((print_seconds / 60) - (print_hours * 60)))
-    except:
-        print_min = "Unknown"
+        try:
+            print("-- Calculating Minutes Elapsed")
+            # Using the total number of minutes minus the total number of whole hours to get the minutes remaining
+            print_min = int(((print_seconds / 60) - (print_hours * 60)))
+        except:
+            print_min = "Unknown"
     
-    try:
-        # Same as above but for the minutes left in print job
-        print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
-    except:
-        print_minleft = "Unknown"
+        try:
+            print("-- Calculating Minutes Left")
+            # Same as above but for the minutes left in print job
+            print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
+        except:
+            print_minleft = "Unknown"
 
-    time_elapsed = "%s Hours %s Minutes" % (print_hours, print_min)
-    time_remaining = "%s Hours %s Minutes" % (print_hoursleft, print_minleft)
+        time_elapsed = "%s Hours %s Minutes" % (print_hours, print_min)
+        time_remaining = "%s Hours %s Minutes" % (print_hoursleft, print_minleft)
 
-    printer_bed = "%s°C" % (octoapi.get_printer_dict()["temperature"]["bed"]["actual"])
-    printer_hotend = "%s°C" % (octoapi.get_printer_dict()["temperature"]["tool0"]["actual"])
+        printer_bed = "%s°C" % (octoapi.get_printer_dict()["temperature"]["bed"]["actual"])
+        printer_hotend = "%s°C" % (octoapi.get_printer_dict()["temperature"]["tool0"]["actual"])
 
-    embed = discord.Embed(title="R0b3's 3D Printer Status", description="Current Job: " + print_filename, color=0xF5A623)
+        embed = discord.Embed(title="R0b3's 3D Printer Status", description="Current Job: " + print_filename, color=0xF5A623)
 
-    if not NoData:
         embed.add_field(name="Percent Complete: ", value=str(print_completion) + "%")
         embed.add_field(name="Time Elapsed: ", value=time_elapsed)
         embed.add_field(name="Time Remaining: ", value=time_remaining)
@@ -182,7 +199,8 @@ async def printstat(ctx):
         await ctx.send(embed=embed)
 
     else:
-        embed.add_field(name="Status: ", value="Printer is currently Offline")
+        print("- 3D Printer is not on or is not printing")
+        embed = discord.Embed(title="Printer is Offline")
         await ctx.send(embed=embed)
 
 @bot.command()

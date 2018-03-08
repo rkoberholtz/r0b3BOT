@@ -57,7 +57,7 @@ class OctoPrint_API(object):
 		
 	def _load_config(self):
 		home_dir = os.path.expanduser("")
-		config_path = os.path.join(home_dir, ".octoapi.conf")
+		config_path = os.path.join(home_dir, "octoapi.conf")
 		try:
 			config_file = open(config_path)
 			config = json.loads(config_file.read())
@@ -163,7 +163,9 @@ def get_version_dict():
 	
 def is_printing():
 	return get_printer_dict()["state"]["flags"]["printing"]
-	
+
+def is_poerational():
+        return get_printer_dict()["state"]["flags"]["operational"]
 def issue(**kwargs):
 	op = OctoPrint_API()
 	return op.post(**kwargs)
