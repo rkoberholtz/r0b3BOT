@@ -82,8 +82,8 @@ async def printstat(ctx):
     turned_on_light = False
 
     # No Data from Printer?
-    NoData = False
-
+    operational = True
+    
     # Try to get the status of the 3D printer light
     try:
         work_lights = remote.get_state(hassapi, 'switch.work_lights')
@@ -130,7 +130,7 @@ async def printstat(ctx):
         # Printer is Offline
         operational = False
     
-    if operational:
+    if not operational:
         print("- 3D Printer is on and printing, getting details")
 
         # Get the name of the file currently being printed
