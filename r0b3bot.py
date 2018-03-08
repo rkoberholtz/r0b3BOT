@@ -220,8 +220,6 @@ async def printstat(ctx):
         print("- Notifying chat channel")
         await ctx.send(embed=embed)
 
-    print("========== End Command ==========")
-
 @bot.command()
 async def info(ctx):
     embed = discord.Embed(title="R0b3BOT", description="Derpy Derp of a Bot", color=0xeee657)
