@@ -80,6 +80,9 @@ async def printstat(ctx):
     # We haven't yet changed the state of the light, setting this to False
     turned_on_light = False
 
+    # No Data from Printer?
+    NoData = True
+
     # Try to get the status of the 3D printer light
     try:
         work_lights = remote.get_state(hassapi, 'switch.work_lights')
@@ -119,7 +122,12 @@ async def printstat(ctx):
     os.remove(full_file_name)
    
     # Get the name of the file currently being printed
-    print_filename = octoapi.get_printFileName()
+    try:
+        print_filename = octoapi.get_printFileName()
+    except:
+        #If there's no file data, we know nothing is being printed or the printer is offline
+        NoData = True
+        print_filename = "None"
 
     try:
         # Try to get the % of Completion
@@ -164,12 +172,18 @@ async def printstat(ctx):
     printer_hotend = "%s°C" % (octoapi.get_printer_dict()["temperature"]["tool0"]["actual"])
 
     embed = discord.Embed(title="R0b3's 3D Printer Status", description="Current Job: " + print_filename, color=0xF5A623)
-    embed.add_field(name="Percent Complete: ", value=str(print_completion) + "%")
-    embed.add_field(name="Time Elapsed: ", value=time_elapsed)
-    embed.add_field(name="Time Remaining: ", value=time_remaining)
-    embed.add_field(name="Bed Temp.: ", value=printer_bed)
-    embed.add_field(name="Hotend Temp.: ", value=printer_hotend)
-    await ctx.send(embed=embed)
+
+    if not NoData:
+        embed.add_field(name="Percent Complete: ", value=str(print_completion) + "%")
+        embed.add_field(name="Time Elapsed: ", value=time_elapsed)
+        embed.add_field(name="Time Remaining: ", value=time_remaining)
+        embed.add_field(name="Bed Temp.: ", value=printer_bed)
+        embed.add_field(name="Hotend Temp.: ", value=printer_hotend)
+        await ctx.send(embed=embed)
+
+    else:
+        embed.add_field(name="Status: ", value="Printer is currently Offline")
+        await ctx.send(embed=embed)
 
 @bot.command()
 async def info(ctx):
