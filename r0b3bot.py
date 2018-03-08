@@ -77,7 +77,7 @@ async def printpic(ctx):
 
 @bot.command()
 async def printstat(ctx):
-    
+    print("========== Command Called at %s ==========" % (time.strftime("%Y%m%d-%H%M%S"))) 
     # We haven't yet changed the state of the light, setting this to False
     turned_on_light = False
 
@@ -85,14 +85,17 @@ async def printstat(ctx):
     operational = True
     
     # Try to get the status of the 3D printer light
+    print("- Getting Printer Light Status")
     try:
         work_lights = remote.get_state(hassapi, 'switch.work_lights')
     except:
         # We weren't able to get the status.  Display this text to the chat channel
+        print("-- Unable to get light status, notifying chat channel")
         await ctx.send("Hmm, I can't tell if the light is on... oh well")
         work_lights = "Unknown"
 
     # If the light is off, let's turn it on before we take a picture
+    print("-- Lights are off, turning on for image capture")
     if work_lights.state == 'off':
         turned_on_light = True
         try:
@@ -100,7 +103,9 @@ async def printstat(ctx):
             remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
         except:
             # Do nothing is this fails
+            print("-- Unable to turn on light")
             pass
+
         await ctx.send("Woah, it's pretty dark in R0b3's basement... Give me a couple secs to turn on a light.")
         time.sleep(3)
 
@@ -109,17 +114,21 @@ async def printstat(ctx):
     full_file_name = str(file_name) + '.jpg'
 
     # Get an image from OctoPrint and save it
+    print("- Getting image from Webcam")
     urllib.request.urlretrieve("http://%s:8080/?action=snapshot" % (OCTOPRINT_IP_ADDRESS), full_file_name)
 
     # If we turned on the light, let's be nice and turn it back off
     if turned_on_light:
+        print("- Turning Light back Off")
         remote.call_service(hassapi, 'switch', 'turn_off', {'entity_id':'{}'.format('switch.work_lights')})
 
     # Send the image to the chat channel
+    print("- Uploading image to chat channel")
     file = discord.File(full_file_name, filename=full_file_name)
     await ctx.send("3D Printer Snapshot:", file=file)
     
     # Remove the Image File now that it is no longer needed
+    print("- Deleting temporary image file")
     os.remove(full_file_name)
    
     print("- Connecting to OctoPrint API")
@@ -202,12 +211,16 @@ async def printstat(ctx):
         embed.add_field(name="Time Remaining: ", value=time_remaining)
         embed.add_field(name="Bed Temp.: ", value=printer_bed)
         embed.add_field(name="Hotend Temp.: ", value=printer_hotend)
+        print("- Sending details to chat channel")
         await ctx.send(embed=embed)
 
     else:
         print("- 3D Printer is not on or is not printing")
         embed = discord.Embed(title="Printer is Offline")
+        print("- Notifying chat channel")
         await ctx.send(embed=embed)
+
+    print("========== End Command ==========")
 
 @bot.command()
 async def info(ctx):
