@@ -78,7 +78,7 @@ async def holyshit(ctx):
 @bot.command()
 async def bitch(ctx):
     discord.opus.load_opus("libopus.so")
-    channel = ctx.message.author.voice.channel
+    channel = ctx.message.author.voice.voice_channel
     print("Someone's being a $BITCH... and the should not be")
     if not channel:
         print(" ! User initiating $bitch is not in a voice channel")
