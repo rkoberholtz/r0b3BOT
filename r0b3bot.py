@@ -77,7 +77,7 @@ async def holyshit(ctx):
 
 @bot.command()
 async def bitch(ctx):
-    discord.opus.load_opus()
+    discord.opus.load_opus("libopus.so")
     channel = ctx.message.author.voice.channel
     if not channel:
         await ctx.send("You are not connected to a voice channel.")
