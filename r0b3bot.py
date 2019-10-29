@@ -90,8 +90,9 @@ async def bitch(ctx):
     source = FFmpegPCMAudio('./monkey_bitch.mp3')
     player = voice.play(source)
     player.start()
-    await asyncio.sleep(2)
-    await player.stop()
+    while not player.is_done():
+        await asyncio.sleep(1)
+    player.stop()
     await channel.disconnect()
 
 #@bot.command()
