@@ -69,6 +69,27 @@ async def holyshit(ctx):
 ###
 
 #
+# Voice Commands
+#
+@bot.command()
+async def bitch(ctx):
+    user=ctx.message.author
+    voice_channel=user.voice.voice_channel
+    channel=None
+    if voice_channel != None:
+        channel=voice_channel.name
+        vc= await client.join_voice_channel(voice_channel)
+        player = vc.create_ffmpeg_player('monkey_bitch.mp3', after=lambda: print('done'))
+        player.start()
+        while not player.is.done():
+            await asyncio.sleep(1)
+        player.stop()
+        await vc.disconnect()
+    else:
+        await ctx.send("User is not in a channel.")
+###
+
+#
 # OctoPrint Commands
 #
 @bot.command()
