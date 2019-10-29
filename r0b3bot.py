@@ -87,7 +87,7 @@ async def bitch(ctx):
         await voice.move_to(channel)
     else:
         voice = await channel.connect()
-    source = FFmpegOpusAudio('monkey_bitch.mp3')
+    source = FFmpegPCMAudio('./monkey_bitch.mp3')
     player = voice.play(source)
     player.start()
     await asyncio.sleep(2)
