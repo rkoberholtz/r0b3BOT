@@ -78,7 +78,7 @@ async def bitch(ctx):
     channel=None
     if voice_channel != None:
         channel=voice_channel.name
-        vc= await client.join_voice_channel(voice_channel)
+        vc= await bot.join_voice_channel(voice_channel)
         player = vc.create_ffmpeg_player('monkey_bitch.mp3', after=lambda: print('done'))
         player.start()
         while not player.is_done():
