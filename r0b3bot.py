@@ -87,8 +87,8 @@ async def bitch(ctx):
         await voice.move_to(channel)
     else:
         voice = await channel.connect()
-    source = FFmpegPCMAudio('./monkey_bitch.mp3')
-    player = voice.play(source)
+    #source = FFmpegPCMAudio('./monkey_bitch.mp3')
+    player = voice.play(discord.FFmpegPCMAudio('./monkey_bitch.mp3'))
     player.start()
     while not player.is_done():
         await asyncio.sleep(1)
