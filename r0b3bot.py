@@ -12,6 +12,7 @@ import configparser
 import json
 from discord import FFmpegPCMAudio
 from discord.utils import get
+from discord.voice_client import VoiceClient
 
 bot = commands.Bot(command_prefix='$', description='A Super-Awesome Bot, for fun people')
 
@@ -76,6 +77,7 @@ async def holyshit(ctx):
 
 @bot.command()
 async def bitch(ctx):
+    discord.opus.load_opus()
     channel = ctx.message.author.voice.channel
     if not channel:
         await ctx.send("You are not connected to a voice channel.")
