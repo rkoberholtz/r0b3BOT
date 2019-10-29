@@ -10,6 +10,8 @@ import homeassistant.remote as remote
 import time
 import configparser
 import json
+from discord import FFmpegPCMAudio
+from discord.utils import get
 
 bot = commands.Bot(command_prefix='$', description='A Super-Awesome Bot, for fun people')
 
@@ -71,22 +73,38 @@ async def holyshit(ctx):
 #
 # Voice Commands
 #
+
 @bot.command()
 async def bitch(ctx):
-    user=ctx.message.author
-    voice_channel=user.voice.voice_channel
-    channel=None
-    if voice_channel != None:
-        channel=voice_channel.name
-        vc= await bot.join_voice_channel(voice_channel)
-        player = vc.create_ffmpeg_player('monkey_bitch.mp3', after=lambda: print('done'))
-        player.start()
-        while not player.is_done():
-            await asyncio.sleep(1)
-        player.stop()
-        await vc.disconnect()
+    channel = ctx.message.author.voice.channel
+    if not channel:
+        await ctx.send("You are not connected to a voice channel.")
+        return
+    voice = get(bot.voice_clients, guild=ctx.guild)
+    if voice and voice.is_connected():
+        await voice.move_to(channel)
     else:
-        await ctx.send("User is not in a channel.")
+        voice = await channel.connect()
+    source = FFmpegPCMAudio('monkey_bitch.mp3')
+    player = voice.play(source)
+    player.start()
+
+#@bot.command()
+#async def bitch(ctx):
+#    user=ctx.message.author
+#    voice_channel=user.voice.voice_channel
+#    channel=None
+#    if voice_channel != None:
+#        channel=voice_channel.name
+#        vc= await bot.join_voice_channel(voice_channel)
+#        player = vc.create_ffmpeg_player('monkey_bitch.mp3', after=lambda: print('done'))
+#        player.start()
+#        while not player.is_done():
+#            await asyncio.sleep(1)
+#        player.stop()
+#        await vc.disconnect()
+#    else:
+#        await ctx.send("User is not in a channel.")
 ###
 
 #
