@@ -99,6 +99,7 @@ async def bitch(ctx):
     audio_source = discord.FFmpegPCMAudio('./monkey_bitch.mp3')
     print(" - Playing sound")
     voice.play(audio_source, after=None)
+    async time.sleep(2)
     await voice.disconnect()
 
 ###
