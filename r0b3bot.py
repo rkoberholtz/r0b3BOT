@@ -79,20 +79,28 @@ async def holyshit(ctx):
 async def bitch(ctx):
     discord.opus.load_opus("libopus.so")
     channel = ctx.message.author.voice.channel
+    print("Someone's being a $BITCH... and the should not be")
     if not channel:
+        print(" ! User initiating $bitch is not in a voice channel")
         await ctx.send("You are not connected to a voice channel.")
         return
     voice = get(bot.voice_clients, guild=ctx.guild)
     if voice and voice.is_connected():
+        print(" - Joining voice channel")
         await voice.move_to(channel)
     else:
+        print(" ! Dunno what's going on, but it's not good")
         voice = await channel.connect()
     #source = FFmpegPCMAudio('./monkey_bitch.mp3')
+    print(" - Creating Player")
     player = voice.play(discord.FFmpegPCMAudio('./monkey_bitch.mp3'))
+    print(" - Playing sound")
     player.start()
     while not player.is_done():
+        print(" - Waiting for player to finish playing")
         await asyncio.sleep(1)
     player.stop()
+    print(" - Disconnecting from voice channel")
     await channel.disconnect()
 
 #@bot.command()
