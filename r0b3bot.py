@@ -109,6 +109,40 @@ async def bitch(ctx):
     print(" - Disconnecting from voice channel")
     await voice.disconnect()
 
+@bot.command()
+async def bitch2(ctx, member : discord.member):
+    discord.opus.load_opus("libopus.so")
+    print("Someone's being a $BITCH...")
+    await ctx.send(f"Destination Member: {member}")
+    try:
+        channel = ctx.message.author.voice.channel
+    except:
+        await ctx.send("You are not connected to a voice channel.")
+        print("User is not connected to a voice channel")
+        return
+    ## commented if command is replaced by above try except statement
+    #if not channel:
+    #    print(" ! User initiating $bitch is not in a voice channel")
+    #    await ctx.send("You are not connected to a voice channel.")
+    #    return
+    voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    
+    if voice and voice.is_connected():
+        print(" - Moving to channel")
+        await voice.move_to(channel)
+
+    else:
+        print(" - Joining Channel")
+        voice = await channel.connect()
+    #source = FFmpegPCMAudio('./monkey_bitch.mp3')
+
+    print(" - Creating Player")
+    audio_source = discord.FFmpegPCMAudio('./monkey_bitch.mp3')
+    print(" - Playing sound")
+    voice.play(audio_source, after=None)
+    time.sleep(2)
+    print(" - Disconnecting from voice channel")
+    await voice.disconnect()
 ###
 
 #
