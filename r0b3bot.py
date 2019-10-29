@@ -84,14 +84,17 @@ async def bitch(ctx):
         print(" ! User initiating $bitch is not in a voice channel")
         await ctx.send("You are not connected to a voice channel.")
         return
-    voice = get(bot.voice_clients, guild=ctx.guild)
+    voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=guild)
+    #voice = get(bot.voice_clients, guild=ctx.guild)
     if voice and voice.is_connected():
         print(" - Joining voice channel")
         await voice.move_to(channel)
+
     #else:
     #    print(" ! Dunno what's going on, but it's not good")
     #    voice = await channel.connect()
     #source = FFmpegPCMAudio('./monkey_bitch.mp3')
+
     print(" - Creating Player")
     player = voice.play(discord.FFmpegPCMAudio('./monkey_bitch.mp3'))
     print(" - Playing sound")
