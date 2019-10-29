@@ -76,11 +76,6 @@ async def holyshit(ctx):
 #
 
 @bot.command()
-async def monk(ctx):
-    voice = await ctx.author.voice.channel.connect()
-    voice.play(discord.FFmpegPCMAudio('/home/rich/r0b3BOT/monkey_bitch.mp3'))
-
-@bot.command()
 async def bitch(ctx):
     discord.opus.load_opus("libopus.so")
     channel = ctx.message.author.voice.channel
@@ -104,24 +99,8 @@ async def bitch(ctx):
     audio_source = discord.FFmpegPCMAudio('./monkey_bitch.mp3')
     print(" - Playing sound")
     voice.play(audio_source, after=None)
-    await channel.disconnect()
+    await voice.disconnect()
 
-#@bot.command()
-async def b(ctx):
-    user=ctx.message.author
-    voice_channel=user.voice.voice_channel
-    channel=None
-    if voice_channel != None:
-        channel=voice_channel.name
-        vc= await bot.join_voice_channel(voice_channel)
-        player = vc.create_ffmpeg_player('monkey_bitch.mp3', after=lambda: print('done'))
-        player.start()
-        while not player.is_done():
-            await asyncio.sleep(1)
-        player.stop()
-        await vc.disconnect()
-    else:
-        await ctx.send("User is not in a channel.")
 ###
 
 #
