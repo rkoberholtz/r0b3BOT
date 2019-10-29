@@ -78,7 +78,7 @@ async def holyshit(ctx):
 @bot.command()
 async def monk(ctx):
     voice = await ctx.author.voice.channel.connect()
-    voice.play(discord.FFmpegPCMAudio('./monkey_bitch.mp3'))
+    voice.play(discord.FFmpegPCMAudio('/home/rich/r0b3BOT/monkey_bitch.mp3'))
 
 @bot.command()
 async def bitch(ctx):
