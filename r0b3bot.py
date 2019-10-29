@@ -110,14 +110,14 @@ async def bitch(ctx):
     await voice.disconnect()
 
 @bot.command()
-async def bitch2(ctx, member : discord.member="NONE"):
+async def bitch2(ctx, user : discord.user="NONE"):
     discord.opus.load_opus("libopus.so")
     print("Someone's being a $BITCH...")
     if member != "NONE":
         channel = member.voice.channel
-        print(f" - User specified: {member.display_name}")
+        print(f" - User specified: {user.display_name}")
         print(f" - Channel we're going to play the sound in: {channel}")
-    await ctx.send(f"Destination Member: {member.display_name}")
+    await ctx.send(f"Destination Member: {user.display_name}")
     try:
         channel = ctx.message.author.voice.channel
     except:
