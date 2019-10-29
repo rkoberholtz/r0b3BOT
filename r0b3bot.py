@@ -117,7 +117,7 @@ async def bitch2(ctx, member : discord.member="NONE"):
         channel = member.voice.channel
         print(f" - User specified: {member.display_name}")
         print(f" - Channel we're going to play the sound in: {channel}")
-    await ctx.send(f"Destination Member: {member}")
+    await ctx.send(f"Destination Member: {member.display_name}")
     try:
         channel = ctx.message.author.voice.channel
     except:
