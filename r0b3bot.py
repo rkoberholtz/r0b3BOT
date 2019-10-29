@@ -88,9 +88,9 @@ async def bitch(ctx):
     if voice and voice.is_connected():
         print(" - Joining voice channel")
         await voice.move_to(channel)
-    else:
-        print(" ! Dunno what's going on, but it's not good")
-        voice = await channel.connect()
+    #else:
+    #    print(" ! Dunno what's going on, but it's not good")
+    #    voice = await channel.connect()
     #source = FFmpegPCMAudio('./monkey_bitch.mp3')
     print(" - Creating Player")
     player = voice.play(discord.FFmpegPCMAudio('./monkey_bitch.mp3'))
