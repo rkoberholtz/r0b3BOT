@@ -110,7 +110,7 @@ async def bitch(ctx):
     await voice.disconnect()
 
 @bot.command()
-async def bitch2(ctx, member : discord.member):
+async def bitch2(ctx, member : discord.member="NONE"):
     discord.opus.load_opus("libopus.so")
     print("Someone's being a $BITCH...")
     if member != "NONE":
