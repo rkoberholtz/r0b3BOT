@@ -95,7 +95,7 @@ async def bitch(ctx):
     await channel.disconnect()
 
 #@bot.command()
-async def bitch2(ctx):
+async def b(ctx):
     user=ctx.message.author
     voice_channel=user.voice.voice_channel
     channel=None
