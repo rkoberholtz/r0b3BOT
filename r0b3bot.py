@@ -84,7 +84,7 @@ async def bitch(ctx):
         print(" ! User initiating $bitch is not in a voice channel")
         await ctx.send("You are not connected to a voice channel.")
         return
-    voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=guild)
+    voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     #voice = get(bot.voice_clients, guild=ctx.guild)
     if voice and voice.is_connected():
         print(" - Joining voice channel")
