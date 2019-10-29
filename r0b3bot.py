@@ -78,12 +78,18 @@ async def holyshit(ctx):
 @bot.command()
 async def bitch(ctx):
     discord.opus.load_opus("libopus.so")
-    channel = ctx.message.author.voice.channel
-    print("Someone's being a $BITCH... and the should not be")
-    if not channel:
-        print(" ! User initiating $bitch is not in a voice channel")
+    try:
+        channel = ctx.message.author.voice.channel
+    except:
         await ctx.send("You are not connected to a voice channel.")
+        print("User is not connected to a voice channel")
         return
+    print("Someone's being a $BITCH...")
+    ## commented if command is replaced by above try except statement
+    #if not channel:
+    #    print(" ! User initiating $bitch is not in a voice channel")
+    #    await ctx.send("You are not connected to a voice channel.")
+    #    return
     voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     
     if voice and voice.is_connected():
