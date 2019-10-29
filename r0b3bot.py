@@ -81,7 +81,7 @@ async def bitch(ctx):
         vc= await client.join_voice_channel(voice_channel)
         player = vc.create_ffmpeg_player('monkey_bitch.mp3', after=lambda: print('done'))
         player.start()
-        while not player.is.done():
+        while not player.is_done():
             await asyncio.sleep(1)
         player.stop()
         await vc.disconnect()
