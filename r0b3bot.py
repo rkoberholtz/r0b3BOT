@@ -113,22 +113,26 @@ async def bitch(ctx):
 async def bitch2(ctx, member : discord.Member="NONE"):
     discord.opus.load_opus("libopus.so")
     print("Someone's being a $BITCH...")
+
     if member != "NONE":
-        channel = member.voice.channel
+        try:
+            channel = member.voice.channel
+        except:
+            await ctx.send(f"{member.display_name} is not in a voice channel!")
+            print(f" ! {member.display_name} is not in a voice channel")
+            return
         print(f" - User specified: {member.display_name}")
         print(f" - Channel we're going to play the sound in: {channel}")
-    await ctx.send(f"Destination Member: {member.display_name}")
-    try:
-        channel = ctx.message.author.voice.channel
-    except:
-        await ctx.send("You are not connected to a voice channel.")
-        print("User is not connected to a voice channel")
-        return
-    ## commented if command is replaced by above try except statement
-    #if not channel:
-    #    print(" ! User initiating $bitch is not in a voice channel")
-    #    await ctx.send("You are not connected to a voice channel.")
-    #    return
+        await ctx.send(f"Destination Member: {member.display_name}")
+
+    if member == "NONE":
+        try:
+            channel = ctx.message.author.voice.channel
+        except:
+            await ctx.send("You are not connected to a voice channel.")
+            print("User is not connected to a voice channel")
+            return
+    
     voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     
     if voice and voice.is_connected():
