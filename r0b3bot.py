@@ -76,9 +76,14 @@ async def holyshit(ctx):
 #
 
 @bot.command()
+async def monk(ctx):
+    voice = await message.author.voice.channel.connect()
+    voice.play(discord.FFmpegPCMAudio('./monkey_bitch.mp3'))
+
+@bot.command()
 async def bitch(ctx):
     discord.opus.load_opus("libopus.so")
-    channel = ctx.message.author.voice.voice_channel
+    channel = ctx.message.author.voice.channel
     print("Someone's being a $BITCH... and the should not be")
     if not channel:
         print(" ! User initiating $bitch is not in a voice channel")
