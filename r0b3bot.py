@@ -172,7 +172,7 @@ async def cowbell(ctx, member : discord.Member="NONE"):
     audio_source = discord.FFmpegPCMAudio('./sounds/More_cowbell.mp3')
     print(" - Playing sound")
     voice.play(audio_source, after=None)
-    time.sleep(2)
+    time.sleep(5)
     print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
 ###
