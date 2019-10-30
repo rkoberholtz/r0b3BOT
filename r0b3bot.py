@@ -88,7 +88,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
             print(f" ! {member.display_name} is not in a voice channel")
             return
         print(f" - User specified: {member.display_name}")
-        print(f" - Channel we're going to play the sound in: {channel}")
+        print(f" - Destination channel: {channel}")
         await ctx.send(f"Destination Member: {member.display_name}")
 
     if member == "NONE":
