@@ -89,7 +89,6 @@ async def bitch(ctx, member : discord.Member="NONE"):
             return
         print(f" - User specified: {member.display_name}")
         print(f" - Destination channel: {channel}")
-        await ctx.send(f"Destination Member: {member.display_name}")
 
     if member == "NONE":
         try:
@@ -103,10 +102,12 @@ async def bitch(ctx, member : discord.Member="NONE"):
     
     if voice and voice.is_connected():
         print(" - Moving to channel")
+        await ctx.send(f"Moving to '{channel}'")
         await voice.move_to(channel)
 
     else:
         print(" - Joining Channel")
+        await ctx.send(f"Joining '{channel}'")
         voice = await channel.connect()
     #source = FFmpegPCMAudio('./monkey_bitch.mp3')
 
