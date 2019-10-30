@@ -297,7 +297,7 @@ async def help(ctx):
     embed.add_field(name="$holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
     embed.add_field(name="$greetings", value="Gives a nice greet message", inline=False)
     embed.add_field(name="$cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
-    embed.add_field(name="$bitch @member", value="Plays 'monkey_bitch.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=Flase)
+    embed.add_field(name="$bitch @member", value="Plays 'monkey_bitch.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
 
