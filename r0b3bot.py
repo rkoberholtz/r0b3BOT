@@ -101,13 +101,13 @@ async def bitch(ctx, member : discord.Member="NONE"):
     voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     
     if voice and voice.is_connected():
-        print(" - Moving to channel")
-        await ctx.send(f"Moving to '{channel}'")
+        print(f" - Moving to channel '{channel}''")
+        await ctx.send(f"Moving to '{channel}' for just a moment")
         await voice.move_to(channel)
 
     else:
-        print(" - Joining Channel")
-        await ctx.send(f"Joining '{channel}'")
+        print(f" - Joining Channel '{channel}''")
+        await ctx.send(f"Joining '{channel}' for just a moment")
         voice = await channel.connect()
     #source = FFmpegPCMAudio('./monkey_bitch.mp3')
 
@@ -116,7 +116,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
     print(" - Playing sound")
     voice.play(audio_source, after=None)
     time.sleep(2)
-    print(" - Disconnecting from voice channel")
+    print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
 ###
 
