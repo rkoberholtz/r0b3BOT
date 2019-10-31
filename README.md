@@ -1,4 +1,4 @@
-*** This project lives @ https://gitlab.rickelobe.com/Rich/R0b3BOT ***
+*** This project lives @ https://gitlab.rickelobe.com/Bots/R0b3BOT ***
 
 # Screenshot
 ![](images/Discord_Printstat_Command.png)
