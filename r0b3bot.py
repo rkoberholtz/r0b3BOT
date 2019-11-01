@@ -48,6 +48,7 @@ async def on_command_error(error, ctx):
         print(ctx)
         print('Error:')
         print(error)
+        await ctx.send(f"{error}")
 
 @bot.event
 async def on_ready():
