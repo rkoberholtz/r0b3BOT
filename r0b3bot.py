@@ -36,8 +36,6 @@ DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
 
 hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
-const talkedRecently = new Set();
-
 @bot.event
 async def on_ready():
     print('Logged in as')
