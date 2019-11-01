@@ -8,6 +8,7 @@ import os
 import octoapi
 import homeassistant.remote as remote
 import time
+from datetime import datetime
 import configparser
 import json
 from discord import FFmpegPCMAudio
@@ -89,7 +90,11 @@ async def boom(ctx, member : discord.Member="NONE"):
 
 async def play_sound(ctx, member : discord.Member, soundFile, command):
     discord.opus.load_opus("libopus.so")
-    print(f"{ctx.message.author.display_name} called {command}")
+
+    datestring = datetime.now()
+    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+
+    print(f"[{datestring}]: {ctx.message.author.display_name} called {command}")
 
     # Need to check whether or not a user has been specified.  If one has, we need to use the channel
     #  they are currently connected to instead the channel that the command issuer is in.
