@@ -41,7 +41,7 @@ async def on_command_error(ctx, error):
     print(error.retry_after)
     if isinstance(error, commands.CommandOnCooldown):
         msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
-        await ctx.send_message(ctx.message.channel, msg)
+        await ctx.send(ctx.message.channel, msg)
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
