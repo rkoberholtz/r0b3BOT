@@ -38,12 +38,12 @@ hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
 async def on_command_error(error, ctx):
-    if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
+    print(error)
+    if isinstance(error, CommandOnCooldown):
         msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
         await bot.send_message(ctx.message.channel, msg)
     else:
         print('Oopsie, I found an error...')
-        print(f"Channel: {channel}")
         print(f"Error: {error}")
 
 @bot.event
