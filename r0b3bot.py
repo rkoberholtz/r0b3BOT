@@ -119,7 +119,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
 
     print(" - Creating Player")
     audio_source = discord.FFmpegPCMAudio('./sounds/monkey_bitch.mp3')
-    print(" - Playing sound")
+    print(" - Playing monkey_bitch.mp3")
     voice.play(audio_source, after=None)
     time.sleep(2)
     print(f" - Disconnecting from '{channel}'")
@@ -129,7 +129,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
 @bot.command()
 async def cowbell(ctx, member : discord.Member="NONE"):
     discord.opus.load_opus("libopus.so")
-    print("Someone's being a $BITCH...")
+    print("Someone's gotta have more $COWBELL...")
 
     # Need to check whether or not a user has been specified.  If one has, we need to use the channel
     #  they are currently connected to instead the channel that the command issuer is in.
@@ -169,7 +169,7 @@ async def cowbell(ctx, member : discord.Member="NONE"):
 
     print(" - Creating Player")
     audio_source = discord.FFmpegPCMAudio('./sounds/More_cowbell.mp3')
-    print(" - Playing sound")
+    print(" - Playing More_cowbell.mp3")
     voice.play(audio_source, after=None)
     time.sleep(5)
     print(f" - Disconnecting from '{channel}'")
@@ -179,7 +179,7 @@ async def cowbell(ctx, member : discord.Member="NONE"):
 @bot.command()
 async def boom(ctx, member : discord.Member="NONE"):
     discord.opus.load_opus("libopus.so")
-    print("Someone's being a $BITCH...")
+    print("$BOOM, that's what I'm talking about!")
 
     # Need to check whether or not a user has been specified.  If one has, we need to use the channel
     #  they are currently connected to instead the channel that the command issuer is in.
@@ -219,7 +219,7 @@ async def boom(ctx, member : discord.Member="NONE"):
 
     print(" - Creating Player")
     audio_source = discord.FFmpegPCMAudio('./sounds/BoomBitch.mp3')
-    print(" - Playing sound")
+    print(" - Playing BoomBitch.mp3")
     voice.play(audio_source, after=None)
     time.sleep(5)
     print(f" - Disconnecting from '{channel}'")
