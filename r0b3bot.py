@@ -229,7 +229,7 @@ async def boom(ctx, member : discord.Member="NONE"):
     """
 ###
 
-async def play_sound(ctx, member : discord.Member="NONE", soundFile : str = "NONE", command):
+async def play_sound(ctx, member : discord.Member, soundFile, command):
     discord.opus.load_opus("libopus.so")
     print(f"{ctx.message.author.display_name} called {command}")
 
