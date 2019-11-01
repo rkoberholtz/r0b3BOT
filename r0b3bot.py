@@ -88,6 +88,11 @@ async def cowbell(ctx, member : discord.Member="NONE"):
 async def boom(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
 
+@bot.command()
+async def rs(ctx, member : discord.Member="NONE"):
+    soundfiles = ["./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3"]
+    await play_sound(ctx, member, random.choice(soundFiles), "$rs")
+
 async def play_sound(ctx, member : discord.Member, soundFile, command):
     discord.opus.load_opus("libopus.so")
 
