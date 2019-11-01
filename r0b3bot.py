@@ -43,7 +43,7 @@ async def on_command_error(error, ctx):
         await bot.send_message(ctx.message.channel, msg)
     else:
         print('Oopsie, I found an error...')
-        print(f"Channel: {ctx.channel}")
+        print(f"Channel: {channel}")
         print(f"Error: {error}")
 
 @bot.event
