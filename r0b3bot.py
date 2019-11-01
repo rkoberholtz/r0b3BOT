@@ -39,16 +39,14 @@ hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 @bot.event
 async def on_command_error(error, ctx):
     if isinstance(error, commands.CommandOnCooldown):
-        await ctx.send(f"{ctx.message.author.display_name} - This command is ratelimited, please try again in {error.retry_after}")
-        #msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
-        #await client.send_message(ctx.message.channel, msg)
+        msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
+        await bot.send_message(ctx.message.channel, msg)
     else:
         print('Oopsie, I found an error...')
         print('Channel:')
         print(ctx)
         print('Error:')
         print(error)
-        await bot.send_message(ctx.message.channel, error)
 
 @bot.event
 async def on_ready():
