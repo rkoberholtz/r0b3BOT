@@ -89,6 +89,18 @@ async def boom(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
 
 @bot.command()
+async def oops(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/Oops.mp3", "$oops")
+
+@bot.command()
+async def trololo(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/Trololo.mp3", "$trololo")
+
+@bot.command()
+async def promoted(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
+
+@bot.command()
 async def rs(ctx, member : discord.Member="NONE"):
     soundfiles = ["./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
     await play_sound(ctx, member, random.choice(soundfiles), "$rs")
