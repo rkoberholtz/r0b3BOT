@@ -107,7 +107,10 @@ async def trololo(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def promoted(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
+    try:
+        await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
+    except commands.CommandOnCooldown:
+        print("On Cooldown")
 
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
