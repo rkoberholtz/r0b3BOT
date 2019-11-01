@@ -36,6 +36,8 @@ DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
 
 hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
+const talkedRecently = new Set();
+
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -106,6 +108,7 @@ async def rs(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, random.choice(soundfiles), "$rs")
 
 async def play_sound(ctx, member : discord.Member, soundFile, command):
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
     discord.opus.load_opus("libopus.so")
 
     datestring = datetime.now()
@@ -147,7 +150,6 @@ async def play_sound(ctx, member : discord.Member, soundFile, command):
         print(f" - Joining Channel '{channel}''")
         await ctx.send(f"Joining '{channel}' for just a moment")
         voice = await channel.connect()
-    ##
 
     print(" - Creating Player")
     audio_source = discord.FFmpegPCMAudio(soundFile)
