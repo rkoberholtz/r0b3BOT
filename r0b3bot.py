@@ -37,7 +37,7 @@ DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
 hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
-async def on_command_error(error, ctx):
+async def on_command_error(ctx, error):
     print(error.retry_after)
     if isinstance(error, commands.CommandOnCooldown):
         msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
@@ -107,10 +107,7 @@ async def trololo(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def promoted(ctx, member : discord.Member="NONE"):
-    try:
-        await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
-    except commands.CommandOnCooldown:
-        print("On Cooldown")
+    await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
 
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
