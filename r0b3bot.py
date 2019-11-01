@@ -43,7 +43,6 @@ async def on_command_error(error, ctx):
         #msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
         #await client.send_message(ctx.message.channel, msg)
     else:
-        raise error
         print('Oopsie, I found an error...')
         print('Channel:')
         print(ctx)
@@ -113,7 +112,7 @@ async def trololo(ctx, member : discord.Member="NONE"):
 async def promoted(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
 
-@bot.command()
+@bot.command(pass_context=True)
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     soundfiles = ["./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
