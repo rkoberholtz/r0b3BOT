@@ -15,7 +15,7 @@ from discord import FFmpegPCMAudio
 from discord.utils import get
 from discord.voice_client import VoiceClient
 
-bot = commands.Bot(command_prefix='$', description='A Super-Awesome Bot, for fun people')
+bot = commands.Bot(command_prefix='$', description='A Derpy Derp of a bot')
 
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
@@ -38,7 +38,7 @@ hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
 async def on_command_error(error, ctx):
-    if isinstance(error, commands.CommandOnCooldown):
+    if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
         msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
         await bot.send_message(ctx.message.channel, msg)
     else:
