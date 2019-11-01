@@ -178,6 +178,8 @@ async def cowbell(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 async def boom(ctx, member : discord.Member="NONE"):
+    play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
+    """
     discord.opus.load_opus("libopus.so")
     print("$BOOM, that's what I'm talking about!")
 
@@ -224,7 +226,56 @@ async def boom(ctx, member : discord.Member="NONE"):
     time.sleep(5)
     print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
+    """
 ###
+
+async def play_sound(ctx, member : discord.Member="NONE", soundFile : str = "NONE", command)
+    discord.opus.load_opus("libopus.so")
+    print(f"{ctx.message.author.display_name} called {command}")
+
+    # Need to check whether or not a user has been specified.  If one has, we need to use the channel
+    #  they are currently connected to instead the channel that the command issuer is in.
+    if member != "NONE":
+        try:
+            channel = member.voice.channel
+        except:
+            await ctx.send(f"{member.display_name} is not in a voice channel!")
+            print(f" ! {member.display_name} is not in a voice channel")
+            return
+        print(f" - User specified: {member.display_name}")
+        print(f" - Destination channel: {channel}")
+
+    if member == "NONE":
+        try:
+            channel = ctx.message.author.voice.channel
+        except:
+            await ctx.send("You are not connected to a voice channel.")
+            print("User is not connected to a voice channel")
+            return
+    
+    voice: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    
+    # Different join actions are needed depending on whether or not the bot is already in a 
+    #  voice channel.  If already in a channel, wait until disconnected, then join the requested
+    #  channel.  If not already in a channel, then join requested channel immediately
+    if voice and voice.is_connected():
+        print(f" - Moving to channel '{channel}''")
+        await ctx.send(f"Moving to '{channel}' for just a moment")
+        await voice.move_to(channel)
+
+    else:
+        print(f" - Joining Channel '{channel}''")
+        await ctx.send(f"Joining '{channel}' for just a moment")
+        voice = await channel.connect()
+    ##
+
+    print(" - Creating Player")
+    audio_source = discord.FFmpegPCMAudio(soundFile)
+    print(f" - Playing {soundFile}")
+    voice.play(audio_source, after=None)
+    time.sleep(5)
+    print(f" - Disconnecting from '{channel}'")
+    await voice.disconnect()
 
 #
 # OctoPrint Commands
