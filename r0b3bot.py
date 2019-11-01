@@ -36,6 +36,15 @@ DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
 
 hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
+@bot.error
+async def mine_error(error, ctx):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(f"{ctx.message.author.display_name} - This command is ratelimited, please try again in {error.retry_after}")
+        #msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
+        #await client.send_message(ctx.message.channel, msg)
+    else:
+        raise error
+
 @bot.event
 async def on_ready():
     print('Logged in as')
