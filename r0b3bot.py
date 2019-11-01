@@ -178,7 +178,7 @@ async def cowbell(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 async def boom(ctx, member : discord.Member="NONE"):
-    play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
+    await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
     """
     discord.opus.load_opus("libopus.so")
     print("$BOOM, that's what I'm talking about!")
