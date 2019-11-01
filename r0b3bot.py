@@ -38,7 +38,7 @@ hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
 async def on_command_error(error, ctx):
-    if isinstance(error, commands.CommandOnCooldown):
+    if isinstance(error, CommandOnCooldown):
         msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
         await bot.send_message(ctx.message.channel, msg)
     else:
@@ -111,7 +111,7 @@ async def trololo(ctx, member : discord.Member="NONE"):
 async def promoted(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
 
-@bot.command(pass_context=True)
+@bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     soundfiles = ["./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
