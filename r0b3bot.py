@@ -174,7 +174,13 @@ async def play_sound(ctx, member : discord.Member, soundFile, command):
 #
 @bot.command()
 async def printstat(ctx):
-    print("========== Command Called at %s ==========" % (time.strftime("%Y%m%d-%H%M%S"))) 
+
+    datestring = datetime.now()
+    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+
+    print(f"[{datestring}]: {ctx.message.author.display_name} called {command}")
+
+    #print("========== Command Called at %s ==========" % (time.strftime("%Y%m%d-%H%M%S"))) 
     # We haven't yet changed the state of the light, setting this to False
     turned_on_light = False
 
@@ -182,17 +188,17 @@ async def printstat(ctx):
     operational = True
     
     # Try to get the status of the 3D printer light
-    print("- Getting Printer Light Status")
+    print(" - Getting Printer Light Status")
     try:
         work_lights = remote.get_state(hassapi, 'switch.work_lights')
     except:
         # We weren't able to get the status.  Display this text to the chat channel
-        print("-- Unable to get light status, notifying chat channel")
+        print("  ! Unable to get light status, notifying chat channel")
         await ctx.send("Hmm, I can't tell if the light is on... oh well")
         work_lights = "Unknown"
 
     # If the light is off, let's turn it on before we take a picture
-    print("-- Lights are off, turning on for image capture")
+    print(" - Lights are off, turning on for image capture")
     if work_lights.state == 'off':
         turned_on_light = True
         try:
@@ -200,7 +206,7 @@ async def printstat(ctx):
             remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
         except:
             # Do nothing is this fails
-            print("-- Unable to turn on light")
+            print("  ! Unable to turn on light")
             pass
 
         lightMessages = ["Woah, it's pretty dark in R0b3's Basement... Give me a couple seconds to turn on a light.", \
@@ -217,24 +223,24 @@ async def printstat(ctx):
     full_file_name = str(file_name) + '.jpg'
 
     # Get an image from OctoPrint and save it
-    print("- Getting image from Webcam")
+    print(" - Getting image from Webcam")
     urllib.request.urlretrieve("http://%s:8080/?action=snapshot" % (OCTOPRINT_IP_ADDRESS), full_file_name)
 
     # If we turned on the light, let's be nice and turn it back off
     if turned_on_light:
-        print("- Turning Light back Off")
+        print(" - Turning Light back Off")
         remote.call_service(hassapi, 'switch', 'turn_off', {'entity_id':'{}'.format('switch.work_lights')})
 
     # Send the image to the chat channel
-    print("- Uploading image to chat channel")
+    print(" - Uploading image to chat channel")
     file = discord.File(full_file_name, filename=full_file_name)
     await ctx.send("3D Printer Snapshot:", file=file)
     
     # Remove the Image File now that it is no longer needed
-    print("- Deleting temporary image file")
+    print(" - Deleting temporary image file")
     os.remove(full_file_name)
    
-    print("- Connecting to OctoPrint API")
+    print(" - Connecting to OctoPrint API")
     # Testing OctoPrint API Status.  If printer is off, I won't receive JSON data.
     try:
         operational = json.loads(octoapi.get_printer_dict())
@@ -243,17 +249,17 @@ async def printstat(ctx):
         operational = False
     
     if not operational:
-        print("- 3D Printer is on and printing, getting details")
+        print(" - 3D Printer is on and printing, getting details")
 
         # Get the name of the file currently being printed
         try:
-            print("-- Getting Filename")
+            print("  - Getting Filename")
             print_filename = octoapi.get_printFileName()
         except:
             print_filename = ""
 
         try:
-            print("-- Getting % Completion")
+            print("  - Getting % Completion")
             # Try to get the % of Completion
             print_completion = round(octoapi.get_completion(), 2)
         except:
@@ -261,41 +267,41 @@ async def printstat(ctx):
 
         # Get the current print time in seconds
         try:
-            print("-- Getting Seconds Elapsed")
+            print("  - Getting Seconds Elapsed")
             print_seconds = octoapi.get_printTime()
         except:
             print("Unable to get Seconds data from OctoPrint")
 
         # Get the time remaining for current print job in seconds
         try:
-            print("-- Getting Seconds Left")
+            print("  - Getting Seconds Left")
             print_secondsleft = octoapi.get_printTimeLeft()
         except:
-            print("Unable to get Seconds Left from OctoPrint")
+            print("  ! Unable to get Seconds Left from OctoPrint")
 
         try:
-            print("-- Converting Seconds to Hours")
+            print("  - Converting Seconds to Hours")
             # Try to convert seconds to hours
             print_hours = int(((print_seconds / 60) / 60))
         except:
             print_hours = "Unknown"
 
         try:
-            print("-- Converting Seconds left to Hours left")
+            print("  - Converting Seconds left to Hours left")
             # Try to convert seconds left to hours left
             print_hoursleft = int(((print_secondsleft / 60) / 60))
         except:
             print_hoursleft = "Unknown"
     
         try:
-            print("-- Calculating Minutes Elapsed")
+            print("  - Calculating Minutes Elapsed")
             # Using the total number of minutes minus the total number of whole hours to get the minutes remaining
             print_min = int(((print_seconds / 60) - (print_hours * 60)))
         except:
             print_min = "Unknown"
     
         try:
-            print("-- Calculating Minutes Left")
+            print("  - Calculating Minutes Left")
             # Same as above but for the minutes left in print job
             print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
         except:
@@ -314,13 +320,13 @@ async def printstat(ctx):
         embed.add_field(name="Time Remaining: ", value=time_remaining)
         embed.add_field(name="Bed Temp.: ", value=printer_bed)
         embed.add_field(name="Hotend Temp.: ", value=printer_hotend)
-        print("- Sending details to chat channel")
+        print(" - Sending details to chat channel")
         await ctx.send(embed=embed)
 
     else:
-        print("- 3D Printer is not on or is not printing")
+        print(" - 3D Printer is not on or is not printing")
         embed = discord.Embed(title="Printer is Offline")
-        print("- Notifying chat channel")
+        print(" - Notifying chat channel")
         await ctx.send(embed=embed)
 
 @bot.command()
