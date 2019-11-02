@@ -173,10 +173,6 @@ async def play_sound(ctx, member : discord.Member, soundFile, command):
 # OctoPrint Commands
 #
 @bot.command()
-async def printpic(ctx):
-    await ctx.send("Oops, $printpic has been changed to $printstat")
-
-@bot.command()
 async def printstat(ctx):
     print("========== Command Called at %s ==========" % (time.strftime("%Y%m%d-%H%M%S"))) 
     # We haven't yet changed the state of the light, setting this to False
@@ -341,7 +337,6 @@ bot.remove_command('help')
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
-    embed.add_field(name="$printpic", value="deprecated, use $printstat instead", inline=False)
     embed.add_field(name="$printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
     embed.add_field(name="$explain", value="Displays Dalek EXPLAIN gif", inline=False)
     embed.add_field(name="$holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
