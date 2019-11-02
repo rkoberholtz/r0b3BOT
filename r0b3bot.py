@@ -215,7 +215,7 @@ async def printstat(ctx):
         "Where's that light switch?...", \
         "Uh, the lights are off.  Give me a sec..."]
 
-        await ctx.send(random.choice(lightMessages))
+        await ctx.send(f"{random.choice(lightMessages)}")
         time.sleep(3)
 
     # Randomly generate a filename to save the image to
