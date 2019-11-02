@@ -213,7 +213,8 @@ async def printstat(ctx):
         "Turning on a light, give me a moment...", \
         "I can't see a thing, let me get a light...", \
         "Where's that light switch?...", \
-        "Uh, the lights are off.  Give me a sec..."]
+        "Uh, the lights are off.  Give me a sec...", \
+        "Replacing the light bulb, just a moment..."]
 
         await ctx.send(f"{random.choice(lightMessages)}")
         time.sleep(3)
