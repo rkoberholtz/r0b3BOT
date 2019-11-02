@@ -204,9 +204,9 @@ async def printstat(ctx):
             pass
 
         lightMessages = ["Woah, it's pretty dark in R0b3's Basement... Give me a couple seconds to turn on a light.", \
-        "Turning on a light, give me a moment..." \
-        "I can't see a thing, let me get a light..." \
-        "Where's that light switch?..." \
+        "Turning on a light, give me a moment...", \
+        "I can't see a thing, let me get a light...", \
+        "Where's that light switch?...", \
         "Uh, the lights are off.  Give me a sec..."]
 
         await ctx.send(random.choice(lightMessages))
