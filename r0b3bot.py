@@ -178,7 +178,7 @@ async def printstat(ctx):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
 
-    print(f"[{datestring}]: {ctx.message.author.display_name} called {command}")
+    print(f"[{datestring}]: {ctx.message.author.display_name} called $printstat")
 
     #print("========== Command Called at %s ==========" % (time.strftime("%Y%m%d-%H%M%S"))) 
     # We haven't yet changed the state of the light, setting this to False
