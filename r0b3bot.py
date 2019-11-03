@@ -248,6 +248,7 @@ async def printstat(ctx):
     except:
         # Printer is Offline
         operational = False
+        print(f"Error getting octoapi status - {sys.exc_info()[0]}")
     print(f"OPERATIONAL = {operational}")
     if not operational:
         print(" - 3D Printer is on and printing, getting details")
