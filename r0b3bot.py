@@ -86,6 +86,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
     if ctx.message.channel.is_nsfw():
         await play_sound(ctx, member, "./sounds/monkey_bitch.mp3", "$bitch")
     else:
+        print(f"[{datestring}]: {ctx.message.author.display_name} called {command}, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
 
 @bot.command()
@@ -96,7 +97,11 @@ async def cowbell(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def boom(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
+    if ctx.message.channel.is_nsfw():
+        await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
+    else:
+        print(f"[{datestring}]: {ctx.message.author.display_name} called {command}, but is not in a NSFW channel")
+        await ctx.send("This command is too explicit for you!")
 
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
@@ -116,8 +121,12 @@ async def promoted(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
-    soundfiles = ["./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
-    await play_sound(ctx, member, random.choice(soundfiles), "$rs")
+    if ctx.message.channel.is_nsfw():
+        soundfiles = ["./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
+        await play_sound(ctx, member, random.choice(soundfiles), "$rs")
+    else:
+        print(f"[{datestring}]: {ctx.message.author.display_name} called {command}, but is not in a NSFW channel")
+        await ctx.send("This command is too explicit for you!")
 
 async def play_sound(ctx, member : discord.Member, soundFile, command):
 
