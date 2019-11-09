@@ -83,7 +83,10 @@ async def holyshit(ctx):
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def bitch(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/monkey_bitch.mp3", "$bitch")
+    if ctx.channel.is_nsfw():
+        ctx.send("U can't use that command!")
+    else:
+        await play_sound(ctx, member, "./sounds/monkey_bitch.mp3", "$bitch")
 
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
