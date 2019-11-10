@@ -119,6 +119,11 @@ async def trololo(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+async def leeroy(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/leeroy.mp3", "$leeroy")
+
+@bot.command()
+@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def promoted(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
 
@@ -128,7 +133,7 @@ async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
-        soundfiles = ["./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
+        soundfiles = ["./sounds/leeroy.mp3","./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
         await play_sound(ctx, member, random.choice(soundfiles), "$rs")
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $rs, but is not in a NSFW channel")
