@@ -3,9 +3,11 @@ Description=r0b3bot
 After=network.target
 
 [Service]
+User=root #Change as needed (root not recommended)
 Type=forking
 Restart=on-failure
 RestartSec=3
+WorkingDirectory=/path/to/r0b3BOT
 ExecStart=/usr/bin/screen -L -dmS pi  python /path/to/r0b3bot.py
 
 [Install]
