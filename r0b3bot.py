@@ -385,6 +385,7 @@ async def help(ctx):
     embed.add_field(name="$oops @member", value="Plays 'Oops.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
     embed.add_field(name="$promoted @member", value="Plays 'Promoted.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
     embed.add_field(name="$trololo @member", value="Plays 'Trololo.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
+    embed.add_field(name="$leeroy @member", value="Plays 'leeroy.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
 
