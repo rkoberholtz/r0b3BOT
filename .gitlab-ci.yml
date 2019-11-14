@@ -3,4 +3,4 @@ stages:
     
 deploy:
     stage: deploy
-    script: /bin/bash /var/lib/gitlab-runner/deploy_r0b3bot.sh
+    script: /var/lib/gitlab-runner/deploy_r0b3bot.sh
