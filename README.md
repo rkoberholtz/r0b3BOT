@@ -1,5 +1,7 @@
 *** This project lives @ https://gitlab.rickelobe.com/Bots/R0b3BOT ***
 
+[![pipeline status](http://gitlab.rickelobe.com/Bots/r0b3BOT/badges/master/pipeline.svg)](http://gitlab.rickelobe.com/Bots/r0b3BOT/commits/master)
+
 # Screenshot
 ![](images/Discord_Printstat_Command.png)
 
