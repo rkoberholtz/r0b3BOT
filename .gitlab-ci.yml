@@ -1,0 +1,6 @@
+stages:
+    - deploy
+    
+deploy:
+    stage: deploy
+    script: /var/lib/gitlab-runner/deploy_r0b3bot.sh
