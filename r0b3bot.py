@@ -15,7 +15,7 @@ from discord import FFmpegPCMAudio
 from discord.utils import get
 from discord.voice_client import VoiceClient
 
-bot = commands.Bot(command_prefix='$', description='A Derpy Derp of a bot')
+bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot')
 
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
