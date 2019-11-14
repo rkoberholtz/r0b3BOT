@@ -9,6 +9,7 @@ Restart=on-failure
 RestartSec=3
 WorkingDirectory=/path/to/r0b3BOT
 ExecStart=/usr/bin/screen -L -dmS pi  python /path/to/r0b3bot.py
+ExecStop=/usr/bin/kill $(ps aux | grep "SCREEN.*r0b3bot" | awk '{print $2}')
 
 [Install]
 WantedBy=multi-user.target
