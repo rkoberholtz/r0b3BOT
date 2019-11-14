@@ -356,7 +356,7 @@ async def printstat(ctx):
 
 @bot.command()
 async def info(ctx):
-    embed = discord.Embed(title="R0b3BOT", description="Derpy Derp of a Bot", color=0xeee657)
+    embed = discord.Embed(title="R0b3BOT", description="Derpy Derp of a Bot :P", color=0xeee657)
           
     # give info about you here
     embed.add_field(name="Author", value="R0b3")
