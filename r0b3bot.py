@@ -253,7 +253,11 @@ async def printstat(ctx):
         turned_on_light = True
         try:
             # REST API call to home assistant to turn the light off.
-            remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
+            #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
+            payload = {
+                "state":"on"
+            }
+            requests.post(hassURL, data=payload, headers=hassHEADERS)
         except:
             # Do nothing is this fails
             print("  ! Unable to turn on light")
