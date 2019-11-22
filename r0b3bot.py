@@ -38,11 +38,16 @@ hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
 async def on_command_error(ctx, error):
-    print(error.retry_after)
     if isinstance(error, commands.CommandOnCooldown):
         #msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
         seconds = round(error.retry_after,1)
+        print(f" - Error, user tried to use command while in cooldown (wait is: {seconds}")
         await ctx.send(f"This command is ratelimited per user, please try again in {seconds}s")
+    if isinstance(error, commands.CommandInvokeError):
+        print(" - ERROR: encountered 'CommandInvokeError'")
+        print(f" - Dumping error: {error}")
+        await ctx.send("Error, unable to complete your request.")
+        await ctx.send()
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
