@@ -47,7 +47,6 @@ async def on_command_error(ctx, error):
         print(" - ERROR: encountered 'CommandInvokeError'")
         print(f" - Dumping error: {error}")
         await ctx.send("Error, unable to complete your request.")
-        await ctx.send()
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
