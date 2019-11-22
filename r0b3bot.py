@@ -216,18 +216,17 @@ async def printstat(ctx):
     
     # Try to get the status of the 3D printer light
     print(" - Getting Printer Light Status")
-    try:
-        work_lights = remote.get_state(hassapi, 'switch.work_lights')
-    except:
-        # We weren't able to get the status.  Display this text to the chat channel
-        print("  ! Unable to get light status, notifying chat channel")
-        await ctx.send("Hmm, I can't tell if the light is on... oh well")
+    work_lights = remote.get_state(hassapi, 'switch.work_lights')
         
+    # Making sure that the API request succeeded.  If it has, there will be a state attribute added to
+    #  work_lights.  
     try:
         work_lights.state()
     except:
-        print("  ! Unable to get light status, notifying chat channel")
-        await ctx.send("Hmm, I can't tell if the light is on... oh well")
+        print("  ! Unable to get light status from Homeassistant, notifying chat channel")
+        await ctx.send("Hmm, I can't tell if the light is on... oh well [Hass API error]")
+
+        # Create State class and add state attribute to work_lights
         class State:
             state = "unknown"
         work_lights = State()
