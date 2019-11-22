@@ -222,14 +222,20 @@ async def printstat(ctx):
         # We weren't able to get the status.  Display this text to the chat channel
         print("  ! Unable to get light status, notifying chat channel")
         await ctx.send("Hmm, I can't tell if the light is on... oh well")
+        
+    try:
+        work_lights.state()
+    except:
+        print("  ! Unable to get light status, notifying chat channel")
+        await ctx.send("Hmm, I can't tell if the light is on... oh well")
         class State:
             state = "unknown"
         work_lights = State()
         work_lights.state = "Unknown"
 
     # If the light is off, let's turn it on before we take a picture
-    print(" - Lights are off, turning on for image capture")
     if work_lights.state == 'off':
+        print(" - Lights are off, turning on for image capture")
         turned_on_light = True
         try:
             # REST API call to home assistant to turn the light off.
