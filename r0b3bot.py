@@ -32,13 +32,19 @@ HASS_IP_ADDRESS = config.get('bot-config', 'hass_ip_address')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
 hassURL = "http://" + HASS_IP_ADDRESS + ":8123/api/states/" + HASS_LIGHT
 hassHEADERS = {
-    'Authorization': f'Bearer {HASS_API_KEY}',
+    'Authorization': f"Bearer {HASS_API_KEY}",
     'content-type': 'application/json',
 }
 
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
 
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+
+# Printing configuration details to console
+print(f"HomeAssistant URL: {hassURL}")
+print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
+print(f"HomeAssistant Light: {HASS_LIGHT}")
+print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
 
 # This is now deprecated and will be replaced with using the REST
 hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
@@ -225,6 +231,7 @@ async def printstat(ctx):
     print(" - Getting Printer Light Status")
     #work_lights = remote.get_state(hassapi, 'switch.work_lights')
     work_lights = requests.get(hassURL, hassHEADERS)
+    print(f"   Response from HomeAssistant: {work_lights}")
 
     # Making sure that the API request succeeded.  If it has, there will be a state attribute added to
     #  work_lights.  
