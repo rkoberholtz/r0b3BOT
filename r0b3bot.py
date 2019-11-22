@@ -272,7 +272,6 @@ async def printstat(ctx):
         # Printer is Offline
         operational = False
         
-    print(f"OPERATIONAL = {operational}")
     if not operational:
         print(" - 3D Printer is on and printing, getting details")
 
