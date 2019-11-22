@@ -30,7 +30,7 @@ except:
 HASS_API_KEY = config.get('bot-config', 'hass_api_key')
 HASS_IP_ADDRESS = config.get('bot-config', 'hass_ip_address')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
-hassURL = "http://" + HASS_IP_ADDRESS + ":8123/api/states/" + HASS_LIGHT
+hassURL = "https://" + HASS_IP_ADDRESS + ":/api/states/" + HASS_LIGHT
 hassHEADERS = {
     'Authorization': f"Bearer {HASS_API_KEY}",
     'content-type': 'application/json',
