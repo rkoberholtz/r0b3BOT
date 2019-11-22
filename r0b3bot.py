@@ -14,6 +14,7 @@ import json
 from discord import FFmpegPCMAudio
 from discord.utils import get
 from discord.voice_client import VoiceClient
+import requests
 
 bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 
@@ -25,15 +26,21 @@ try:
 except:
     print("Error loading config!  Please check config file 'bot-config.conf'")
 
+# Setup HomeAssistant URL and Headers
 HASS_API_KEY = config.get('bot-config', 'hass_api_key')
 HASS_IP_ADDRESS = config.get('bot-config', 'hass_ip_address')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
+hassURL = "http://" + HASS_IP_ADDRESS + ":8123/api/states/" + HASS_LIGHT
+hassHEADERS = {
+    'Authorization': f'Bearer {HASS_API_KEY}',
+    'content-type': 'application/json',
+}
 
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
 
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
 
-
+# This is now deprecated and will be replaced with using the REST
 hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
@@ -216,8 +223,9 @@ async def printstat(ctx):
     
     # Try to get the status of the 3D printer light
     print(" - Getting Printer Light Status")
-    work_lights = remote.get_state(hassapi, 'switch.work_lights')
-        
+    #work_lights = remote.get_state(hassapi, 'switch.work_lights')
+    work_lights = requests.get(hassURL, hassHEADERS)
+
     # Making sure that the API request succeeded.  If it has, there will be a state attribute added to
     #  work_lights.  
     try:
