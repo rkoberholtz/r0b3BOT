@@ -38,11 +38,15 @@ hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
 async def on_command_error(ctx, error):
-    print(error.retry_after)
     if isinstance(error, commands.CommandOnCooldown):
         #msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
         seconds = round(error.retry_after,1)
+        print(f" - Error, user tried to use command while in cooldown (wait is: {seconds}")
         await ctx.send(f"This command is ratelimited per user, please try again in {seconds}s")
+    if isinstance(error, commands.CommandInvokeError):
+        print(" - ERROR: encountered 'CommandInvokeError'")
+        print(f" - Dumping error: {error}")
+        await ctx.send("Error, unable to complete your request.")
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
@@ -212,17 +216,25 @@ async def printstat(ctx):
     
     # Try to get the status of the 3D printer light
     print(" - Getting Printer Light Status")
+    work_lights = remote.get_state(hassapi, 'switch.work_lights')
+        
+    # Making sure that the API request succeeded.  If it has, there will be a state attribute added to
+    #  work_lights.  
     try:
-        work_lights = remote.get_state(hassapi, 'switch.work_lights')
+        work_lights.state()
     except:
-        # We weren't able to get the status.  Display this text to the chat channel
-        print("  ! Unable to get light status, notifying chat channel")
-        await ctx.send("Hmm, I can't tell if the light is on... oh well")
-        work_lights = "Unknown"
+        print("  ! Unable to get light status from Homeassistant, notifying chat channel")
+        await ctx.send("Hmm, I can't tell if the light is on... oh well [Hass API error]")
+
+        # Create State class and add state attribute to work_lights
+        class State:
+            state = "unknown"
+        work_lights = State()
+        work_lights.state = "Unknown"
 
     # If the light is off, let's turn it on before we take a picture
-    print(" - Lights are off, turning on for image capture")
     if work_lights.state == 'off':
+        print(" - Lights are off, turning on for image capture")
         turned_on_light = True
         try:
             # REST API call to home assistant to turn the light off.
