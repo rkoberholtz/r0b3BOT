@@ -28,7 +28,7 @@ except:
     print("Error loading config!  Please check config file 'bot-config.conf'")
 
 # Setup HomeAssistant URL and Headers
-HASS_TOKEN = config.get('bot-config', 'hass_api_key')
+HASS_TOKEN = config.get('bot-config', 'hass_token')
 HASS_URL = config.get('bot-config', 'hass_url')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
 hassURL = HASS_URL + "/api/states/" + HASS_LIGHT
