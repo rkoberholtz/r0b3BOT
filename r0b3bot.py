@@ -264,7 +264,7 @@ async def printstat(ctx):
         try:
             # REST API call to home assistant to turn the light off.
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
-            hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
+            hassAPIURL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
             payload = f'service_data={{"entity_id": "{HASS_LIGHT}"}}'
             print(f"  - Payload String: {payload}")
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
@@ -291,7 +291,7 @@ async def printstat(ctx):
         try:
             # REST API call to home assistant to turn the light off.
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
-            hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_off"
+            hassAPIURL = HASS_IP_ADDRESS + "/api/services/switch/turn_off"
             payload = f'service_data={{"entity_id": "{HASS_LIGHT}"}}'
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
             
