@@ -253,8 +253,9 @@ async def printstat(ctx):
         try:
             # REST API call to home assistant to turn the light off.
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
+            hassAPIRUL = "https://" + HASS_IP_ADDRESS + "/api/services/switch/turn_on"
             payload = {
-                "state":"on"
+                "entity": HASS_LIGHT
             }
             requests.post(hassURL, data=payload, headers=hassHEADERS)
         except:
