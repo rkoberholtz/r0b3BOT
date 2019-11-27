@@ -30,7 +30,7 @@ except:
 HASS_API_KEY = config.get('bot-config', 'hass_api_key')
 HASS_IP_ADDRESS = config.get('bot-config', 'hass_ip_address')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
-hassURL = "https://" + HASS_IP_ADDRESS + "/api/states/" + HASS_LIGHT
+hassURL = HASS_IP_ADDRESS + "/api/states/" + HASS_LIGHT
 hassHEADERS = {
     'Authorization': f"Bearer {HASS_API_KEY}",
     'content-type': 'application/json',
@@ -253,7 +253,7 @@ async def printstat(ctx):
         try:
             # REST API call to home assistant to turn the light off.
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
-            hassAPIRUL = "https://" + HASS_IP_ADDRESS + "/api/services/switch/turn_on"
+            hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
             payload = {
                 "entity": HASS_LIGHT
             }
