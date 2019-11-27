@@ -5,6 +5,7 @@ from discord.ext import commands
 import urllib.request
 import random
 import os
+import sys
 import octoapi
 import homeassistant.remote as remote
 import time
