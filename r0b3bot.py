@@ -265,13 +265,13 @@ async def printstat(ctx):
             # REST API call to home assistant to turn the light off.
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
             hassAPIURL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
-            payload = f'service_data={{"entity_id": "{HASS_LIGHT}"}}'
+            payload = f'{{"entity_id": "{HASS_LIGHT}"}}'
             print(f"  - Payload String: {payload}")
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
             print(f"  - POST Response: {response.text}")
+
         except Exception as e:
-            # Do nothing if this fails
-            print(f"  ! Unable to turn on light; DUMP: {e}")
+            print(f"  ! Unable to turn on light; ERROR: {e}")
             await ctx.send("Sorry, I was unable to turn on the light.")
             pass
 
@@ -294,9 +294,10 @@ async def printstat(ctx):
             hassAPIURL = HASS_IP_ADDRESS + "/api/services/switch/turn_off"
             payload = f'{{"entity_id": "{HASS_LIGHT}"}}'
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
-            
-        except:
-            # Do nothing is this fails
+            print(f"  - POST Response: {response.text}")
+
+        except Exception as e:
+            print(f"  ! Unable to turn on light; ERROR: {e}")
             print("  ! Unable to turn off light")
             pass
 
