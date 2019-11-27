@@ -255,7 +255,7 @@ async def printstat(ctx):
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
             hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
             payload = {
-                "entity": HASS_LIGHT
+                "entity": f"{HASS_LIGHT}"
             }
             requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
         except:
@@ -289,7 +289,7 @@ async def printstat(ctx):
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
             hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_off"
             payload = {
-                "entity": HASS_LIGHT
+                "entity": f"{HASS_LIGHT}"
             }
             requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
         except:
