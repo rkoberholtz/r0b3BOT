@@ -250,17 +250,6 @@ async def printstat(ctx):
     if work_lights["state"] == 'off':
         print(" - Lights are off, turning on for image capture")
         turned_on_light = True
-        try:
-            # REST API call to home assistant to turn the light off.
-            #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
-            hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
-            payload = { "entity_id": '"' + HASS_LIGHT + '"' }
-            requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
-        except:
-            # Do nothing if this fails
-            print("  ! Unable to turn on light")
-            await ctx.send("Sorry, I was unable to turn on the light.")
-            pass
 
         lightMessages = ["Woah, it's pretty dark in R0b3's Basement... Give me a couple seconds to turn on a light.", \
         "Turning on a light, give me a moment...", \
@@ -270,6 +259,20 @@ async def printstat(ctx):
         "Replacing the light bulb, just a moment..."]
 
         await ctx.send(f"{random.choice(lightMessages)}")
+
+        try:
+            # REST API call to home assistant to turn the light off.
+            #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
+            hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
+            payload = { "entity_id": '"' + HASS_LIGHT + '"' }
+            print(f"  - Payload String: {payload}")
+            requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
+        except:
+            # Do nothing if this fails
+            print("  ! Unable to turn on light")
+            await ctx.send("Sorry, I was unable to turn on the light.")
+            pass
+
         time.sleep(3)
 
     # Randomly generate a filename to save the image to
