@@ -266,7 +266,8 @@ async def printstat(ctx):
             hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
             payload = f'service_data={{"entity_id": "{HASS_LIGHT}"}}'
             print(f"  - Payload String: {payload}")
-            requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
+            response = requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
+            print(f"  - POST Response: {response.text}")
         except:
             # Do nothing if this fails
             print("  ! Unable to turn on light")
