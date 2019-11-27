@@ -269,10 +269,8 @@ async def printstat(ctx):
             print(f"  - Payload String: {payload}")
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
             print(f"  - POST Response: {response.text}")
-        except:
+        except Exception, e:
             # Do nothing if this fails
-            e = sys.exc_info()[0]
-
             print(f"  ! Unable to turn on light; DUMP: {e}")
             await ctx.send("Sorry, I was unable to turn on the light.")
             pass
