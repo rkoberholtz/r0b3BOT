@@ -231,7 +231,7 @@ async def printstat(ctx):
     print(" - Getting Printer Light Status")
     #work_lights = remote.get_state(hassapi, 'switch.work_lights')
     work_lights = requests.get(hassURL, headers=hassHEADERS)
-    print(f"   Response from HomeAssistant: {work_lights}")
+    print(f"   Response from HomeAssistant: {work_lights.text}")
 
     # Making sure that the API request succeeded.  If it has, there will be a state attribute added to
     #  work_lights.  
