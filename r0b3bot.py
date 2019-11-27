@@ -231,24 +231,23 @@ async def printstat(ctx):
     print(" - Getting Printer Light Status")
     #work_lights = remote.get_state(hassapi, 'switch.work_lights')
     work_lights = requests.get(hassURL, headers=hassHEADERS)
-    print(f"   Response from HomeAssistant: {work_lights.text}")
+    print(f"   JSON Response from HomeAssistant: {work_lights.text}")
+
+    work_lights = json.loads(work_lights.text)
 
     # Making sure that the API request succeeded.  If it has, there will be a state attribute added to
     #  work_lights.  
     try:
-        work_lights.state()
+        work_lights["state"]
     except:
         print("  ! Unable to get light status from Homeassistant, notifying chat channel")
         await ctx.send("Hmm, I can't tell if the light is on... oh well [Hass API error]")
 
-        # Create State class and add state attribute to work_lights
-        class State:
-            state = "unknown"
-        work_lights = State()
-        work_lights.state = "Unknown"
+        # Create empty dict w/ state of unknown
+        work_lights = {'state': "unknown"}
 
     # If the light is off, let's turn it on before we take a picture
-    if work_lights.state == 'off':
+    if work_lights["state"] == 'off':
         print(" - Lights are off, turning on for image capture")
         turned_on_light = True
         try:
