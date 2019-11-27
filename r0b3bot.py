@@ -266,9 +266,9 @@ async def printstat(ctx):
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
             hassAPIURL = HASS_IP_ADDRESS + "/api/services/switch/turn_on"
             payload = f'{{"entity_id": "{HASS_LIGHT}"}}'
-            print(f"  - Payload String: {payload}")
+            #print(f"  - Payload String: {payload}")
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
-            print(f"  - POST Response: {response.text}")
+            #print(f"  - POST Response: {response.text}")
 
         except Exception as e:
             print(f"  ! Unable to turn on light; ERROR: {e}")
@@ -294,7 +294,7 @@ async def printstat(ctx):
             hassAPIURL = HASS_IP_ADDRESS + "/api/services/switch/turn_off"
             payload = f'{{"entity_id": "{HASS_LIGHT}"}}'
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
-            print(f"  - POST Response: {response.text}")
+            #print(f"  - POST Response: {response.text}")
 
         except Exception as e:
             print(f"  ! Unable to turn on light; ERROR: {e}")
