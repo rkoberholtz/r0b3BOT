@@ -270,7 +270,9 @@ async def printstat(ctx):
             print(f"  - POST Response: {response.text}")
         except:
             # Do nothing if this fails
-            print("  ! Unable to turn on light")
+            e = sys.exc_info()[0]
+
+            print(f"  ! Unable to turn on light; DUMP: {e}")
             await ctx.send("Sorry, I was unable to turn on the light.")
             pass
 
@@ -292,7 +294,8 @@ async def printstat(ctx):
             #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
             hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_off"
             payload = f'service_data={{"entity_id": "{HASS_LIGHT}"}}'
-            requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
+            response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
+            
         except:
             # Do nothing is this fails
             print("  ! Unable to turn off light")
