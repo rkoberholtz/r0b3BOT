@@ -284,7 +284,18 @@ async def printstat(ctx):
     # If we turned on the light, let's be nice and turn it back off
     if turned_on_light:
         print(" - Turning Light back Off")
-        remote.call_service(hassapi, 'switch', 'turn_off', {'entity_id':'{}'.format('switch.work_lights')})
+        try:
+            # REST API call to home assistant to turn the light off.
+            #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
+            hassAPIRUL = HASS_IP_ADDRESS + "/api/services/switch/turn_off"
+            payload = {
+                "entity": HASS_LIGHT
+            }
+            requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
+        except:
+            # Do nothing is this fails
+            print("  ! Unable to turn off light")
+            pass
 
     # Send the image to the chat channel
     print(" - Uploading image to chat channel")
