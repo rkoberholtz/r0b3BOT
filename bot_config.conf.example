@@ -3,14 +3,14 @@
 # Replace the placeholders with your information.  Do not use quotes.
 #
 #   discord_auth_token   - this is the bot token generated via the Discord development console.
-#   hass_ip_address      - IP address of your home assistant instance.  This is used to turn on the light by your 3d printer
-#   hass_api_key         - API Key to use the REST API for your Home assistant instance
+#   hass_url             - URL to your home assistant instance.  This is used to turn on the light by your 3d printer
+#   hass_token           - Long Lived Access Token used to authenticate with the REST API for your Home assistant instance
 #   hass_light           - Entity name of the light you want to control
 #   octoprint_ip_address - IP Address of you OctoPrint (or OctoPi) host.  Used to get 3D printer stats.  
 #
-discord_auth_token = ENTERYOURDISCORDAUTHTOKENHERE
-hass_ip_address = IPADDRESSOFHOMEASSISTANTINSTANCE
-hass_api_key = HASSAPIKEY
-hass_light = LIGHT.NAME
-octoprint_ip_address = OCTOPRINTIPADDRESS
+discord_auth_token = <Discord Auth Token>
+hass_url = <URL to HomeAssistant>
+hass_token = <HomeAssistant Long Lived Access Token>
+hass_light = <Entity_ID of the light @ your printer>
+octoprint_ip_address = <OctoPrint IP Address>
 

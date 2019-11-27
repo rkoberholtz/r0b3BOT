@@ -28,10 +28,10 @@ except:
     print("Error loading config!  Please check config file 'bot-config.conf'")
 
 # Setup HomeAssistant URL and Headers
-HASS_API_KEY = config.get('bot-config', 'hass_api_key')
-HASS_IP_ADDRESS = config.get('bot-config', 'hass_ip_address')
+HASS_TOKEN = config.get('bot-config', 'hass_api_key')
+HASS_URL = config.get('bot-config', 'hass_url')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
-hassURL = HASS_IP_ADDRESS + "/api/states/" + HASS_LIGHT
+hassURL = HASS_URL + "/api/states/" + HASS_LIGHT
 hassHEADERS = {
     'Authorization': f"Bearer {HASS_API_KEY}",
     'content-type': 'application/json',
