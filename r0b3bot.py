@@ -257,7 +257,7 @@ async def printstat(ctx):
             payload = {
                 "entity": HASS_LIGHT
             }
-            requests.post(hassURL, data=payload, headers=hassHEADERS)
+            requests.post(hassAPIURL, data=payload, headers=hassHEADERS)
         except:
             # Do nothing is this fails
             print("  ! Unable to turn on light")
