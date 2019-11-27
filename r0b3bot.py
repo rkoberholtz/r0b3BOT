@@ -33,7 +33,7 @@ HASS_URL = config.get('bot-config', 'hass_url')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
 hassURL = HASS_URL + "/api/states/" + HASS_LIGHT
 hassHEADERS = {
-    'Authorization': f"Bearer {HASS_API_KEY}",
+    'Authorization': f"Bearer {HASS_TOKEN}",
     'content-type': 'application/json',
 }
 
@@ -48,7 +48,7 @@ print(f"HomeAssistant Light: {HASS_LIGHT}")
 print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
 
 # This is now deprecated and will be replaced with using the REST
-hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
+#hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
 
 @bot.event
 async def on_command_error(ctx, error):
