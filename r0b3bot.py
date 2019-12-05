@@ -15,6 +15,7 @@ from discord import FFmpegPCMAudio
 from discord.utils import get
 from discord.voice_client import VoiceClient
 import requests
+import asyncio
 
 bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 
