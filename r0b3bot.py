@@ -404,6 +404,8 @@ async def printstat(ctx):
 
 async def updateStatus():
 
+    print_completion = 0
+
     while print_completion <= 100:
         try:
             print("  - Getting % Completion")
