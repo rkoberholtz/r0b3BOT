@@ -9,7 +9,7 @@
 This is R0b3's Discord Bot.  It's creation was basically a challenge posed a coworker who said "Hey, you can write Discord Bots in Python... Make one to display your 3D printer status!".
 
 # Requirements
-1. discord.py version 1.0.0a or greater<br>
+1. discord.py version 1.2.4 or greater<br>
     <code> python3 -m pip install -U https://github.com/Rapptz/discord.py/archive/rewrite.zip </code>
 2. homeassistant API<br>
     <code> pip install homeassistant</code><br><br>
