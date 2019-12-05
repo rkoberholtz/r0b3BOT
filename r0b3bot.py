@@ -392,6 +392,8 @@ async def printstat(ctx):
         embed.add_field(name="Hotend Temp.: ", value=printer_hotend)
         print(" - Sending details to chat channel")
         await ctx.send(embed=embed)
+        activity = discord.Activity(name=f"3D Print @ {str(print_completion)}",type=discord.ActivityType.watching)
+        await bot.change_presence(activity=activity)
 
     else:
         print(" - 3D Printer is not on or is not printing")
