@@ -72,6 +72,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    print("Setting activity to 'Listenting to your commands")
     activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
@@ -406,9 +407,11 @@ async def printstat(ctx):
 
 async def updateStatus():
 
+    # Initialize variable
     print_completion = 0
 
-    while print_completion <= 100:
+    #While the print status is less than 100 % complete, keep updating
+    while print_completion < 100:
         try:
             print("  - Getting % Completion")
             # Try to get the % of Completion
@@ -416,10 +419,12 @@ async def updateStatus():
         except:
             print_completion = "Unknown"
         
+        #Set the activity to the new percent complete value
         activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
         await bot.change_presence(activity=activity)
         await asyncio.sleep(30)
     
+    # Wait 10 minutes before changing the status back to listening to your commands
     await asyncio.sleep(600)
     activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
