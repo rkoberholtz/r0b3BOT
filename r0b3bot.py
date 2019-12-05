@@ -394,12 +394,28 @@ async def printstat(ctx):
         await ctx.send(embed=embed)
         activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
         await bot.change_presence(activity=activity)
+        updateStatus()
 
     else:
         print(" - 3D Printer is not on or is not printing")
         embed = discord.Embed(title="Printer is Offline")
         print(" - Notifying chat channel")
         await ctx.send(embed=embed)
+
+async def updateStatus():
+
+    while print_completion <= 100:
+        try:
+            print("  - Getting % Completion")
+            # Try to get the % of Completion
+            print_completion = round(octoapi.get_completion(), 2)
+        except:
+            print_completion = "Unknown"
+        
+        activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
+        await bot.change_presence(activity=activity)
+        time.sleep(30)
+
 
 @bot.command()
 async def info(ctx):
