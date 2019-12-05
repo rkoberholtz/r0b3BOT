@@ -7,7 +7,6 @@ import random
 import os
 import sys
 import octoapi
-import homeassistant.remote as remote
 import time
 from datetime import datetime
 import configparser
