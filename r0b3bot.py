@@ -148,6 +148,11 @@ async def promoted(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+async def wow(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/wow.mp3", "$wow")
+
+@bot.command()
+@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
