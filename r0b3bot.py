@@ -111,12 +111,12 @@ async def bitch(ctx, member : discord.Member="NONE"):
         await ctx.send("This command is too explicit for you!")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def cowbell(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/More_cowbell.mp3", "$cowbell")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def boom(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
@@ -127,32 +127,32 @@ async def boom(ctx, member : discord.Member="NONE"):
         await ctx.send("This command is too explicit for you!")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def oops(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/Oops.mp3", "$oops")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def trololo(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/Trololo.mp3", "$trololo")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def leeroy(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/leeroy.mp3", "$leeroy")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def promoted(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def wow(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/wow.mp3", "$wow")
 
 @bot.command()
-@commands.cooldown(rate=1, per=30.0, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
