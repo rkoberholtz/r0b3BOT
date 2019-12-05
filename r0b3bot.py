@@ -71,6 +71,8 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    activity = discord.Activity(name="Awaiting commands",type=discord.ActivityType.idle)
+    await bot.change_presence(activity=activity)
 
 @bot.command()
 async def greetings(ctx):
@@ -416,6 +418,10 @@ async def updateStatus():
         activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
         await bot.change_presence(activity=activity)
         time.sleep(30)
+    
+    time.sleep(600)
+    activity = discord.Activity(name="Awaiting commands",type=discord.ActivityType.idle)
+    await bot.change_presence(activity=activity)
 
 
 @bot.command()
