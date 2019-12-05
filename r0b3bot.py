@@ -47,25 +47,7 @@ print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
 print(f"HomeAssistant Light: {HASS_LIGHT}")
 print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
 
-# This is now deprecated and will be replaced with using the REST
-#hassapi = remote.API(HASS_IP_ADDRESS, HASS_API_KEY)
-
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
-        #msg = 'This command is ratelimited, please try again in {:.2f}s'.format(error.retry_after)
-        seconds = round(error.retry_after,1)
-        print(f" - Error, user tried to use command while in cooldown (wait is: {seconds}")
-        await ctx.send(f"This command is ratelimited per user, please try again in {seconds}s")
-    if isinstance(error, commands.CommandInvokeError):
-        print(" - ERROR: encountered 'CommandInvokeError'")
-        print(f" - Dumping error: {error}")
-        await ctx.send("Error, unable to complete your request.")
-    else:
-        print('Oopsie, I found an error...')
-        print(f"Error: {error}")
-
-
+# On Ready
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -79,6 +61,22 @@ async def on_ready():
 @bot.command()
 async def greetings(ctx):
     await ctx.send(":smiley: :wave: Hello there!")
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        seconds = round(error.retry_after,1)
+        print(f" - Error, user tried to use command while in cooldown (wait is: {seconds}")
+        await ctx.send(f"This command is ratelimited per user, please try again in {seconds}s")
+    if isinstance(error, commands.CommandInvokeError):
+        print(" - ERROR: encountered 'CommandInvokeError'")
+        print(f" - Dumping error: {error}")
+        await ctx.send("Error, unable to complete your request.")
+    else:
+        print('Oopsie, I found an error...')
+        print(f"Error: {error}")
+
 
 #
 # Giphy Commands
@@ -233,7 +231,6 @@ async def printstat(ctx):
     
     # Try to get the status of the 3D printer light
     print(" - Getting Printer Light Status")
-    #work_lights = remote.get_state(hassapi, 'switch.work_lights')
     work_lights = requests.get(hassURL, headers=hassHEADERS)
     print(f"   JSON Response from HomeAssistant: {work_lights.text}")
 
@@ -266,7 +263,6 @@ async def printstat(ctx):
 
         try:
             # REST API call to home assistant to turn the light off.
-            #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
             hassAPIURL = HASS_URL + "/api/services/switch/turn_on"
             payload = f'{{"entity_id": "{HASS_LIGHT}"}}'
             #print(f"  - Payload String: {payload}")
@@ -293,7 +289,6 @@ async def printstat(ctx):
         print(" - Turning Light back Off")
         try:
             # REST API call to home assistant to turn the light off.
-            #remote.call_service(hassapi, 'switch', 'turn_on', {'entity_id':'{}'.format(HASS_LIGHT)})
             hassAPIURL = HASS_URL + "/api/services/switch/turn_off"
             payload = f'{{"entity_id": "{HASS_LIGHT}"}}'
             response = requests.post(hassAPIURL, headers=hassHEADERS, data=payload)
