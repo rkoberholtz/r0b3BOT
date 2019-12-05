@@ -407,9 +407,9 @@ async def printstat(ctx):
 
 async def updateStatus():
 
-    # Initialize variable
+    # Initialize variables
     print_completion = 0
-
+    unknowns = 0
     #While the print status is less than 100 % complete, keep updating
     while print_completion < 100:
         try:
@@ -418,14 +418,18 @@ async def updateStatus():
             print_completion = round(octoapi.get_completion(), 2)
         except:
             print_completion = "Unknown"
+            unknowns += 1
         
         #Set the activity to the new percent complete value
         activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
         await bot.change_presence(activity=activity)
+        if (unknowns >= 5):
+            break
         await asyncio.sleep(30)
     
-    # Wait 10 minutes before changing the status back to listening to your commands
-    await asyncio.sleep(600)
+    # Wait 10 minutes before changing the status back to listening to your commands, only if uknowns !5.
+    if unknowns != 5:
+        await asyncio.sleep(600)
     activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
