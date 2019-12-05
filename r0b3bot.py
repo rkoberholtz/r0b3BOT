@@ -71,7 +71,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    activity = discord.Activity(name="Awaiting commands",type=discord.ActivityType.listening)
+    activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
 @bot.command()
@@ -420,7 +420,7 @@ async def updateStatus():
         time.sleep(30)
     
     time.sleep(600)
-    activity = discord.Activity(name="Awaiting commands",type=discord.ActivityType.listening)
+    activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
 
