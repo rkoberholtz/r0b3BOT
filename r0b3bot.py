@@ -434,7 +434,7 @@ async def updateStatus():
             activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
             await bot.change_presence(activity=activity)
             await asyncio.sleep(2)
-            activity = discord.Activity(name="#################",type=discord.ActivityType.watching)
+            activity = discord.Activity(name="-",type=discord.ActivityType.watching)
             await bot.change_presence(activity=activity)
             await asyncio.sleep(2)
 
