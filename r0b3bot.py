@@ -101,7 +101,7 @@ async def holyshit(ctx):
 @bot.command()
 async def smudge(ctx):
     print(" - Uploading Smudge to chat channel")
-    file = discord.File("./images/smudge.png", filename="Smudge")
+    file = discord.File("./images/smudge.png", filename="smudge.png")
     await ctx.send(file=file)
 
 #
