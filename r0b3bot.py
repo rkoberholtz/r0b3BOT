@@ -430,13 +430,13 @@ async def updateStatus():
     # Wait 10 minutes before changing the status back to listening to your commands, only if uknowns !5.
     if unknowns != 5:
         #await asyncio.sleep(600)
-        for x in range(10):
+        for x in range(20):
             activity = discord.Activity(name="-",type=discord.ActivityType.watching)
             await bot.change_presence(activity=activity)
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
             activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
             await bot.change_presence(activity=activity)
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
 
     print(" - Done watching 3D Printer status")
     await asyncio.sleep(3)
