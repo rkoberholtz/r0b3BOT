@@ -10,9 +10,7 @@ This is R0b3's Discord Bot.  It's creation was basically a challenge posed a cow
 
 # Requirements
 1. discord.py version 1.2.4 or greater<br>
-    <code> python3 -m pip install -U https://github.com/Rapptz/discord.py/archive/rewrite.zip </code>
-2. homeassistant API<br>
-    <code> pip install homeassistant</code><br><br>
+    <code> pip install discord.py </code>
 
 # Configuration
 1. Create a Discord Bot via Developer tools<br>
