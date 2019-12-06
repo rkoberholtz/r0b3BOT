@@ -427,9 +427,8 @@ async def updateStatus():
             break
         await asyncio.sleep(30)
     
-    # Wait 10 minutes before changing the status back to listening to your commands, only if uknowns !5.
+    # Flash the status @ 100% before changing back to listening to your commands, only if uknowns !5.
     if unknowns != 5:
-        #await asyncio.sleep(600)
         for x in range(20):
             activity = discord.Activity(name="-",type=discord.ActivityType.watching)
             await bot.change_presence(activity=activity)
