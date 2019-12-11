@@ -432,12 +432,12 @@ async def updateStatus():
         #Set the activity to the new percent complete value
         activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
         await bot.change_presence(activity=activity)
-        if (unknowns >= 5):
+        if (int(unknowns) >= int(5)):
             break
         await asyncio.sleep(30)
     
     # Flash the status @ 100% before changing back to listening to your commands, only if uknowns !5.
-    if unknowns != 5:
+    if int(unknowns) != int(5):
         for x in range(20):
             activity = discord.Activity(name="-",type=discord.ActivityType.watching)
             await bot.change_presence(activity=activity)
