@@ -426,13 +426,18 @@ async def updateStatus():
             # Try to get the % of Completion
             print_completion = round(octoapi.get_completion(), 2)
         except:
-            print_completion = "Unknown"
+            print_completion = 999
             unknowns += 1
         
         #Set the activity to the new percent complete value
-        activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
+        if print_completion != 999:
+            activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
+        else:
+            activity = discord.Activity(name=f"3D Print @ ERROR",type=discord.ActivityType.watching)
+
         await bot.change_presence(activity=activity)
-        if (int(unknowns) >= int(5)):
+
+        if (unknowns >= 5):
             break
         await asyncio.sleep(30)
     
