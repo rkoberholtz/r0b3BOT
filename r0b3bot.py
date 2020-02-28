@@ -163,7 +163,7 @@ async def wow(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def aww(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Awww_Bitch.mp3", "$wow")
+    await play_sound(ctx, member, "./sounds/Awww_Bitch.mp3", "$aww")
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
