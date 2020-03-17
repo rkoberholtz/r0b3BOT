@@ -114,7 +114,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
-        await play_sound(ctx, member, "./sounds/monkey_bitch.mp3", "$bitch")
+        await play_sound(ctx, member, "./sounds/monkey_bitch.mp3", "$bitch", 5)
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $bitch, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
@@ -122,7 +122,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def cowbell(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/More_cowbell.mp3", "$cowbell")
+    await play_sound(ctx, member, "./sounds/More_cowbell.mp3", "$cowbell", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -130,7 +130,7 @@ async def boom(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
-        await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
+        await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom", 5)
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $boom, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
@@ -138,37 +138,37 @@ async def boom(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def oops(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Oops.mp3", "$oops")
+    await play_sound(ctx, member, "./sounds/Oops.mp3", "$oops", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def trololo(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Trololo.mp3", "$trololo")
+    await play_sound(ctx, member, "./sounds/Trololo.mp3", "$trololo", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def leeroy(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/leeroy.mp3", "$leeroy")
+    await play_sound(ctx, member, "./sounds/leeroy.mp3", "$leeroy", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def promoted(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
+    await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def wow(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/wow.mp3", "$wow")
+    await play_sound(ctx, member, "./sounds/wow.mp3", "$wow", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def aww(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Awww_Bitch.mp3", "$aww")
+    await play_sound(ctx, member, "./sounds/Awww_Bitch.mp3", "$aww", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def eia(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/awesome.mp3", "$eia")
+    await play_sound(ctx, member, "./sounds/awesome.mp3", "$eia", 11)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -182,7 +182,7 @@ async def rs(ctx, member : discord.Member="NONE"):
         print(f"[{datestring}]: {ctx.message.author.display_name} called $rs, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
 
-async def play_sound(ctx, member : discord.Member, soundFile, command):
+async def play_sound(ctx, member : discord.Member, soundFile, command, playtime):
 
     discord.opus.load_opus("libopus.so")
 
@@ -230,7 +230,7 @@ async def play_sound(ctx, member : discord.Member, soundFile, command):
     audio_source = discord.FFmpegPCMAudio(soundFile)
     print(f" - Playing {soundFile}")
     voice.play(audio_source, after=None)
-    time.sleep(11)
+    time.sleep(int(playtime)
     print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
 ###
