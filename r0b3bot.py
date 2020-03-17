@@ -167,6 +167,11 @@ async def aww(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def eia(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/awesome.mp3", "$eia")
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
