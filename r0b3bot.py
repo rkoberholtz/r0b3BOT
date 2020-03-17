@@ -230,7 +230,7 @@ async def play_sound(ctx, member : discord.Member, soundFile, command):
     audio_source = discord.FFmpegPCMAudio(soundFile)
     print(f" - Playing {soundFile}")
     voice.play(audio_source, after=None)
-    time.sleep(5)
+    time.sleep(11)
     print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
 ###
