@@ -488,10 +488,10 @@ bot.remove_command('help')
 # Dice Roll
 #
 # Sides def
-def d(sides):
+async def d(sides):
     return randint(1, sides)
 # Roll per sides
-def roll(n, sides):
+async def roll(n, sides):
     return tuple(d(sides) for _ in range(n))
 # wrap it up with output for bot.
 @bot.command()
