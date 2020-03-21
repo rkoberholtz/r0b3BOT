@@ -484,22 +484,6 @@ async def info(ctx):
 
 bot.remove_command('help')
 
-#
-# Dice Roll
-#
-# Sides def
-async def d(sides):
-    return randint(1, sides)
-# Roll per sides
-async def roll(n, sides):
-    return tuple(d(sides) for _ in range(n))
-# wrap it up with output for bot.
-@bot.command()
-async def rolldice(ctx, nDice=1, nSides=20):
-    dice = roll(nDice, nSides)
-    print(dice, sum(dice))
-    await ctx.send(dice, sum(dice))
-
 
 @bot.command()
 async def help(ctx):
@@ -516,7 +500,6 @@ async def help(ctx):
     embed.add_field(name="$promoted @member", value="Plays 'Promoted.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
     embed.add_field(name="$trololo @member", value="Plays 'Trololo.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
     embed.add_field(name="$leeroy @member", value="Plays 'leeroy.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$rolldice numofdice numofsides", value="Rolls dice in a number of dice number of sides format.", inline=False)
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
 
