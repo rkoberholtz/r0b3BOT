@@ -484,6 +484,23 @@ async def info(ctx):
 
 bot.remove_command('help')
 
+#
+# Dice Roll
+#
+# Sides def
+def d(sides):
+    return randint(1, sides)
+# Roll per sides
+def roll(n, sides):
+    return tuple(d(sides) for _ in range(n))
+# wrap it up with output for bot.
+@bot.command()
+async def rolldice(ctx, nDice=1, nSides=20):
+    dice = roll(nDice, nSides)
+    print(dice, sum(dice))
+    await ctx.send(dice, sum(dice))
+
+
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
