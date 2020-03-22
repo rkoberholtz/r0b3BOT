@@ -23,7 +23,7 @@ config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
 
 # Last error message variable used by $last_error command to display in discord
-last_error = "No errors been recorded."
+global last_error = "No errors been recorded."
 
 try:
     config.read(configFilePath)
