@@ -22,6 +22,9 @@ bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
 
+# Last error message variable used by $last_error command to display in discord
+last_error = "No errors been recorded."
+
 try:
     config.read(configFilePath)
 except:
@@ -72,11 +75,19 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
         print(" - ERROR: encountered 'CommandInvokeError'")
         print(f" - Dumping error: {error}")
+        last_error = error
         await ctx.send("Error, unable to complete your request.")
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
+        last_error = error
 
+#
+# Debug commands
+#
+@bot.command()
+async def last_error(ctx):
+    await ctx.send(f"Last error recorded: {last_error}")
 
 #
 # Giphy Commands
@@ -493,16 +504,20 @@ async def help(ctx):
     embed.add_field(name="$holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
     embed.add_field(name="$greetings", value="Gives a nice greet message", inline=False)
     embed.add_field(name="$cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
-    embed.add_field(name="$bitch @member", value="Plays 'monkey_bitch.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$boom @member", value="Plays 'BoomBitch.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$cowbell @member", value="Plays 'More_cowbell.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$oops @member", value="Plays 'Oops.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$promoted @member", value="Plays 'Promoted.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
+    embed.add_field(name="$bitch @member", value="Plays clip of BigEric420 saying 'maybe you shouldn't be such a bitch.mp3'", inline=False)
+    embed.add_field(name="$boom @member", value="Plays 'Boom Bitch' sound clip", inline=False)
+    embed.add_field(name="$cowbell @member", value="Plays 'SNL More Cowbell' sound clip", inline=False)
+    embed.add_field(name="$oops @member", value="Plays 'Oops.mp3'", inline=False)
+    embed.add_field(name="$promoted @member", value="Plays Battlefield Friends 'PROMOTED!' sound clip", inline=False)
     embed.add_field(name="$trololo @member", value="Plays 'Trololo.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
     embed.add_field(name="$leeroy @member", value="Plays 'leeroy.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
+    embed.add_field(name="$eia @member", value="Plays 'Everything is Awesome' song clip")
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
+    embed.add_field(name="$last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    await ctx.send(embed=embed)
 
+    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are played only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
     await ctx.send(embed=embed)
 
 bot.run(DISCORD_AUTH_TOKEN)
