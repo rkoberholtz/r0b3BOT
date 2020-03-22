@@ -517,7 +517,7 @@ async def help(ctx):
     embed.add_field(name="$last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
     await ctx.send(embed=embed)
 
-    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are played only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
+    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
     await ctx.send(embed=embed)
 
 bot.run(DISCORD_AUTH_TOKEN)
