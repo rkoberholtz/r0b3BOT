@@ -511,6 +511,8 @@ async def info(ctx):
     # give users a link to invite thsi bot to their server
     embed.add_field(name="Invite", value="[Invite link](https://discordapp.com/api/oauth2/authorize?client_id=416312716677087233&permissions=51264&scope=bot)")
 
+    # Gitlab link to source
+    embed.add_field(name="Source Code:", value="[R0b3Bot on Gitlab](https://gitlab.rickelobe.com/Bots/r0b3BOT)", inline=False)
     await ctx.send(embed=embed)
 
 bot.remove_command('help')
