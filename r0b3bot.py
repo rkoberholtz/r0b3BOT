@@ -105,7 +105,7 @@ async def uptime(ctx):
     day = int(day)
     hour = int(hour)
     minute = int(minute)
-    second = int(minute)
+    second = int(second)
     await ctx.send(f"{week} W {day} D, {hour} H, {minute} M, {second} S")
 
 #
