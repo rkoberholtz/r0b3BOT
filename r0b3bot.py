@@ -19,8 +19,15 @@ import asyncio
 
 bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 
+#Record the time the bot started
+start_time = time.time()
+
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
+
+# Last error message variable used by $last_error command to display in discord
+global last_error
+last_error = "No errors been recorded."
 
 try:
     config.read(configFilePath)
@@ -72,11 +79,34 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
         print(" - ERROR: encountered 'CommandInvokeError'")
         print(f" - Dumping error: {error}")
+        last_error = error
         await ctx.send("Error, unable to complete your request.")
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
+        last_error = error
 
+#
+# Debug commands
+#
+@bot.command()
+async def last_error(ctx):
+    await ctx.send(f"Last error recorded: {last_error}")
+
+@bot.command()
+async def uptime(ctx):
+    # Displays how long the bot has been online
+    second = time.time() - start_time
+    minute, second = divmod(second, 60)
+    hour, minute = divmod(minute, 60)
+    day, hour = divmod(hour, 24)
+    week, day = divmod(day, 7)
+    week = int(week)
+    day = int(day)
+    hour = int(hour)
+    minute = int(minute)
+    second = int(second)
+    await ctx.send(f"Uptime [WW:DD:HH:MM:SS]: {week:02d}:{day:02d}:{hour:02d}:{minute:02d}:{second:02d}")
 
 #
 # Giphy Commands
@@ -114,7 +144,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
-        await play_sound(ctx, member, "./sounds/monkey_bitch.mp3", "$bitch")
+        await play_sound(ctx, member, "./sounds/monkey_bitch.mp3", "$bitch", 5)
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $bitch, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
@@ -122,7 +152,7 @@ async def bitch(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def cowbell(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/More_cowbell.mp3", "$cowbell")
+    await play_sound(ctx, member, "./sounds/More_cowbell.mp3", "$cowbell", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -130,7 +160,7 @@ async def boom(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
-        await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom")
+        await play_sound(ctx, member, "./sounds/BoomBitch.mp3", "$boom", 5)
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $boom, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
@@ -138,32 +168,37 @@ async def boom(ctx, member : discord.Member="NONE"):
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def oops(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Oops.mp3", "$oops")
+    await play_sound(ctx, member, "./sounds/Oops.mp3", "$oops", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def trololo(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Trololo.mp3", "$trololo")
+    await play_sound(ctx, member, "./sounds/Trololo.mp3", "$trololo", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def leeroy(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/leeroy.mp3", "$leeroy")
+    await play_sound(ctx, member, "./sounds/leeroy.mp3", "$leeroy", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def promoted(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted")
+    await play_sound(ctx, member, "./sounds/Promoted.mp3", "$promoted", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def wow(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/wow.mp3", "$wow")
+    await play_sound(ctx, member, "./sounds/wow.mp3", "$wow", 5)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def aww(ctx, member : discord.Member="NONE"):
-    await play_sound(ctx, member, "./sounds/Awww_Bitch.mp3", "$aww")
+    await play_sound(ctx, member, "./sounds/Awww_Bitch.mp3", "$aww", 5)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def eia(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/awesome.mp3", "$eia", 11)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -177,7 +212,7 @@ async def rs(ctx, member : discord.Member="NONE"):
         print(f"[{datestring}]: {ctx.message.author.display_name} called $rs, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
 
-async def play_sound(ctx, member : discord.Member, soundFile, command):
+async def play_sound(ctx, member : discord.Member, soundFile, command, playtime):
 
     discord.opus.load_opus("libopus.so")
 
@@ -224,8 +259,9 @@ async def play_sound(ctx, member : discord.Member, soundFile, command):
     print(" - Creating Player")
     audio_source = discord.FFmpegPCMAudio(soundFile)
     print(f" - Playing {soundFile}")
+    time.sleep(1)
     voice.play(audio_source, after=None)
-    time.sleep(5)
+    time.sleep(playtime)
     print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
 ###
@@ -479,6 +515,7 @@ async def info(ctx):
 
 bot.remove_command('help')
 
+
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
@@ -487,16 +524,21 @@ async def help(ctx):
     embed.add_field(name="$holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
     embed.add_field(name="$greetings", value="Gives a nice greet message", inline=False)
     embed.add_field(name="$cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
-    embed.add_field(name="$bitch @member", value="Plays 'monkey_bitch.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$boom @member", value="Plays 'BoomBitch.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$cowbell @member", value="Plays 'More_cowbell.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$oops @member", value="Plays 'Oops.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$promoted @member", value="Plays 'Promoted.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$trololo @member", value="Plays 'Trololo.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
-    embed.add_field(name="$leeroy @member", value="Plays 'leeroy.mp3' to the users voice channel, if no user is specified it will play in your own voice channel", inline=False)
+    embed.add_field(name="$bitch @member", value="Plays clip of BigEric420 saying 'maybe you shouldn't be such a bitch.mp3'", inline=False)
+    embed.add_field(name="$boom @member", value="Plays 'Boom Bitch' sound clip", inline=False)
+    embed.add_field(name="$cowbell @member", value="Plays 'SNL More Cowbell' sound clip", inline=False)
+    embed.add_field(name="$oops @member", value="Plays 'Oops.mp3'", inline=False)
+    embed.add_field(name="$promoted @member", value="Plays Battlefield Friends 'PROMOTED!' sound clip", inline=False)
+    embed.add_field(name="$trololo @member", value="Plays a clip of Trololo song", inline=False)
+    embed.add_field(name="$leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
+    embed.add_field(name="$eia @member", value="Plays 'Everything is Awesome' song clip")
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
+    embed.add_field(name="$last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    embed.add_field(name="$uptime", value="Displays how long the bot has been up since last service restart")
+    await ctx.send(embed=embed)
 
+    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
     await ctx.send(embed=embed)
 
 bot.run(DISCORD_AUTH_TOKEN)
