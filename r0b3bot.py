@@ -19,6 +19,9 @@ import asyncio
 
 bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 
+#Record the time the bot started
+start_time = time.time()
+
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
 
@@ -89,6 +92,16 @@ async def on_command_error(ctx, error):
 @bot.command()
 async def last_error(ctx):
     await ctx.send(f"Last error recorded: {last_error}")
+
+@bot.command()
+async def uptime(ctx):
+    # Displays how long the bot has been online
+    second = time.time() - start_time
+    minute, second = divmod(second, 60)
+    hour, minute = divmod(minute, 60)
+    day, hour = divmod(hour, 24)
+    week, day = divmod(day, 7)
+    await ctx.send(f"{week} Weeks, {day} Days, {hour} Hours, {minute}, {second} Seconds")
 
 #
 # Giphy Commands
