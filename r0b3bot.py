@@ -106,7 +106,7 @@ async def uptime(ctx):
     hour = int(hour)
     minute = int(minute)
     second = int(second)
-    await ctx.send(f"{week} W {day} D, {hour} H, {minute} M, {second} S")
+    await ctx.send(f"{week} weeks, {day} days, {hour} hours, {minute} minutes, {second} seconds")
 
 #
 # Giphy Commands
