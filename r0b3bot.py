@@ -535,6 +535,7 @@ async def help(ctx):
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
     embed.add_field(name="$last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    embed.add_field(name="$uptime", value="Displays how long the bot has been up since last service restart")
     await ctx.send(embed=embed)
 
     embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
