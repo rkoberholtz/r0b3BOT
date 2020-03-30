@@ -511,6 +511,20 @@ async def info(ctx):
     # give users a link to invite thsi bot to their server
     embed.add_field(name="Invite", value="[Invite link](https://discordapp.com/api/oauth2/authorize?client_id=416312716677087233&permissions=51264&scope=bot)")
 
+    # Bot Uptime
+    second = time.time() - start_time
+    minute, second = divmod(second, 60)
+    hour, minute = divmod(minute, 60)
+    day, hour = divmod(hour, 24)
+    week, day = divmod(day, 7)
+    week = int(week)
+    day = int(day)
+    hour = int(hour)
+    minute = int(minute)
+    second = int(second)
+    embed.add_field(name="Uptime [WW:DD:HH:MM:SS]:", value=f"{week:02d}:{day:02d}:{hour:02d}:{minute:02d}:{second:02d}", inline=False)
+
+
     # Gitlab link to source
     embed.add_field(name="Source Code:", value="[R0b3Bot on Gitlab](https://gitlab.rickelobe.com/Bots/r0b3BOT)", inline=False)
     await ctx.send(embed=embed)
