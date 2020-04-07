@@ -45,8 +45,8 @@ hassHEADERS = {
 }
 
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
-
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
 
 # Printing configuration details to console
 print(f"HomeAssistant URL: {hassURL}")

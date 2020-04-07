@@ -13,4 +13,4 @@ hass_url = <URL to HomeAssistant>
 hass_token = <HomeAssistant Long Lived Access Token>
 hass_light = <Entity_ID of the light @ your printer>
 octoprint_ip_address = <OctoPrint IP Address>
-
+statping_api_key = <Statping API Key>
