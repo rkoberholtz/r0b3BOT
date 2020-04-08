@@ -7,6 +7,7 @@
 #   hass_token           - Long Lived Access Token used to authenticate with the REST API for your Home assistant instance
 #   hass_light           - Entity name of the light you want to control
 #   octoprint_ip_address - IP Address of you OctoPrint (or OctoPi) host.  Used to get 3D printer stats.  
+#   statping_server      - Server hostname of the StatPing instance we will be querying w/ the REST API
 #   statping_api_key     - API Key for Statping to query for service status
 #
 discord_auth_token = <Discord Auth Token>
@@ -14,4 +15,5 @@ hass_url = <URL to HomeAssistant>
 hass_token = <HomeAssistant Long Lived Access Token>
 hass_light = <Entity_ID of the light @ your printer>
 octoprint_ip_address = <OctoPrint IP Address>
+statping_server = <Statping Server>
 statping_api_key = <Statping API Key>
