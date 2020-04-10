@@ -549,7 +549,7 @@ async def spalert(ctx, service = "NONE"):
     if service != "NONE":
         
         #await get_stp_status(ctx, service.lower())
-        result = await get_stp_status(ctx, service.lower())
+        result = await get_stp_status(service.lower())
 
         if result == "service not found":
             await ctx.send(f"'{service}' was not found")
@@ -570,18 +570,20 @@ async def spsub(ctx, service = "NONE"):
     current_subrequest = []
 
     if service != "NONE":
+
+        service_state = await get_stp_status()
         
         currentsub_request.append(ctx)
         currentsub_request.append(service)
         spsublist.append(current_subrequest)
 
 
-async def get_stp_status(ctx, service):
+async def get_stp_status(service):
 
     # Get StatPing status via REST API
     spservice_array = requests.get(statpingURL, headers=statpingHEADERS)
     found = False
-    
+
     # spservice_array is json data, need to treat it as such
     for spservice in spservice_array.json():
 
