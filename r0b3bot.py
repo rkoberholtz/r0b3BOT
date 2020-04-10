@@ -20,7 +20,7 @@ import asyncio
 bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 
 #Record the time the bot started
-start_time = time.time()
+start_time = time.time() 
 
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
@@ -46,13 +46,21 @@ hassHEADERS = {
 
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+STATPING_URL = config.get('bot-config', 'statping_server')
 STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
+statpingURL = STATPING_URL + "/api/services"
+statpingHEADERS = {
+    'Authorization': f"Bearer {STATPING_API_KEY}"
+}
 
 # Printing configuration details to console
 print(f"HomeAssistant URL: {hassURL}")
 print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
 print(f"HomeAssistant Light: {HASS_LIGHT}")
 print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
+print(f"StatPing Server: {STATPING_SERVER}")
+print(f"StatPing API Key: {STATPING_API_KEY}")
+print(f"StatPing URL Headers: {statpingHEADERS}")
 
 # On Ready
 @bot.event
@@ -541,6 +549,29 @@ async def info(ctx):
 
 bot.remove_command('help')
 
+@bot.command()
+async def spalert(ctx, service = "NONE")
+#async def spalert(ctx, cmd = "NONE", arg = "NONE"):
+
+    # if cmd != "NONE":
+    #    if cmd == "add":
+    #        spalert +=
+    if cmd != "NONE":
+        get_stp_status(ctx, service.lower())
+    
+
+async def get_stp_status(ctx, service):
+
+    spservice_array = requests.get(statpingURL, headers=statpingHEADERS)
+    
+        for spservice in spservice_array:
+            if spservice['name'].lower() == service and spservice['online']:
+                await ctx.send(f"{spservice['name']} is Online")
+            else if not spservice['online'] and spservice['name'].lower() == service:
+                await ctx.send(f"{spservice['name']"} is Offline")
+            else:
+                await ctx.send("There was an error")
+                
 
 @bot.command()
 async def help(ctx):
