@@ -567,9 +567,9 @@ async def get_stp_status(ctx, service):
     spservice_array = requests.get(statpingURL, headers=statpingHEADERS)
     #spservice_array = json.loads(spservice_array)
 
-    await ctx.send(f"{spservice_array.json()}")
+    #await ctx.send(f"{spservice_array.json()}")
 
-    for spservice in spservice_array:
+    for spservice in spservice_array.json():
         if spservice['name'].lower() == service and spservice['online']:
             await ctx.send(f"{spservice['name']} is Online")
         elif not spservice['online'] and spservice['name'].lower() == service:
