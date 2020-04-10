@@ -603,8 +603,10 @@ async def sp_monitor(spsublist):
         status = await get_stp_status(spsublist[1])
         if status['online'] and spsublist[2] == "online":
             # nothing has changed, no alert needed
+            time.sleep(1)
         elif not status['online'] and spsublist[2] == "offline":
             # again, nothing has changed no alert needed
+            time.sleep(1)
         else:
             if status['online']:
                 await ctx.send(f"{spsublist[1]} is now Online!")
