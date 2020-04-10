@@ -581,7 +581,7 @@ async def get_stp_status(ctx, service):
             elif not spservice['online']:
                 await ctx.send(f"{spservice['name']} is Offline")
                 break
-            else 
+            else:
                 await ctx.send("Serivce name matched, but ran into problem getting status")
                 break
 
