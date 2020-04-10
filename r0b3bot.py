@@ -26,7 +26,6 @@ config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
 
 # Last error message variable used by $last_error command to display in discord
-global last_error
 last_error = "No errors been recorded."
 
 try:
@@ -94,6 +93,7 @@ async def on_command_error(ctx, error):
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
+        global last_error
         last_error = error
 
 #
@@ -572,13 +572,13 @@ async def get_stp_status(ctx, service):
     for spservice in spservice_array.json():
         if spservice['name'].lower() == service and spservice['online']:
             await ctx.send(f"{spservice['name']} is Online")
-            return
+            break
         elif not spservice['online'] and spservice['name'].lower() == service:
             await ctx.send(f"{spservice['name']} is Offline")
-            return
+            break
         else:
-            await ctx.send("There was an error")
-            return
+            await ctx.send(f"There was an error| {spservice}")
+            break
 
 @bot.command()
 async def help(ctx):
