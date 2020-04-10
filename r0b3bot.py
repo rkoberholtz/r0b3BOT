@@ -552,17 +552,11 @@ async def spalert(ctx, service = "NONE"):
         result = await get_stp_status(ctx, service.lower())
 
         if result == "service not found":
-
             await ctx.send(f"'{service}' was not found")
-        
         elif result['online']:
-
             await ctx.send(f"{result['name']} is Online")
-
         elif not result['online']:
-
             await ctx.send(f"{result['name']} is Offline")
-
         else:
             await ctx.send(f"Received an unexpected result '{result}' querying '{service}'")
 
@@ -586,10 +580,11 @@ async def get_stp_status(ctx, service):
 
     # Get StatPing status via REST API
     spservice_array = requests.get(statpingURL, headers=statpingHEADERS)
-
+    found = False
+    
     # spservice_array is json data, need to treat it as such
     for spservice in spservice_array.json():
-        found = False
+
         # using lower() to eliminate any case mismatch problems
         if spservice['name'].lower() == service:
             
