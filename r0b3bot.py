@@ -580,13 +580,11 @@ async def spsub(ctx, service = "NONE"):
         if service_state != "service not found":
         
             print(f"'{service}' exists, starting monitor")
+            await ctx.send(f"{service_state['name']}' added to monitored services")
             currentsub_request.append(ctx)
             currentsub_request.append(service)
             currentsub_request.append("online")
 
-            #Add the request to the spsublist list
-            #global spsublist
-            #spsublist.append(currentsub_request)
             await sp_monitor(currentsub_request)
         
         else:
