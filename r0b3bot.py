@@ -81,6 +81,7 @@ async def greetings(ctx):
 
 @bot.event
 async def on_command_error(ctx, error):
+    global last_error
     if isinstance(error, commands.CommandOnCooldown):
         seconds = round(error.retry_after,1)
         print(f" - Error, user tried to use command while in cooldown (wait is: {seconds}")
@@ -88,13 +89,11 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
         print(" - ERROR: encountered 'CommandInvokeError'")
         print(f" - Dumping error: {error}")
-        global last_error
         last_error = error
         await ctx.send("Error, unable to complete your request.")
     else:
         print('Oopsie, I found an error...')
         print(f"Error: {error}")
-        global last_error
         last_error = error
 
 #
