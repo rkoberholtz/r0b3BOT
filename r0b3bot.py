@@ -608,10 +608,10 @@ async def sp_monitor(spsublist):
         status = await get_stp_status(spsublist[1])
         if status['online'] and spsublist[2] == "online":
             # nothing has changed, no alert needed
-            time.sleep(1)
+            await asyncio.sleep(1)
         elif not status['online'] and spsublist[2] == "offline":
             # again, nothing has changed no alert needed
-            time.sleep(1)
+            await asyncio.sleep(1)
         else:
             print(f"Status of {status['name']}' has changed")
             if status['online']:
@@ -622,7 +622,7 @@ async def sp_monitor(spsublist):
                 spsublist[2] = "offline"
             else:
                 await ctx.send(f"Unknown state for service {spsublist[1]}")
-        time.sleep(60)
+        await asyncio.sleep(60)
 
 async def get_stp_status(service):
 
