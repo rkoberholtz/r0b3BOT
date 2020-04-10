@@ -549,7 +549,7 @@ async def spalert(ctx, service = "NONE"):
     if service != "NONE":
         
         #await get_stp_status(ctx, service.lower())
-        result = get_stp_status(ctx, service.lower())
+        result = await get_stp_status(ctx, service.lower())
 
         if result == "online" or result == "offline":
 
