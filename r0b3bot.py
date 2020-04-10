@@ -71,7 +71,7 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     print("Setting activity to 'Listenting to your commands")
-    activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
+    activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
 @bot.command()
