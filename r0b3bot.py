@@ -588,7 +588,7 @@ async def spsub(ctx, service = "NONE"):
 
             await ctx.send(f"{service} was not found")
 
-aync def sp_monitor(spsublist):
+async def sp_monitor(spsublist):
 
     # Checks the services listed in spsublist for status change
     # Sublist is a list of 3 items:
