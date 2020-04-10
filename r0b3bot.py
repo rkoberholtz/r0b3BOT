@@ -551,17 +551,18 @@ async def spalert(ctx, service = "NONE"):
         #await get_stp_status(ctx, service.lower())
         result = await get_stp_status(ctx, service.lower())
 
-        if result == "online" or result == "offline":
+        if result == "service not found":
 
-            await ctx.send(f"{service} is {result}")
+            await ctx.send(f"'{service}' was not found")
+        
+        elif result['online']:
 
-        elif result == "not available":
+            await ctx.send(f"{result['name']} is Online")
 
-            await ctx.send(f"Status info for '{service}' is {result}")
+        elif not result['online']:
 
-        elif result == "not found":
+            await ctx.send(f"{result['name']} is Offline")
 
-            await ctx.send(f"{service} was {result}")
         else:
             await ctx.send(f"Received an unexpected result '{result}' querying '{service}'")
 
@@ -583,7 +584,7 @@ async def spsub(ctx, service = "NONE"):
 
 async def get_stp_status(ctx, service):
 
-    # Get StatPing status via RESTful API
+    # Get StatPing status via REST API
     spservice_array = requests.get(statpingURL, headers=statpingHEADERS)
 
     # spservice_array is json data, need to treat it as such
@@ -591,32 +592,13 @@ async def get_stp_status(ctx, service):
         found = False
         # using lower() to eliminate any case mismatch problems
         if spservice['name'].lower() == service:
-            if spservice['online']:
-
-                #Return result to channel
-                #await ctx.send(f"{spservice['name']} is Online")
+            
                 found = True
-                return "online"
-                #break
-
-            elif not spservice['online']:
-
-                #await ctx.send(f"{spservice['name']} is Offline")
-                found = True
-                return "offline"
-                #break
-
-            else:
-                # Catch in case the status info is not available
-                #await ctx.send(f"Status for {spservice['name']} is not available")
-                found = True
-                return "not available"
-                #break
+                return spservice
 
     # Want to alert user if the service was not found
     if not found:  
-        return "not found"  
-        #await ctx.send("Service was not found :(")
+        return "service not found"  
 
 
 @bot.command()
