@@ -567,7 +567,7 @@ async def get_stp_status(ctx, service):
     for spservice in spservice_array:
         if spservice['name'].lower() == service and spservice['online']:
             await ctx.send(f"{spservice['name']} is Online")
-        else if not spservice['online'] and spservice['name'].lower() == service:
+        elif not spservice['online'] and spservice['name'].lower() == service:
             await ctx.send(f"{spservice['name']"} is Offline")
         else:
             await ctx.send("There was an error")
