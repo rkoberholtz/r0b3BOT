@@ -567,6 +567,7 @@ async def spalert(ctx, service = "NONE"):
     
 @bot.command()
 async def spsub(ctx, service = "NONE"):
+
     currentsub_request = []
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
@@ -613,13 +614,19 @@ async def sp_monitor(spsublist):
         else:
             print(f"Status of {status['name']}' has changed")
             if status['online']:
-                await ctx.send(f"{spsublist[1]} is Online!")
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Online!", color=0x00ff40)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"{spsublist[1]} is Online!")
                 spsublist[2] = "online"
             elif not status['online']:
-                await ctx.send(f"{spsublist[1]} is Offline!")
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Offline!", color=0xff2200)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"{spsublist[1]} is Offline!")
                 spsublist[2] = "offline"
             else:
-                await ctx.send(f"Unknown state for service {spsublist[1]}")
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is in an unknown state!", color=0xffff00)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"Unknown state for service {spsublist[1]}")
         await asyncio.sleep(60)
 
 async def get_stp_status(service):
