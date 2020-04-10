@@ -545,6 +545,8 @@ async def spalert(ctx, service = "NONE"):
     #        spalert +=
     if service != "NONE":
         await get_stp_status(ctx, service.lower())
+    else:
+        await ctx.send("Please speficy a service name to query.")
     
 
 async def get_stp_status(ctx, service):
