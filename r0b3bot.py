@@ -564,36 +564,30 @@ async def spalert(ctx, service = "NONE"):
 
 async def get_stp_status(ctx, service):
 
+    # Get StatPing status via RESTful API
     spservice_array = requests.get(statpingURL, headers=statpingHEADERS)
-    #spservice_array = json.loads(spservice_array)
 
-    #await ctx.send(f"{spservice_array.json()}")
-
+    # spservice_array is json data, need to treat it as such
     for spservice in spservice_array.json():
 
-        #if spservice['name'].lower() == service:
-        #await ctx.send(f"{spservice['name']} | Online = {spservice['online']}")
-
+        # using lower() to eliminate any case mismatch problems
         if spservice['name'].lower() == service:
             if spservice['online']:
+
+                #Return result to channel
                 await ctx.send(f"{spservice['name']} is Online")
                 break
+
             elif not spservice['online']:
+
                 await ctx.send(f"{spservice['name']} is Offline")
                 break
-            else:
-                await ctx.send("Serivce name matched, but ran into problem getting status")
-                break
 
-        #if spservice['name'].lower() == service and spservice['online']:
-        #    await ctx.send(f"{spservice['name']} is Online")
-        #    break
-        #elif not spservice['online'] and spservice['name'].lower() == service:
-        #    await ctx.send(f"{spservice['name']} is Offline")
-        #    break
-        #else:
-        #    await ctx.send(f"There was an error| {spservice}")
-        #    break
+            else:
+                # Catch in case the status info is not available
+                await ctx.send(f"Status for {spservice['name']} is not available")
+                break
+            
 
 @bot.command()
 async def help(ctx):
