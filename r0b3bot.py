@@ -572,14 +572,13 @@ async def get_stp_status(ctx, service):
     for spservice in spservice_array.json():
         if spservice['name'].lower() == service and spservice['online']:
             await ctx.send(f"{spservice['name']} is Online")
-            break
+            return
         elif not spservice['online'] and spservice['name'].lower() == service:
             await ctx.send(f"{spservice['name']} is Offline")
-            break
+            return
         else:
             await ctx.send("There was an error")
-            break
-
+            return
 
 @bot.command()
 async def help(ctx):
