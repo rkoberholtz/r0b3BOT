@@ -567,7 +567,7 @@ async def spalert(ctx, service = "NONE"):
     
 @bot.command()
 async def spsub(ctx, service = "NONE"):
-    current_subrequest = []
+    currentsub_request = []
 
     if service != "NONE":
 
@@ -580,8 +580,8 @@ async def spsub(ctx, service = "NONE"):
             currentsub_request.append("online")
 
             #Add the request to the spsublist list
-            global spsublist
-            spsublist.append(current_subrequest)
+            #global spsublist
+            #spsublist.append(currentsub_request)
             await sp_monitor(currentsub_request)
         
         else:
