@@ -58,7 +58,7 @@ print(f"HomeAssistant URL: {hassURL}")
 print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
 print(f"HomeAssistant Light: {HASS_LIGHT}")
 print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
-print(f"StatPing Server: {STATPING_SERVER}")
+print(f"StatPing Server: {STATPING_URL}")
 print(f"StatPing API Key: {STATPING_API_KEY}")
 print(f"StatPing URL Headers: {statpingHEADERS}")
 
