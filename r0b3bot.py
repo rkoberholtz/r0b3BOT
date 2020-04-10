@@ -103,21 +103,6 @@ async def on_command_error(ctx, error):
 async def last_error(ctx):
     await ctx.send(f"Last error recorded: {last_error}")
 
-@bot.command()
-async def uptime(ctx):
-    # Displays how long the bot has been online
-    second = time.time() - start_time
-    minute, second = divmod(second, 60)
-    hour, minute = divmod(minute, 60)
-    day, hour = divmod(hour, 24)
-    week, day = divmod(day, 7)
-    week = int(week)
-    day = int(day)
-    hour = int(hour)
-    minute = int(minute)
-    second = int(second)
-    await ctx.send(f"Uptime [WW:DD:HH:MM:SS]: {week:02d}:{day:02d}:{hour:02d}:{minute:02d}:{second:02d}")
-
 #
 # Giphy Commands
 #
@@ -614,7 +599,7 @@ async def help(ctx):
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
     embed.add_field(name="$last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
-    embed.add_field(name="$uptime", value="Displays how long the bot has been up since last service restart")
+    embed.add_field(name="$spalert servicename", value="Retrieves status of service from StatPing")
     await ctx.send(embed=embed)
 
     embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
