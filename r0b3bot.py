@@ -29,6 +29,9 @@ configFilePath = r'bot_config.conf'
 global last_error
 last_error = "No errors have been recorded."
 
+global spsublist
+spsublist = []
+
 try:
     config.read(configFilePath)
 except:
@@ -544,10 +547,39 @@ async def spalert(ctx, service = "NONE"):
     #    if cmd == "add":
     #        spalert +=
     if service != "NONE":
-        await get_stp_status(ctx, service.lower())
+        
+        #await get_stp_status(ctx, service.lower())
+        result = get_stp_status(ctx, service.lower())
+
+        if result == "online" or result == "offline":
+
+            await ctx.send(f"{service} is {result}")
+
+        elif result == "not available":
+
+            await ctx.send(f"Status info for '{service}' is {result}")
+
+        elif result == "not found":
+
+            await ctx.send(f"{service} was {result}")
+        else:
+            await ctx.send(f"Received an unexpected result '{result}' querying '{service}'")
+
     else:
         await ctx.send("Please speficy a service name to query.")
+
     
+    
+@bot.command()
+async def spsub(ctx, service = "NONE"):
+    current_subrequest = []
+
+    if service != "NONE":
+        
+        currentsub_request.append(ctx)
+        currentsub_request.append(service)
+        spsublist.append(current_subrequest)
+
 
 async def get_stp_status(ctx, service):
 
@@ -562,24 +594,29 @@ async def get_stp_status(ctx, service):
             if spservice['online']:
 
                 #Return result to channel
-                await ctx.send(f"{spservice['name']} is Online")
+                #await ctx.send(f"{spservice['name']} is Online")
                 found = True
-                break
+                return "online"
+                #break
 
             elif not spservice['online']:
 
-                await ctx.send(f"{spservice['name']} is Offline")
+                #await ctx.send(f"{spservice['name']} is Offline")
                 found = True
-                break
+                return "offline"
+                #break
 
             else:
                 # Catch in case the status info is not available
-                await ctx.send(f"Status for {spservice['name']} is not available")
-                break
+                #await ctx.send(f"Status for {spservice['name']} is not available")
+                found = True
+                return "not available"
+                #break
 
     # Want to alert user if the service was not found
-    if not found:    
-        await ctx.send("Service was not found :(")
+    if not found:  
+        return "not found"  
+        #await ctx.send("Service was not found :(")
 
 
 @bot.command()
