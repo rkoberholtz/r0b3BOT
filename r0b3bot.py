@@ -48,9 +48,10 @@ OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
 STATPING_URL = config.get('bot-config', 'statping_url')
 STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
-statpingURL = STATPING_URL + "/api/services"
+statpingURL = STATPING_URL + "/api/services/"
 statpingHEADERS = {
-    'Authorization': f"Bearer {STATPING_API_KEY}"
+    'Authorization': f"Bearer {STATPING_API_KEY}",
+    'content-type': 'application/json',
 }
 
 # Printing configuration details to console
