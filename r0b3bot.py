@@ -87,7 +87,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
         print(" - ERROR: encountered 'CommandInvokeError'")
         print(f" - Dumping error: {error}")
-        last_error = error
+        global last_error = error
         await ctx.send("Error, unable to complete your request.")
     else:
         print('Oopsie, I found an error...')
