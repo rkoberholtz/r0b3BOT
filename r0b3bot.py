@@ -574,15 +574,26 @@ async def get_stp_status(ctx, service):
         #if spservice['name'].lower() == service:
         await ctx.send(f"{spservice['name']} | Online = {spservice['online']}")
 
-        if spservice['name'].lower() == service and spservice['online']:
-            await ctx.send(f"{spservice['name']} is Online")
-            break
-        elif not spservice['online'] and spservice['name'].lower() == service:
-            await ctx.send(f"{spservice['name']} is Offline")
-            break
-        else:
-            await ctx.send(f"There was an error| {spservice}")
-            break
+        if spservice['name'].lower() == service:
+            if spservice['online']:
+                await ctx.send(f"{spservice['name']} is Online")
+                break
+            elif not spservice['online']:
+                await ctx.send(f"{spservice['name']} is Offline")
+                break
+            else 
+                await ctx.send("Serivce name matched, but ran into problem getting status")
+                break
+
+        #if spservice['name'].lower() == service and spservice['online']:
+        #    await ctx.send(f"{spservice['name']} is Online")
+        #    break
+        #elif not spservice['online'] and spservice['name'].lower() == service:
+        #    await ctx.send(f"{spservice['name']} is Offline")
+        #    break
+        #else:
+        #    await ctx.send(f"There was an error| {spservice}")
+        #    break
 
 @bot.command()
 async def help(ctx):
