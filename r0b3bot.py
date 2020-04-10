@@ -604,7 +604,7 @@ async def help(ctx):
     embed.add_field(name="$spalert servicename", value="Retrieves status of service from StatPing")
     await ctx.send(embed=embed)
 
-    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
+    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
     await ctx.send(embed=embed)
 
 bot.run(DISCORD_AUTH_TOKEN)
