@@ -580,7 +580,8 @@ async def spsub(ctx, service = "NONE"):
             currentsub_request.append("online")
 
             #Add the request to the spsublist list
-            global spsublist.append(current_subrequest)
+            global spsublist
+            spsublist.append(current_subrequest)
             await sp_monitor(currentsub_request)
         
         else:
