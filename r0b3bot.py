@@ -568,13 +568,18 @@ async def spalert(ctx, service = "NONE"):
 @bot.command()
 async def spsub(ctx, service = "NONE"):
     currentsub_request = []
+    datestring = datetime.now()
+    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub {service}'")
 
     if service != "NONE":
 
+        print(f"Querying status of '{service}' to see if it exists")
         service_state = await get_stp_status(service)
 
         if service_state != "service not found":
         
+            print(f"'{service}' exists, starting monitor")
             currentsub_request.append(ctx)
             currentsub_request.append(service)
             currentsub_request.append("online")
@@ -585,7 +590,7 @@ async def spsub(ctx, service = "NONE"):
             await sp_monitor(currentsub_request)
         
         else:
-
+            print(f"'{service}' does not exist, cancelling subscription")
             await ctx.send(f"{service} was not found")
 
 async def sp_monitor(spsublist):
@@ -608,10 +613,13 @@ async def sp_monitor(spsublist):
             # again, nothing has changed no alert needed
             time.sleep(1)
         else:
+            print(f"Status of {status['name']}' has changed")
             if status['online']:
                 await ctx.send(f"{spsublist[1]} is now Online!")
+                spsublist[2] = "online"
             elif not status['online']:
                 await ctx.send(f"{spsublist[1]} is now Offline!")
+                spsublist[2] = "offline"
             else:
                 await ctx.send(f"Unknown state for service {spsublist[1]}")
         time.sleep(60)
