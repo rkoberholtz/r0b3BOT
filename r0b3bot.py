@@ -550,7 +550,7 @@ async def info(ctx):
 bot.remove_command('help')
 
 @bot.command()
-async def spalert(ctx, service = "NONE")
+async def spalert(ctx, service = "NONE"):
 #async def spalert(ctx, cmd = "NONE", arg = "NONE"):
 
     # if cmd != "NONE":
@@ -571,7 +571,7 @@ async def get_stp_status(ctx, service):
                 await ctx.send(f"{spservice['name']"} is Offline")
             else:
                 await ctx.send("There was an error")
-                
+
 
 @bot.command()
 async def help(ctx):
