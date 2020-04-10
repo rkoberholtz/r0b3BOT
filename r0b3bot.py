@@ -580,7 +580,7 @@ async def spsub(ctx, service = "NONE"):
         if service_state != "service not found":
         
             print(f"'{service}' exists, starting monitor")
-            await ctx.send(f"{service_state['name']}' added to monitored services")
+            await ctx.send(f"'{service_state['name']}' added to monitored services")
             currentsub_request.append(ctx)
             currentsub_request.append(service)
             currentsub_request.append("online")
@@ -613,10 +613,10 @@ async def sp_monitor(spsublist):
         else:
             print(f"Status of {status['name']}' has changed")
             if status['online']:
-                await ctx.send(f"{spsublist[1]} is now Online!")
+                await ctx.send(f"{spsublist[1]} is Online!")
                 spsublist[2] = "online"
             elif not status['online']:
-                await ctx.send(f"{spsublist[1]} is now Offline!")
+                await ctx.send(f"{spsublist[1]} is Offline!")
                 spsublist[2] = "offline"
             else:
                 await ctx.send(f"Unknown state for service {spsublist[1]}")
