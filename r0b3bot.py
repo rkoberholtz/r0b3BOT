@@ -569,25 +569,31 @@ async def get_stp_status(ctx, service):
 
     # spservice_array is json data, need to treat it as such
     for spservice in spservice_array.json():
-
+        found = False
         # using lower() to eliminate any case mismatch problems
         if spservice['name'].lower() == service:
             if spservice['online']:
 
                 #Return result to channel
                 await ctx.send(f"{spservice['name']} is Online")
+                found = True
                 break
 
             elif not spservice['online']:
 
                 await ctx.send(f"{spservice['name']} is Offline")
+                found = True
                 break
 
             else:
                 # Catch in case the status info is not available
                 await ctx.send(f"Status for {spservice['name']} is not available")
                 break
-            
+
+    # Want to alert user if the service was not found
+    if not found:    
+        await ctx.send("Service was not found :(")
+
 
 @bot.command()
 async def help(ctx):
