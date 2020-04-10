@@ -571,12 +571,47 @@ async def spsub(ctx, service = "NONE"):
 
     if service != "NONE":
 
-        service_state = await get_stp_status()
-        
-        currentsub_request.append(ctx)
-        currentsub_request.append(service)
-        spsublist.append(current_subrequest)
+        service_state = await get_stp_status(service)
 
+        if service_state != "service not found":
+        
+            currentsub_request.append(ctx)
+            currentsub_request.append(service)
+            currentsub_request.append("online")
+
+            #Add the request to the spsublist list
+            global spsublist.append(current_subrequest)
+            await sp_monitor(currentsub_request)
+        
+        else:
+
+            await ctx.send(f"{service} was not found")
+
+aync def sp_monitor(spsublist):
+
+    # Checks the services listed in spsublist for status change
+    # Sublist is a list of 3 items:
+    #    - ctx (used to send alert to channel)
+    #    - service (the name of the service to check)
+    #    - status string (last status of the service, either 'online' or 'offline')
+
+    ctx = spsublist[0]
+
+    while True:
+
+        status = await get_stp_status(spsublist[1])
+        if status['online'] and spsublist[2] == "online":
+            # nothing has changed, no alert needed
+        elif not status['online'] and spsublist[2] == "offline":
+            # again, nothing has changed no alert needed
+        else:
+            if status['online']:
+                await ctx.send(f"{spsublist[1]} is now Online!")
+            elif not status['online']:
+                await ctx.send(f"{spsublist[1]} is now Offline!")
+            else:
+                await ctx.send(f"Unknown state for service {spsublist[1]}")
+        time.sleep(60)
 
 async def get_stp_status(service):
 
