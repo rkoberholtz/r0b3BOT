@@ -556,7 +556,7 @@ async def spalert(ctx, service = "NONE"):
     # if cmd != "NONE":
     #    if cmd == "add":
     #        spalert +=
-    if cmd != "NONE":
+    if service != "NONE":
         await get_stp_status(ctx, service.lower())
     
 
