@@ -17,7 +17,6 @@ from discord.voice_client import VoiceClient
 import requests
 import asyncio
 
-bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 
 #Record the time the bot started
 start_time = time.time() 
@@ -37,6 +36,10 @@ try:
 except:
     print("Error loading config!  Please check config file 'bot-config.conf'")
 
+#
+# Read in bot configurations
+#
+
 # Setup HomeAssistant URL and Headers
 HASS_TOKEN = config.get('bot-config', 'hass_token')
 HASS_URL = config.get('bot-config', 'hass_url')
@@ -49,6 +52,7 @@ hassHEADERS = {
 
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+BOT_COMMAND_PREFIX = config.get('bot-config', 'bot_command_prefix')
 STATPING_URL = config.get('bot-config', 'statping_url')
 STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
 statpingURL = STATPING_URL + "/api/services"
@@ -56,6 +60,9 @@ statpingHEADERS = {
     'Authorization': f"Bearer {STATPING_API_KEY}",
     'content-type': 'application/json',
 }
+
+# Configure bot
+bot = commands.Bot(command_prefix=BOT_COMMAND_PREFIX, description='A derpy derp of a bot.')
 
 # Printing configuration details to console
 print(f"HomeAssistant URL: {hassURL}")
