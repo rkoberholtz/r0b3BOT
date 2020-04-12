@@ -626,7 +626,7 @@ async def spsub_T(ctx, service = "NONE"):
             print(">> Reading in spsublist.dat")
             if os.path.exists('spsublist.dat'):
                 with open('spsublist.dat', 'rb') as datafile:
-                    spsublist = pickle.load(datafile)
+                    spsublist = await pickle.load(datafile)
             else:
                 print(">> spsublist.dat does not exist, new file will be created")
             
@@ -637,7 +637,7 @@ async def spsub_T(ctx, service = "NONE"):
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
             with open('spsublist.dat', 'wb') as datafile:
-                pickle.dump(spsublist, datafile)
+                await pickle.dump(spsublist, datafile)
             
             print(">> Done")
             await ctx.send(f"'{service_state['name']}' added to monitored services")
@@ -662,7 +662,7 @@ async def StatPing_Monitor():
         print("Statping Monitor: Reading in spsublist.dat")
         if os.path.exists('spsublist.dat'):
             with open('spsublist.dat', 'rb') as datafile:
-                spsublist = pickle.load(datafile)
+                spsublist = await pickle.load(datafile)
         
             for subscription in spsublist:
 
@@ -700,7 +700,7 @@ async def StatPing_Monitor():
             
             # Write status changes to spsublist.dat
             with open('spsublist.dat', 'w') as datafile:
-                pickle.dump(new_spsublist, datafile)
+                await pickle.dump(new_spsublist, datafile)
                     
         else:
             print(">> spsublist.dat does not exist, nothing to do.")
