@@ -16,7 +16,7 @@ from discord.utils import get
 from discord.voice_client import VoiceClient
 import requests
 import asyncio
-from aiofile import AIOfile
+from aiofiles import AIOfile
 
 
 #Record the time the bot started
