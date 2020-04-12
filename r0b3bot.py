@@ -16,6 +16,7 @@ from discord.utils import get
 from discord.voice_client import VoiceClient
 import requests
 import asyncio
+import pickle
 
 
 #Record the time the bot started
@@ -27,9 +28,6 @@ configFilePath = r'bot_config.conf'
 # Last error message variable used by $last_error command to display in discord
 global last_error
 last_error = "No errors have been recorded."
-
-global spsublist
-spsublist = []
 
 try:
     config.read(configFilePath)
@@ -83,6 +81,9 @@ async def on_ready():
     print("Setting activity to 'Listenting to your commands'")
     activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
+
+    #Run StatPing_Monitor
+    await StatPing_Monitor()
 
 @bot.command()
 async def greetings(ctx):
@@ -599,7 +600,115 @@ async def spsub(ctx, service = "NONE"):
             print(f"'{service}' does not exist, cancelling subscription")
             await ctx.send(f"{service} was not found")
 
-async def sp_monitor(spsublist):
+@bot.command()
+async def spsub_T(ctx, service = "NONE"):
+
+    spsublist = []
+    currentsub_request = []
+    datestring = datetime.now()
+    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub {service}'")
+
+    if service != "NONE":
+
+        print(f">> Querying status of '{service}' to see if it exists")
+        service_state = await get_stp_status(service)
+
+        if service_state != "service not found":
+        
+            print(f">> '{service}' exists, adding to StatPing Monitor")
+            await ctx.send(f"'{service_state['name']}' added to monitored services")
+            currentsub_request.append(ctx)
+            currentsub_request.append(service)
+            currentsub_request.append("online")
+
+            # read in data file containing list of subscriptions
+            print(">> Reading in spsublist.dat")
+            if os.path.exists('spsublist.dat'):
+                with open('spsublist.dat', 'rb') as datafile:
+                    spsublist = pickle.load(datafile)
+            else:
+                print(">> spsublist.dat does not exist, new file will be created")
+            
+            # append new subscription to array
+            print(">> Appending new sub to array")
+            spsublist.append(currentsub_request)
+
+            #Write updated array to data file
+            print(">> Writing updated array to spsublist.dat")
+            with open('spsublist.dat', 'wb') as datafile:
+                pickle.dump(spsublist, datafile)
+            
+            print(">> Done")
+            await ctx.send(f"'{service_state['name']}' added to monitored services")
+
+            #await sp_monitor(currentsub_request)
+        
+        else:
+            print(f">> '{service}' does not exist, cancelling subscription")
+            await ctx.send(f"{service} was not found")
+
+async def StatPing_Monitor():
+
+    # reads in "spsublist.dat" every 60 seconds then iterates
+    # through to check for service status changes.  This function will need to check
+    # that "spsublist.dat" exists and is not empty.  This function should be called
+    # in bot.on_ready
+
+    new_spsublist = []
+
+    # read in data file containing list of subscriptions
+    while True:
+        print("Statping Monitor: Reading in spsublist.dat")
+        if os.path.exists('spsublist.dat'):
+            with open('spsublist.dat', 'rb') as datafile:
+                spsublist = pickle.load(datafile)
+        
+            for subscription in spsublist:
+
+                ctx = subscription[0]
+                status = await get_stp_status(subscription[1])
+
+                if status['online'] and subscription[2] == "online":
+
+                    # nothing has changed, no alert needed
+                    await asyncio.sleep(1)
+                elif not status['online'] and subscription[2] == "offline":
+
+                    # again, nothing has changed no alert needed
+                    await asyncio.sleep(1)
+                else:
+                    print(f"Status of {status['name']}' has changed")
+                    if status['online']:
+                        
+                        embed = discord.Embed(title=f"Service Alert", description=f"{status['name']} is Online!", color=0x00ff40)
+                        await ctx.send(embed=embed)
+                        subscription[2] = "online"
+
+                    elif not status['online']:
+
+                        embed = discord.Embed(title=f"Service Alert", description=f"{status['name']} is Offline!", color=0xff2200)
+                        await ctx.send(embed=embed)
+                        subscription[2] = "offline"
+
+                    else:
+
+                        embed = discord.Embed(title=f"Service Alert", description=f"{status['name']} is in an unknown state!", color=0xffff00)
+                        await ctx.send(embed=embed)
+                
+                new_spsublist.append(subscription)
+            
+            # Write status changes to spsublist.dat
+            with open('spsublist.dat', 'w') as datafile:
+                pickle.dump(new_spsublist, datafile)
+                    
+        else:
+            print(">> spsublist.dat does not exist, nothing to do.")
+        
+        await asyncio.sleep(60)
+ 
+
+async def sp_monitor(sublist):
 
     # Checks the services listed in spsublist for status change
     # Sublist is a list of 3 items:
@@ -607,7 +716,8 @@ async def sp_monitor(spsublist):
     #    - service (the name of the service to check)
     #    - status string (last status of the service, either 'online' or 'offline')
 
-    ctx = spsublist[0]
+    ctx = sublist[0]
+
 
     while True:
 
