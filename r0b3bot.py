@@ -625,7 +625,7 @@ async def spsub_T(ctx, service = "NONE"):
             # read in data file containing list of subscriptions
             print(">> Reading in spsublist.dat")
             if os.path.exists('spsublist.dat'):
-                async with AIOfile('spsublist.dat', 'rb') as datafile:
+                async with AIOFile('spsublist.dat', 'rb') as datafile:
                     spsublist = await datafile.read()
             else:
                 print(">> spsublist.dat does not exist, new file will be created")
@@ -636,7 +636,7 @@ async def spsub_T(ctx, service = "NONE"):
 
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
-            async with AIOfile('spsublist.dat', 'wb') as datafile:
+            async with AIOFile('spsublist.dat', 'wb') as datafile:
                 await datafile.write(spsublist)
                 await datafile.fsync()
             
@@ -662,7 +662,7 @@ async def StatPing_Monitor():
     while True:
         print("Statping Monitor: Reading in spsublist.dat")
         if os.path.exists('spsublist.dat'):
-            async with AIOfile('spsublist.dat', 'rb') as datafile:
+            async with AIOFile('spsublist.dat', 'rb') as datafile:
                 spsublist = await datafile.read()
         
             for subscription in spsublist:
@@ -700,7 +700,7 @@ async def StatPing_Monitor():
                 new_spsublist.append(subscription)
             
             # Write status changes to spsublist.dat
-            async with AIOfile('spsublist.dat', 'w') as datafile:
+            async with AIOFile('spsublist.dat', 'w') as datafile:
                 await datafile.write(new_spsublist)
                 await datafile.fsync()
                     
