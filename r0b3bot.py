@@ -666,7 +666,7 @@ async def spsub_T(ctx, service = "NONE"):
             
                 # append new subscription to dict
                 print(">> Creating new dictionary")
-                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : (currentsub_request[0])}
 
             #Write updated array to data file
             print(">> Saving dictionary to spsublist.dat")
@@ -705,7 +705,7 @@ async def StatPing_Monitor():
 
                 status = await get_stp_status(service)
 
-                if status['online'] and service['state'] == "online":
+                if status['online'] and service['state'] == 'online':
 
                     # nothing has changed, no alert needed
                     await asyncio.sleep(1)
