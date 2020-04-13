@@ -657,6 +657,7 @@ async def spsub_T(ctx, service = "NONE"):
                         for channel in spsublist[service]['channels']:
                             if channel == currentsub_request[0]:
                                 print(f">> This channel is already subscribed to {service}")
+                                await ctx.send(f"This channel is already subscribed to {service} alerts")
                                 found_channel = True
                                 break
                         if not found_channel:
