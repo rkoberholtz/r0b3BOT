@@ -628,7 +628,7 @@ async def spsub_T(ctx, service = "NONE"):
             # read in data file containing list of subscriptions
             print(">> Reading in spsublist.dat")
             if os.path.exists('spsublist.dat'):
-                async with aiof.open('spsublist.dat', 'rb') as datafile:
+                async with aiof.open('spsublist.dat', 'r') as datafile:
                     spsublist = await datafile.read()
             else:
                 print(">> spsublist.dat does not exist, new file will be created")
