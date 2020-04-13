@@ -629,7 +629,7 @@ async def spsub_T(ctx, service = "NONE"):
         if service_state != "service not found":
         
             print(f">> '{service}' is a valid service on StatPing.")
-            print(f">>  Checking if it has already been subscribed to"
+            print(f">>  Checking if it has already been subscribed to")
             #await ctx.send(f"'{service_state['name']}' added to monitored services")
             currentsub_request.append(ctx.channel.id)
             currentsub_request.append(service_state['name'])
