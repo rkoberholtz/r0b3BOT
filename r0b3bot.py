@@ -707,7 +707,7 @@ async def StatPing_Monitor():
                 print(f"{service}")
                 print(f"{spsublist[service]['state']}")
                 print(f"{status}")
-                if status['online'] and spsublist[service]['state'] == 'online':
+                if status and spsublist[service]['state'] == 'online':
 
                     # nothing has changed, no alert needed
                     await asyncio.sleep(1)
@@ -805,6 +805,7 @@ async def get_stp_status(service):
         if spservice['name'].lower() == service:
             
                 found = True
+                print(f"{spservice}")
                 return spservice
 
     # Want to alert user if the service was not found
