@@ -630,7 +630,7 @@ async def spsub_T(ctx, service = "NONE"):
         
             print(f">> '{service}' exists, adding to StatPing Monitor")
             await ctx.send(f"'{service_state['name']}' added to monitored services")
-            currentsub_request.append(ctx.message.channel.id)
+            currentsub_request.append(ctx.channel.id)
             print(f">> channel ID: {ctx.channel.id}")
             #currentsub_request.append(ctx)
             currentsub_request.append(service_state['name'])
@@ -646,13 +646,12 @@ async def spsub_T(ctx, service = "NONE"):
                     spsublist = pickle.loads(pickled_spsublist)
                 
                 for service in spsublist.keys():
-                    # service = service_names
-                    # info = dict of service information
+                    
 
                     if service.lower() == currentsub_request[1].lower():
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
-                        for channels in service['channels']:
+                        for channels in spsublist[service]['channels']:
                             if channel == currentsub_request[0]:
                                 print(">> Subscribed Already")
                             else:
