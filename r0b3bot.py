@@ -647,17 +647,19 @@ async def spsub_T(ctx, service = "NONE"):
                 
                 for service in spsublist.keys():
                     
-
                     if service.lower() == currentsub_request[1].lower():
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
+                        found_channel = False
                         for channel in spsublist[service]['channels']:
                             if channel == currentsub_request[0]:
-                                print(">> Subscribed Already")
-                            else:
-                                # Append the current channel id to the list for this service
-                                print(f">> Appending {currentsub_request[1]} to {channel}")
-                                spsublist[service]['channels'].append(currentsub_request[1])
+                                print(f">> This channel is already subscribed to {service}")
+                                found_channel = True
+                                break
+                        if not found_channel:
+                            # Append the current channel id to the list for this service
+                            print(f">> Appending {currentsub_request[1]} to {channel}")
+                            spsublist[service]['channels'].append(currentsub_request[1])
                     
             else:
 
@@ -676,7 +678,7 @@ async def spsub_T(ctx, service = "NONE"):
                 await datafile.flush()
             
             print(">> Done")
-            await ctx.send(f"'{service_state['name']}' added to monitored services")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
         
         else:
             print(f">> '{service}' does not exist, cancelling subscription")
