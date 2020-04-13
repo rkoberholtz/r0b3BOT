@@ -707,37 +707,38 @@ async def StatPing_Monitor():
                 print(f"{service}")
                 print(f"{spsublist[service]['state']}")
                 print(f"{status}")
-                if status and spsublist[service]['state'] == 'online':
+                if status != 'status not found':
+                    if status['online'] and spsublist[service]['state'] == 'online':
 
-                    # nothing has changed, no alert needed
-                    await asyncio.sleep(1)
-                elif not status['online'] and spsublist[service]['state'] == "offline":
+                        # nothing has changed, no alert needed
+                        await asyncio.sleep(1)
+                    elif not status['online'] and spsublist[service]['state'] == "offline":
 
-                    # again, nothing has changed no alert needed
-                    await asyncio.sleep(1)
-                else:
-                    
-                    print(f"Status of {service}' has changed, notifying subscribed channels")
-
-                    if status['online']:
-                        for channel in service['channels']:
-                            ctx = bot.get_channel(channel)
-                            embed = discord.Embed(title=f"Service Alert", description=f"{service} is Online!", color=0x00ff40)
-                            await ctx.send(embed=embed)
-                            spsublist[service]['state'] = 'online'
-
-                    elif not status['online']:
-                        for channel in service['channels']:
-                            ctx = bot.get_channel(channel)
-                            embed = discord.Embed(title=f"Service Alert", description=f"{service} is Offline!", color=0xff2200)
-                            await ctx.send(embed=embed)
-                            spsublist[service]['state'] = 'offline'
-
+                        # again, nothing has changed no alert needed
+                        await asyncio.sleep(1)
                     else:
-                        for channel in service['channels']:
-                            ctx = bot.get_channel(channel)
-                            embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
-                            await ctx.send(embed=embed)
+                    
+                        print(f"Status of {service}' has changed, notifying subscribed channels")
+
+                        if status['online']:
+                            for channel in service['channels']:
+                                ctx = bot.get_channel(channel)
+                                embed = discord.Embed(title=f"Service Alert", description=f"{service} is Online!", color=0x00ff40)
+                                await ctx.send(embed=embed)
+                                spsublist[service]['state'] = 'online'
+
+                        elif not status['online']:
+                            for channel in service['channels']:
+                                ctx = bot.get_channel(channel)
+                                embed = discord.Embed(title=f"Service Alert", description=f"{service} is Offline!", color=0xff2200)
+                                await ctx.send(embed=embed)
+                                spsublist[service]['state'] = 'offline'
+
+                        else:
+                            for channel in service['channels']:
+                                ctx = bot.get_channel(channel)
+                                embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
+                                await ctx.send(embed=embed)
                 
                 #new_spsublist.append(subscription)
             
