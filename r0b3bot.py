@@ -674,7 +674,7 @@ async def spsub_T(ctx, service = "NONE"):
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
             async with aiof.open('spsublist.dat', 'wb') as datafile:
-                pickled_spsublist = pickle.dumps(spsublist)
+                pickled_spsublist = pickle.dumps(spsublist, protocol=4)
                 await datafile.write(pickled_spsublist)
                 #await datafile.fsync()
                 await datafile.flush()
