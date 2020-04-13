@@ -631,7 +631,7 @@ async def spsub_T(ctx, service = "NONE"):
             print(f">> '{service}' exists, adding to StatPing Monitor")
             await ctx.send(f"'{service_state['name']}' added to monitored services")
             currentsub_request.append(ctx.message.channel.id)
-            print(f">> channel ID: {ctx.message.channel.id}")
+            print(f">> channel ID: {ctx.channel.id}")
             #currentsub_request.append(ctx)
             currentsub_request.append(service_state['name'])
             currentsub_request.append("online")
