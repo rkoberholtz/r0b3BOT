@@ -669,7 +669,7 @@ async def spsub_T(ctx, service = "NONE"):
             
                 spsublist[currentsub_request[1]]['state'] = 'online'
                 spsublist[currentsub_request[1]]['channels'].append(currentsub_request[0])
-                
+
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
             async with aiof.open('spsublist.dat', 'wb') as datafile:
@@ -694,7 +694,7 @@ async def StatPing_Monitor():
     # that "spsublist.dat" exists and is not empty.  This function should be called
     # in bot.on_ready
 
-    new_spsublist = []
+    #new_spsublist = {}
 
     # read in data file containing list of subscriptions
     while True:
@@ -704,44 +704,49 @@ async def StatPing_Monitor():
                 pickled_spsublist = await datafile.read()
                 spsublist = pickle.loads(pickled_spsublist)
         
-            for subscription in spsublist:
+            for service, info in spsublist:
+                # service used to be subscription
 
-                ctx = subscription[0]
-                status = await get_stp_status(subscription[1])
+                status = await get_stp_status(service)
 
-                if status['online'] and subscription[2] == "online":
+                if status['online'] and service['state'] == "online":
 
                     # nothing has changed, no alert needed
                     await asyncio.sleep(1)
-                elif not status['online'] and subscription[2] == "offline":
+                elif not status['online'] and service['state'] == "offline":
 
                     # again, nothing has changed no alert needed
                     await asyncio.sleep(1)
                 else:
-                    print(f"Status of {status['name']}' has changed")
+                    
+                    print(f"Status of {service}' has changed, notifying subscribed channels")
+
                     if status['online']:
-                        
-                        embed = discord.Embed(title=f"Service Alert", description=f"{status['name']} is Online!", color=0x00ff40)
-                        await ctx.send(embed=embed)
-                        subscription[2] = "online"
+                        for channel in service['channels']:
+                            ctx = bot.get_channel(channel)
+                            embed = discord.Embed(title=f"Service Alert", description=f"{service} is Online!", color=0x00ff40)
+                            await ctx.send(embed=embed)
+                            spsublist[service]['state'] = 'online'
 
                     elif not status['online']:
-
-                        embed = discord.Embed(title=f"Service Alert", description=f"{status['name']} is Offline!", color=0xff2200)
-                        await ctx.send(embed=embed)
-                        subscription[2] = "offline"
+                        for channel in service['channels']:
+                            ctx = bot.get_channel(channel)
+                            embed = discord.Embed(title=f"Service Alert", description=f"{service} is Offline!", color=0xff2200)
+                            await ctx.send(embed=embed)
+                            spsublist[service]['state'] = 'offline'
 
                     else:
-
-                        embed = discord.Embed(title=f"Service Alert", description=f"{status['name']} is in an unknown state!", color=0xffff00)
-                        await ctx.send(embed=embed)
+                        for channel in service['channels']:
+                            ctx = bot.get_channel(channel)
+                            embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
+                            await ctx.send(embed=embed)
                 
                 new_spsublist.append(subscription)
             
             # Write status changes to spsublist.dat
             async with aiof.open('spsublist.dat', 'wb') as datafile:
-                pickled_spsublist = pickle.dumps(new_spsublist)
-                await datafile.write(new_spsublist)
+                pickled_spsublist = pickle.dumps(spsublist)
+                await datafile.write(pickled_spsublist)
                 #await datafile.fsync()
                 await datafile.flush()
                     
