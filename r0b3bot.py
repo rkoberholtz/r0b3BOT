@@ -669,7 +669,7 @@ async def spsub_T(ctx, service = "NONE"):
             
                 spsublist[currentsub_request[1]] = ''
                 spsublist[currentsub_request[1]]['state'] = 'online'
-                spsublist[currentsub_request[1]]['channels'].append(currentsub_request[0])
+                spsublist[currentsub_request[1]]['channels'] = [f'{currentsub_request[0]}']
 
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
