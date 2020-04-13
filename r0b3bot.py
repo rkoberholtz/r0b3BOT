@@ -667,12 +667,13 @@ async def spsub_T(ctx, service = "NONE"):
                 # append new subscription to dict
                 print(">> Creating new dictionary")
             
-                print(">>  Adding service")
-                spsublist[currentsub_request[1]] = ''
-                print(">>  Adding initial state")
-                spsublist[currentsub_request[1]]['state'] = 'online'
-                print(">>  Adding Channel")
-                spsublist[currentsub_request[1]]['channels'] = [f'{currentsub_request[0]}']
+                #print(">>  Adding service")
+                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]}
+                #print(">>  Adding initial state")
+                #spsublist[currentsub_request[1]]['state']
+                #spsublist[currentsub_request[1]]['state'] = 'online'
+                #print(">>  Adding Channel")
+                #spsublist[currentsub_request[1]]['channels'] = [f'{currentsub_request[0]}']
 
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
