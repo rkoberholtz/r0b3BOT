@@ -702,7 +702,7 @@ async def StatPing_Monitor():
         
             for service in spsublist.keys():
                 # service used to be subscription
-
+                status = {}
                 status = await get_stp_status(service)
                 print(f"{service}")
                 print(f"{spsublist[service]['state']}")
@@ -805,7 +805,6 @@ async def get_stp_status(service):
         if spservice['name'].lower() == service:
             
                 found = True
-                print(f"{spservice}")
                 return spservice
 
     # Want to alert user if the service was not found
