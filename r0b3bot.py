@@ -704,7 +704,7 @@ async def StatPing_Monitor():
                 # service used to be subscription
 
                 status = await get_stp_status(service)
-
+                print(f"{service}")
                 if status['online'] and service['state'] == 'online':
 
                     # nothing has changed, no alert needed
