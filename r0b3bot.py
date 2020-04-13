@@ -667,6 +667,7 @@ async def spsub_T(ctx, service = "NONE"):
                 # append new subscription to dict
                 print(">> Creating new dictionary")
             
+                spsublist[currentsub_request[1]] = ''
                 spsublist[currentsub_request[1]]['state'] = 'online'
                 spsublist[currentsub_request[1]]['channels'].append(currentsub_request[0])
 
