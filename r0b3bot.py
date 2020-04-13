@@ -18,6 +18,7 @@ import requests
 import asyncio
 from aiofile import AIOFile
 import aiofiles as aiof
+import pickle
 
 
 #Record the time the bot started
@@ -628,8 +629,9 @@ async def spsub_T(ctx, service = "NONE"):
             # read in data file containing list of subscriptions
             print(">> Reading in spsublist.dat")
             if os.path.exists('spsublist.dat'):
-                async with aiof.open('spsublist.dat', 'r') as datafile:
-                    spsublist = await datafile.read()
+                async with aiof.open('spsublist.dat', 'rb') as datafile:
+                    pickled_spsublist = await datafile.read()
+                    spsublist = pickle.loads(pickled_spsublist)
             else:
                 print(">> spsublist.dat does not exist, new file will be created")
             
@@ -639,7 +641,8 @@ async def spsub_T(ctx, service = "NONE"):
 
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
-            async with aiof.open('spsublist.dat', 'a') as datafile:
+            async with aiof.open('spsublist.dat', 'wb') as datafile:
+                pickled_spsublist = pickle.dumps(spsublist)
                 await datafile.write(spsublist)
                 #await datafile.fsync()
                 await datafile.flush()
@@ -666,8 +669,9 @@ async def StatPing_Monitor():
     while True:
         print("Statping Monitor: Reading in spsublist.dat")
         if os.path.exists('spsublist.dat'):
-            async with aiof.open('spsublist.dat', 'r') as datafile:
-                spsublist = await datafile.read()
+            async with aiof.open('spsublist.dat', 'rb') as datafile:
+                pickled_spsublist = await datafile.read()
+                spsublist = pickle.loads(pickled_spsublist)
         
             for subscription in spsublist:
 
@@ -704,7 +708,8 @@ async def StatPing_Monitor():
                 new_spsublist.append(subscription)
             
             # Write status changes to spsublist.dat
-            async with aiof.open('spsublist.dat', 'w') as datafile:
+            async with aiof.open('spsublist.dat', 'wb') as datafile:
+                pickled_spsublist = pickle.dumps(new_spsublist)
                 await datafile.write(new_spsublist)
                 #await datafile.fsync()
                 await datafile.flush()
