@@ -16,7 +16,7 @@ from discord.utils import get
 from discord.voice_client import VoiceClient
 import requests
 import asyncio
-from aiofile import AIOFile
+#from aiofile import AIOFile
 import aiofiles as aiof
 import pickle
 
@@ -605,40 +605,71 @@ async def spsub(ctx, service = "NONE"):
 @bot.command()
 async def spsub_T(ctx, service = "NONE"):
 
-    spsublist = []
-    currentsub_request = []
+    spsublist = {} # Statping Subscription list to be read in from file
+    #  Structure of spsublist nested dictionary
+    #   spsublist[service name][list of channel ids][a state value]
+    #   dict = {'Plex': {'state' : 'online', 'channels' : ['1232', '43234']}
+    #           'Space Eingineers' : {'state' : online', 'channels' : ['2343', '54563']}}
+    #
+    currentsub_request = [] # list of elements detailing the current sub request
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+
     print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub {service}'")
 
+    # Only work on this if the user has supplied a service name to monitor, a value of NONE
+    #  means nothing was specified.
     if service != "NONE":
 
+        # Verify that the service name requested acutally exists
         print(f">> Querying status of '{service}' to see if it exists")
         service_state = await get_stp_status(service)
 
+        # If the service exists, proceed with adding it to the list.
         if service_state != "service not found":
         
             print(f">> '{service}' exists, adding to StatPing Monitor")
             await ctx.send(f"'{service_state['name']}' added to monitored services")
-            currentsub_request.append(ctx.message.channel)
+            currentsub_request.append(ctx.message.channel.id)
             print(f">> channel ID: {ctx.message.channel}")
             #currentsub_request.append(ctx)
-            currentsub_request.append(service)
+            currentsub_request.append(service_state['name'])
             currentsub_request.append("online")
 
-            # read in data file containing list of subscriptions
+            # read in data file containing dict of subscriptions
             print(">> Reading in spsublist.dat")
             if os.path.exists('spsublist.dat'):
+
+                # Read in spsublist
                 async with aiof.open('spsublist.dat', 'rb') as datafile:
                     pickled_spsublist = await datafile.read()
                     spsublist = pickle.loads(pickled_spsublist)
+                
+                for service, info in spsublist.keys():
+                    # service = service_names
+                    # info = dict of service information
+
+                    if service == currentsub_request[1]:
+                        # This service matched what the user is trying to subscribe to
+                        # Now we need to check if this is for the same channel
+                        for channels in service['channels']:
+                            if channel == currentsub_request[0]:
+                                print(">> Subscribed Already")
+                            else:
+                                # Append the current channel id to the list for this service
+                                print(f">> Appending {currentsub_request[1]} to {channel}")
+                                spsublist[service]['channels'].append(currentsub_request[1])
+                    
             else:
+
                 print(">> spsublist.dat does not exist, new file will be created")
             
-            # append new subscription to array
-            print(">> Appending new sub to array")
-            spsublist.append(currentsub_request)
-
+                # append new subscription to dict
+                print(">> Creating new dictionary")
+            
+                spsublist[currentsub_request[1]]['state'] = 'online'
+                spsublist[currentsub_request[1]]['channels'].append(currentsub_request[0])
+                
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
             async with aiof.open('spsublist.dat', 'wb') as datafile:
