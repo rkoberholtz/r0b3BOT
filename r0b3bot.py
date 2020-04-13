@@ -619,7 +619,9 @@ async def spsub_T(ctx, service = "NONE"):
         
             print(f">> '{service}' exists, adding to StatPing Monitor")
             await ctx.send(f"'{service_state['name']}' added to monitored services")
-            currentsub_request.append(ctx)
+            currentsub_request.append(ctx.message.channel)
+            print(f">> channel ID: {ctx.message.channel}")
+            #currentsub_request.append(ctx)
             currentsub_request.append(service)
             currentsub_request.append("online")
 
@@ -637,7 +639,7 @@ async def spsub_T(ctx, service = "NONE"):
 
             #Write updated array to data file
             print(">> Writing updated array to spsublist.dat")
-            async with aiof.open('spsublist.dat', 'wb') as datafile:
+            async with aiof.open('spsublist.dat', 'a') as datafile:
                 await datafile.write(spsublist)
                 #await datafile.fsync()
                 await datafile.flush()
@@ -664,7 +666,7 @@ async def StatPing_Monitor():
     while True:
         print("Statping Monitor: Reading in spsublist.dat")
         if os.path.exists('spsublist.dat'):
-            async with aiof.open('spsublist.dat', 'rb') as datafile:
+            async with aiof.open('spsublist.dat', 'r') as datafile:
                 spsublist = await datafile.read()
         
             for subscription in spsublist:
