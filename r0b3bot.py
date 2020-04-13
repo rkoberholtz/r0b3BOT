@@ -704,12 +704,12 @@ async def StatPing_Monitor():
                 # service used to be subscription
 
                 status = await get_stp_status(service)
-                print(f"{service}")
-                if status['online'] and service['state'] == 'online':
+                #print(f"{service}")
+                if status['online'] and spsublist[service]['state'] == 'online':
 
                     # nothing has changed, no alert needed
                     await asyncio.sleep(1)
-                elif not status['online'] and service['state'] == "offline":
+                elif not status['online'] and spsublist[service]['state'] == "offline":
 
                     # again, nothing has changed no alert needed
                     await asyncio.sleep(1)
