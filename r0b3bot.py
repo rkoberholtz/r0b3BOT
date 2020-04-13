@@ -670,7 +670,7 @@ async def spsub_T(ctx, service = "NONE"):
             
                 # append new subscription to dict
                 print(">> Creating new dictionary")
-                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : (f"{currentsub_request[0]}")}
+                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
                 print(f">> {service} subscription has been saved")
                 await ctx.send(f"{service} has been added to monitored services for this channel")
 
