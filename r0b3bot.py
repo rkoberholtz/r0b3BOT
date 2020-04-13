@@ -802,7 +802,7 @@ async def get_stp_status(service):
     for spservice in spservice_array.json():
 
         # using lower() to eliminate any case mismatch problems
-        if spservice['name'].lower() == service:
+        if spservice['name'].lower() == service.lower():
             
                 found = True
                 return spservice
