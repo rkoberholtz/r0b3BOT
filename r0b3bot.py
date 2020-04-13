@@ -649,10 +649,10 @@ async def spsub_T(ctx, service = "NONE"):
                 
                 for service in spsublist.keys():
                     
-                    print(f">> Found {service} in data file, checking for channel")
                     if service.lower() == currentsub_request[1].lower():
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
+                        print(f">> Found {service} in data file, checking for channel")
                         found_channel = False
                         for channel in spsublist[service]['channels']:
                             if channel == currentsub_request[0]:
