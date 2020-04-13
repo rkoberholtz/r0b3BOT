@@ -651,7 +651,7 @@ async def spsub_T(ctx, service = "NONE"):
                     if service.lower() == currentsub_request[1].lower():
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
-                        for channels in spsublist[service]['channels']:
+                        for channel in spsublist[service]['channels']:
                             if channel == currentsub_request[0]:
                                 print(">> Subscribed Already")
                             else:
