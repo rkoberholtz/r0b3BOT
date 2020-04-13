@@ -704,9 +704,8 @@ async def StatPing_Monitor():
                 # service used to be subscription
                 status = {}
                 status = await get_stp_status(service)
-                print(f"{service}")
-                print(f"{spsublist[service]['state']}")
-                print(f"{status}")
+                print(f"{service} Online: {status['online']}")
+                print(f"  Previous state: {spsublist[service]['state']}")
                 if status != 'status not found':
                     if status['online'] and spsublist[service]['state'] == 'online':
 
