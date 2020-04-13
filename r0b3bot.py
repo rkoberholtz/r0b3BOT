@@ -668,7 +668,7 @@ async def spsub_T(ctx, service = "NONE"):
                 print(">> Creating new dictionary")
             
                 #print(">>  Adding service")
-                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]}
+                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
                 #print(">>  Adding initial state")
                 #spsublist[currentsub_request[1]]['state']
                 #spsublist[currentsub_request[1]]['state'] = 'online'
