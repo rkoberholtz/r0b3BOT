@@ -706,6 +706,7 @@ async def StatPing_Monitor():
                 status = await get_stp_status(service)
                 print(f"{service}")
                 print(f"{spsublist[service]['state']}")
+                print(f"{status}")
                 if status['online'] and spsublist[service]['state'] == 'online':
 
                     # nothing has changed, no alert needed
