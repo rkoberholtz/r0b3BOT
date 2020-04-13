@@ -739,7 +739,7 @@ async def StatPing_Monitor():
                             embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
                             await ctx.send(embed=embed)
                 
-                new_spsublist.append(subscription)
+                #new_spsublist.append(subscription)
             
             # Write status changes to spsublist.dat
             async with aiof.open('spsublist.dat', 'wb') as datafile:
