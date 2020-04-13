@@ -666,17 +666,10 @@ async def spsub_T(ctx, service = "NONE"):
             
                 # append new subscription to dict
                 print(">> Creating new dictionary")
-            
-                #print(">>  Adding service")
                 spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
-                #print(">>  Adding initial state")
-                #spsublist[currentsub_request[1]]['state']
-                #spsublist[currentsub_request[1]]['state'] = 'online'
-                #print(">>  Adding Channel")
-                #spsublist[currentsub_request[1]]['channels'] = [f'{currentsub_request[0]}']
 
             #Write updated array to data file
-            print(">> Writing updated array to spsublist.dat")
+            print(">> Saving dictionary to spsublist.dat")
             async with aiof.open('spsublist.dat', 'wb') as datafile:
                 pickled_spsublist = pickle.dumps(spsublist, protocol=4)
                 await datafile.write(pickled_spsublist)
@@ -685,8 +678,6 @@ async def spsub_T(ctx, service = "NONE"):
             
             print(">> Done")
             await ctx.send(f"'{service_state['name']}' added to monitored services")
-
-            #await sp_monitor(currentsub_request)
         
         else:
             print(f">> '{service}' does not exist, cancelling subscription")
@@ -709,7 +700,7 @@ async def StatPing_Monitor():
                 pickled_spsublist = await datafile.read()
                 spsublist = pickle.loads(pickled_spsublist)
         
-            for service, info in spsublist:
+            for service in spsublist.keys():
                 # service used to be subscription
 
                 status = await get_stp_status(service)
