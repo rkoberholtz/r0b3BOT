@@ -12,7 +12,7 @@
 #   statping_api_key     - API Key for Statping to query for service status
 #
 discord_auth_token = <Discord Auth Token>
-bot_command_prefix=<!/$/#/etc>
+bot_command_prefix = <!/$/#/etc>
 hass_url = <URL to HomeAssistant>
 hass_token = <HomeAssistant Long Lived Access Token>
 hass_light = <Entity_ID of the light @ your printer>
