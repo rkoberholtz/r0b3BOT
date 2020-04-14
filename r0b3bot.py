@@ -574,36 +574,9 @@ async def spalert(ctx, service = "NONE"):
         await ctx.send("Please speficy a service name to query.")
 
     
-    
+
 @bot.command()
 async def spsub(ctx, service = "NONE"):
-
-    currentsub_request = []
-    datestring = datetime.now()
-    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
-    print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub {service}'")
-
-    if service != "NONE":
-
-        print(f"Querying status of '{service}' to see if it exists")
-        service_state = await get_stp_status(service)
-
-        if service_state != "service not found":
-        
-            print(f"'{service}' exists, starting monitor")
-            await ctx.send(f"'{service_state['name']}' added to monitored services")
-            currentsub_request.append(ctx)
-            currentsub_request.append(service)
-            currentsub_request.append("online")
-
-            await sp_monitor(currentsub_request)
-        
-        else:
-            print(f"'{service}' does not exist, cancelling subscription")
-            await ctx.send(f"{service} was not found")
-
-@bot.command()
-async def spsub_T(ctx, service = "NONE"):
 
     spsublist = {} # Statping Subscription list to be read in from file
     #  Structure of spsublist nested dictionary
@@ -618,15 +591,34 @@ async def spsub_T(ctx, service = "NONE"):
     print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub {service}'")
 
     # Only work on this if the user has supplied a service name to monitor, a value of NONE
-    #  means nothing was specified.
+    #  means nothing was specified
     if service != "NONE":
+
+        if service == "-list":
+            # List the serivces that this channel is subscribed to
+            # Read in spsublist
+            sublist = ''
+            async with aiof.open('spsublist.dat', 'rb') as datafile:
+                pickled_spsublist = await datafile.read()
+                spsublist = pickle.loads(pickled_spsublist)
+            
+            for service in spsublist.keys():
+                    
+                for channel in spsublist[service]['channels']:
+                    if channel == ctx.channel.id:
+                        sublist += f"'{service}' "
+            
+            await ctx.send(f"This channel is subscribed to: {sublist}")
+
+        elif service.startswith('-del '):
+            # Delete the service from this channels subscriptions
 
         # Verify that the service name requested acutally exists
         print(f">> Querying status of '{service}' to see if it exists")
         service_state = await get_stp_status(service)
 
         # If the service exists, proceed with adding it to the list.
-        if service_state != "service not found":
+        elif if service_state != "service not found":
         
             print(f">> '{service}' is a valid service on StatPing.")
             print(f">>  Checking if it has already been subscribed to")
