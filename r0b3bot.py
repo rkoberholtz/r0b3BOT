@@ -550,7 +550,7 @@ async def info(ctx):
 bot.remove_command('help')
 
 @bot.command()
-async def spalert(ctx, service = "NONE"):
+async def spstatus(ctx, service = "NONE"):
 #async def spalert(ctx, cmd = "NONE", arg = "NONE"):
 
     # if cmd != "NONE":
@@ -618,6 +618,7 @@ async def spsub(ctx, service = "NONE"):
         elif service.startswith('-del '):
             # Delete the service from this channels subscriptions
             print("placeholder")
+
 
         # If the service exists, proceed with adding it to the list.
         elif service_state != "service not found":
@@ -844,7 +845,7 @@ async def help(ctx):
     embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name="$help", value="Gives this message", inline=False)
     embed.add_field(name="$last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
-    embed.add_field(name="$spalert servicename", value="Retrieves status of service from StatPing")
+    embed.add_field(name="$spstatus servicename", value="Retrieves status of service from StatPing")
     await ctx.send(embed=embed)
 
     embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
