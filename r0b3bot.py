@@ -617,7 +617,6 @@ async def spsub(ctx, service = "NONE"):
 
         elif service.startswith('-del:'):
             # Delete the service from this channels subscriptions
-            print("placeholder")
             service_toremove = service[5:]
             print(f"{service_toremove}")
 
@@ -631,7 +630,7 @@ async def spsub(ctx, service = "NONE"):
                 if service.lower() == service_toremove.lower():
                     found_service = True
                     found_channel = False
-                    service_toremove = serivce
+                    service_toremove = service
                     for channel in spsublist[service]['channels']:
                         if channel == ctx.channel.id:
                             found_service = True
