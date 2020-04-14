@@ -84,8 +84,16 @@ async def on_ready():
     activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
-    #Run StatPing_Monitor
-    await StatPing_Monitor()
+    
+    # If 15 seconds or less have passed since the program was started, start the monitor.
+    runtime = time.time() - start_time
+    if runtime <= 15:
+        #Run StatPing_Monitor
+        print("Starting StatPing Monitor.")
+        await StatPing_Monitor()
+    else:
+        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not restarting monitor.")
+
 
 @bot.command()
 async def greetings(ctx):
@@ -784,22 +792,25 @@ async def StatPing_Monitor():
                         print(f">> Status of '{service}' has changed, notifying subscribed channels")
 
                         if status['online']:
+                            spsublist[service]['state'] = 'online'
                             for channel in spsublist[service]['channels']:
                                 ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {service} is Online")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is Online!", color=0x00ff40)
                                 await ctx.send(embed=embed)
-                                spsublist[service]['state'] = 'online'
 
                         elif not status['online']:
+                            spsublist[service]['state'] = 'offline'
                             for channel in spsublist[service]['channels']:
                                 ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {service} is Offline")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is Offline!", color=0xff2200)
                                 await ctx.send(embed=embed)
-                                spsublist[service]['state'] = 'offline'
 
                         else:
                             for channel in spsublist[service]['channels']:
                                 ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {service} is an Unknown state")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
                                 await ctx.send(embed=embed)
                         print(">> Done")
