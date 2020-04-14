@@ -664,13 +664,13 @@ async def spsub(ctx, service = "NONE"):
                             await ctx.send(f"{service} has been added to monitored services for this channel")
                             spsublist[service]['channels'].append(currentsub_request[0])
                     
-                    if not found_service:
-                        # Append the current channel id to the list for this service
-                        print(f">> Adding serivce '{currentsub_request[1]}' to {ctx.channel.id}")
-                        await ctx.send(f"{service} has been added to monitored services for this channel")
-                        #newsub = {}
-                        #newsub[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
-                        spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                if not found_service:
+                    # Append the current channel id to the list for this service
+                    print(f">> Adding serivce '{currentsub_request[1]}' to {ctx.channel.id}")
+                    await ctx.send(f"{service} has been added to monitored services for this channel")
+                    #newsub = {}
+                    #newsub[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                    spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
                     
             else:
 
