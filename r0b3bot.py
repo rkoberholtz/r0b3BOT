@@ -615,7 +615,7 @@ async def spsub(ctx, service = "NONE"):
             
             await ctx.send(f"This channel is subscribed to: {sublist}")
 
-        elif service.startswith('-del '):
+        elif service.startswith('-del:'):
             # Delete the service from this channels subscriptions
             print("placeholder")
             service_toremove = service[5:]
