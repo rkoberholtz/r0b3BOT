@@ -637,7 +637,12 @@ async def spsub(ctx, service = "NONE"):
                             spsublist[service]['channels'].remove(channel)
 
             if found_service and found_channel:
-
+                print(">> Saving dictionary to spsublist.dat")
+                async with aiof.open('spsublist.dat', 'wb') as datafile:
+                    pickled_spsublist = pickle.dumps(spsublist, protocol=4)
+                    await datafile.write(pickled_spsublist)
+                    #await datafile.fsync()
+                    await datafile.flush()
                 await ctx.send(f"This channel is unsubscribed from '{service}' alerts.")
             else:
                 await ctx.send(f"This channel is not subscribed to alerts for '{service_toremove}''")
@@ -705,13 +710,13 @@ async def spsub(ctx, service = "NONE"):
                 print(f">> {service} subscription has been saved")
                 await ctx.send(f"{service} has been added to monitored services for this channel")
 
-        #Write updated array to data file
-        print(">> Saving dictionary to spsublist.dat")
-        async with aiof.open('spsublist.dat', 'wb') as datafile:
-            pickled_spsublist = pickle.dumps(spsublist, protocol=4)
-            await datafile.write(pickled_spsublist)
-            #await datafile.fsync()
-            await datafile.flush()
+            #Write updated array to data file
+            print(">> Saving dictionary to spsublist.dat")
+            async with aiof.open('spsublist.dat', 'wb') as datafile:
+                pickled_spsublist = pickle.dumps(spsublist, protocol=4)
+                await datafile.write(pickled_spsublist)
+                #await datafile.fsync()
+                await datafile.flush()
             
         print(">> Done")
         #await ctx.send(f"'{service_state['name']}' added to monitored services")
