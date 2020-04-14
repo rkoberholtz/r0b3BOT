@@ -23,7 +23,6 @@ import pickle
 
 #Record the time the bot started
 start_time = time.time() 
-STATPING_MONITOR_STARTED = False
 
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
@@ -74,6 +73,7 @@ print(f"StatPing Server: {STATPING_URL}")
 print(f"StatPing API Key: {STATPING_API_KEY}")
 print(f"StatPing URL Headers: {statpingHEADERS}")
 
+STATPING_MONITOR_STARTED = False
 
 # On Ready
 @bot.event
