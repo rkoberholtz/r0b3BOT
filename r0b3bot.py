@@ -23,8 +23,7 @@ import pickle
 
 #Record the time the bot started
 start_time = time.time() 
-global statping_monitor_started
-statping_monitor_started = False
+STATPING_MONITOR_STARTED = False
 
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
@@ -89,11 +88,11 @@ async def on_ready():
 
     print("------")
     print("Starting StatPing Monitor...")
-    if not statping_monitor_started:
+    if not STATPING_MONITOR_STARTED:
         #Run StatPing_Monitor
         await StatPing_Monitor()
         print(">> Started")
-        statping_monitor_started = True
+        STATPING_MONITOR_STARTED = True
     else:
         print(">> Already running")
 
