@@ -23,6 +23,7 @@ import pickle
 
 #Record the time the bot started
 start_time = time.time() 
+statping_monitor_started = False
 
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
@@ -73,9 +74,6 @@ print(f"StatPing Server: {STATPING_URL}")
 print(f"StatPing API Key: {STATPING_API_KEY}")
 print(f"StatPing URL Headers: {statpingHEADERS}")
 
-print("Starting StatPint Monitor")
-#Run StatPing_Monitor
-await StatPing_Monitor()
 
 # On Ready
 @bot.event
@@ -87,6 +85,16 @@ async def on_ready():
     print("Setting activity to 'Listenting to your commands'")
     activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
+
+    print("------")
+    print("Starting StatPing Monitor...")
+    if not statping_monitor_started:
+        #Run StatPing_Monitor
+        await StatPing_Monitor()
+        print(">> Started")
+        statping_monitor_started = True
+    else:
+        print(">> Already running")
 
 
 @bot.command()
