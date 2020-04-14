@@ -618,7 +618,7 @@ async def spsub(ctx, service = "NONE"):
             service_state = await get_stp_status(service)
 
         # If the service exists, proceed with adding it to the list.
-        elif if service_state != "service not found":
+        elif service_state != "service not found":
         
             print(f">> '{service}' is a valid service on StatPing.")
             print(f">>  Checking if it has already been subscribed to")
