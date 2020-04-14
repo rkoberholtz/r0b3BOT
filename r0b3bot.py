@@ -87,13 +87,13 @@ async def on_ready():
     print("Starting StatPing Monitor...")
     # If 15 seconds or less have passed since the program was started, start the monitor.
     runtime = time.time() - start_time
-    print(f"{runtime.int()}")
+    print(f"{int(runtime)}")
     if runtime <= 15:
         #Run StatPing_Monitor
         await StatPing_Monitor()
         print(">> Started")
     else:
-        print(f">> Bot has been running for more than {runtime.int()} seconds.  Not restarting monitor.")
+        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not restarting monitor.")
 
 
 @bot.command()
