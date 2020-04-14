@@ -620,23 +620,42 @@ async def spsub(ctx, service = "NONE"):
             service_toremove = service[5:]
             print(f"{service_toremove}")
 
+            # Open the data file for read in
             async with aiof.open('spsublist.dat', 'rb') as datafile:
                 pickled_spsublist = await datafile.read()
                 spsublist = pickle.loads(pickled_spsublist)
             
+            # We haven't found either the channel or servic; mark as false
             found_service = False
+            found_channel = False
+
+            # Iterate through the service names in the data
             for service in spsublist.keys():
                 
+                # If the service we want to unsub from is the same as the service in the data, we need to search for the channel
                 if service.lower() == service_toremove.lower():
+
+                    # We've found the service match, mark as true
                     found_service = True
-                    found_channel = False
+                    
+                    # Iterate through the channels that are subbed to this service
                     for channel in spsublist[service]['channels']:
+
+                        # If a channel listed in the service matches the current users channel id, we've found our match
                         if channel == ctx.channel.id:
+
+                            # Marking channel as found
                             found_channel = True
+                            # Get the proper name of the service
                             service_toremove = service
-                            spsublist[service]['channels'].remove(channel)
+                            #Remove the current users channel from this service
+                            spsublist[service]['channels'].remove(ctx.channel.id)
+                            # Break since we're done.
                             break
-                break
+
+                # If we got to the point of finding the channel, we're done.
+                if found_channel:
+                    break
 
             if found_service and found_channel:
                 print(">> Saving dictionary to spsublist.dat")
@@ -673,15 +692,17 @@ async def spsub(ctx, service = "NONE"):
                     spsublist = pickle.loads(pickled_spsublist)
                 
                 print(f">> Checking if serivce is already in datafile")
+                found_service = False
+                found_channel = False
                 for service in spsublist.keys():
                     print(f">>   Does {service.lower()} == {currentsub_request[1].lower()}")
-                    found_service = False
+                    
                     if service.lower() == currentsub_request[1].lower():
                         found_service = True
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
                         print(f">> Found {service} in data file, checking for channel")
-                        found_channel = False
+                        
                         for channel in spsublist[service]['channels']:
                             if channel == currentsub_request[0]:
                                 print(f">> This channel is already subscribed to {service}")
