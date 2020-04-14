@@ -87,7 +87,6 @@ async def on_ready():
     print("Starting StatPing Monitor...")
     # If 15 seconds or less have passed since the program was started, start the monitor.
     runtime = time.time() - start_time
-    print(f"{int(runtime)}")
     if runtime <= 15:
         #Run StatPing_Monitor
         await StatPing_Monitor()
@@ -795,23 +794,23 @@ async def StatPing_Monitor():
                         if status['online']:
                             spsublist[service]['state'] = 'online'
                             for channel in spsublist[service]['channels']:
-                                print(f">>  Alerting {ctx.channel} that {service} is Online")
                                 ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx.channel} that {service} is Online")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is Online!", color=0x00ff40)
                                 await ctx.send(embed=embed)
 
                         elif not status['online']:
                             spsublist[service]['state'] = 'offline'
                             for channel in spsublist[service]['channels']:
-                                print(f">>  Alerting {ctx.channel} that {service} is Offline")
                                 ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx.channel} that {service} is Offline")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is Offline!", color=0xff2200)
                                 await ctx.send(embed=embed)
 
                         else:
                             for channel in spsublist[service]['channels']:
-                                print(f">>  Alerting {ctx.channel} that {service} is an Unknown state")
                                 ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx.channel} that {service} is an Unknown state")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
                                 await ctx.send(embed=embed)
                         print(">> Done")
