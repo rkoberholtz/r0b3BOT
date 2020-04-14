@@ -73,6 +73,10 @@ print(f"StatPing Server: {STATPING_URL}")
 print(f"StatPing API Key: {STATPING_API_KEY}")
 print(f"StatPing URL Headers: {statpingHEADERS}")
 
+print("Starting StatPint Monitor")
+#Run StatPing_Monitor
+await StatPing_Monitor()
+
 # On Ready
 @bot.event
 async def on_ready():
@@ -84,8 +88,6 @@ async def on_ready():
     activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
-    #Run StatPing_Monitor
-    await StatPing_Monitor()
 
 @bot.command()
 async def greetings(ctx):
