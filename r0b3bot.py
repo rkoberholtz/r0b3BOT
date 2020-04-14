@@ -642,8 +642,9 @@ async def spsub(ctx, service = "NONE"):
                     pickled_spsublist = await datafile.read()
                     spsublist = pickle.loads(pickled_spsublist)
                 
+                print(f">> Checking if serivce is already in datafile")
                 for service in spsublist.keys():
-                    
+                    print(f">>   Does {service.lower()} == {currentsub_request[1].lower()}")
                     if service.lower() == currentsub_request[1].lower():
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
