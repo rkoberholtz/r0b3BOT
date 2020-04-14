@@ -23,6 +23,7 @@ import pickle
 
 #Record the time the bot started
 start_time = time.time() 
+global statping_monitor_started
 statping_monitor_started = False
 
 config = configparser.RawConfigParser()
