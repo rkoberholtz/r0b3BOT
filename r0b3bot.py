@@ -633,14 +633,14 @@ async def spsub(ctx, service = "NONE"):
                     service_toremove = service
                     for channel in spsublist[service]['channels']:
                         if channel == ctx.channel.id:
-                            found_service = True
+                            found_channel = True
                             spsublist[service]['channels'].remove(channel)
 
             if found_service and found_channel:
 
                 await ctx.send(f"This channel is unsubscribed from '{service}' alerts.")
             else:
-                await ctx.send(f"This channel is not subscribed to alerts for '{service_toremove}")
+                await ctx.send(f"This channel is not subscribed to alerts for '{service_toremove}''")
 
         # If the service exists, proceed with adding it to the list.
         elif service_state != "service not found":
