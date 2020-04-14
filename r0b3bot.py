@@ -710,7 +710,7 @@ async def StatPing_Monitor():
             for service in spsublist.keys():
                 # service used to be subscription
                 status = await get_stp_status(service)
-                print(f"{service} Online: {status['online']} | Previous state: {spsublist[service]['state']}")
+                print(f">> {service} Online: {status['online']} | Previous state: {spsublist[service]['state']}")
                 if status != 'status not found':
                     if status['online'] and spsublist[service]['state'] == 'online':
 
@@ -722,7 +722,7 @@ async def StatPing_Monitor():
                         await asyncio.sleep(1)
                     else:
                     
-                        print(f"Status of {service}' has changed, notifying subscribed channels")
+                        print(f">> Status of '{service}' has changed, notifying subscribed channels")
 
                         if status['online']:
                             for channel in spsublist[service]['channels']:
@@ -743,6 +743,7 @@ async def StatPing_Monitor():
                                 ctx = bot.get_channel(channel)
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
                                 await ctx.send(embed=embed)
+                        print(">> Done")
                 
                 #new_spsublist.append(subscription)
             
