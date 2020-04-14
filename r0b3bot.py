@@ -84,13 +84,13 @@ async def on_ready():
     activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
-    print("Starting StatPing Monitor...")
+    
     # If 15 seconds or less have passed since the program was started, start the monitor.
     runtime = time.time() - start_time
     if runtime <= 15:
         #Run StatPing_Monitor
+        print("Starting StatPing Monitor.")
         await StatPing_Monitor()
-        print(">> Started")
     else:
         print(f">> Bot has been running for more than {int(runtime)} seconds.  Not restarting monitor.")
 
