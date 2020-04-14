@@ -617,7 +617,8 @@ async def spsub(ctx, service = "NONE"):
 
         elif service.startswith('-del '):
             # Delete the service from this channels subscriptions
-
+            print("placeholder")
+            
         # If the service exists, proceed with adding it to the list.
         elif service_state != "service not found":
         
