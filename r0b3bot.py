@@ -795,7 +795,7 @@ async def StatPing_Monitor():
                             spsublist[service]['state'] = 'online'
                             for channel in spsublist[service]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx.channel} that {service} is Online")
+                                print(f">>  Alerting {ctx} that {service} is Online")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is Online!", color=0x00ff40)
                                 await ctx.send(embed=embed)
 
@@ -803,14 +803,14 @@ async def StatPing_Monitor():
                             spsublist[service]['state'] = 'offline'
                             for channel in spsublist[service]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx.channel} that {service} is Offline")
+                                print(f">>  Alerting {ctx} that {service} is Offline")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is Offline!", color=0xff2200)
                                 await ctx.send(embed=embed)
 
                         else:
                             for channel in spsublist[service]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx.channel} that {service} is an Unknown state")
+                                print(f">>  Alerting {ctx} that {service} is an Unknown state")
                                 embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
                                 await ctx.send(embed=embed)
                         print(">> Done")
