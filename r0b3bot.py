@@ -656,11 +656,11 @@ async def spsub(ctx, service = "NONE"):
                                 await ctx.send(f"This channel is already subscribed to {service} alerts")
                                 found_channel = True
                                 break
-                        if not found_channel:
-                            # Append the current channel id to the list for this service
-                            print(f">> Adding serivce '{currentsub_request[1]}' to {channel}")
-                            await ctx.send(f"{service} has been added to monitored services for this channel")
-                            spsublist[service]['channels'].append(currentsub_request[0])
+                    if not found_channel:
+                        # Append the current channel id to the list for this service
+                        print(f">> Adding serivce '{currentsub_request[1]}' to {channel}")
+                        await ctx.send(f"{service} has been added to monitored services for this channel")
+                        spsublist[service]['channels'].append(currentsub_request[0])
                     
             else:
 
