@@ -718,8 +718,8 @@ async def spsub(ctx, service = "NONE"):
                 #await datafile.fsync()
                 await datafile.flush()
             
-        print(">> Done")
-        #await ctx.send(f"'{service_state['name']}' added to monitored services")
+            print(">> Done")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
         
         else:
             print(f">> '{service}' does not exist, cancelling subscription")
