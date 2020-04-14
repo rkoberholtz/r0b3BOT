@@ -73,8 +73,6 @@ print(f"StatPing Server: {STATPING_URL}")
 print(f"StatPing API Key: {STATPING_API_KEY}")
 print(f"StatPing URL Headers: {statpingHEADERS}")
 
-STATPING_MONITOR_STARTED = False
-
 # On Ready
 @bot.event
 async def on_ready():
@@ -86,10 +84,9 @@ async def on_ready():
     activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
-    await asyncio.sleep(30)
-    print("------")
     print("Starting StatPing Monitor...")
-    if not STATPING_MONITOR_STARTED:
+    # If 30 seconds or less have passed since the program was started, start the monitor.
+    if start_time + 30 < time.time():
         #Run StatPing_Monitor
         await StatPing_Monitor()
         print(">> Started")
