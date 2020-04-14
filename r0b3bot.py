@@ -86,6 +86,7 @@ async def on_ready():
     activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
+    await asyncio.sleep(30)
     print("------")
     print("Starting StatPing Monitor...")
     if not STATPING_MONITOR_STARTED:
