@@ -87,7 +87,9 @@ async def on_ready():
     print("Starting StatPing Monitor...")
     # If 30 seconds or less have passed since the program was started, start the monitor.
     print(f"{start_time} | {time.time()}")
-    if (start_time + 30) < time.time():
+    runtime = time.time() - start_time
+    print(f"{runtime}")
+    if runtime <= 15:
         #Run StatPing_Monitor
         await StatPing_Monitor()
         print(">> Started")
