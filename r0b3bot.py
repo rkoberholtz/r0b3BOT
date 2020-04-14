@@ -85,16 +85,15 @@ async def on_ready():
     await bot.change_presence(activity=activity)
 
     print("Starting StatPing Monitor...")
-    # If 30 seconds or less have passed since the program was started, start the monitor.
-    print(f"{start_time} | {time.time()}")
+    # If 15 seconds or less have passed since the program was started, start the monitor.
     runtime = time.time() - start_time
-    print(f"{runtime}")
+    print(f"{runtime.int()}")
     if runtime <= 15:
         #Run StatPing_Monitor
         await StatPing_Monitor()
         print(">> Started")
     else:
-        print(">> Already running")
+        print(f">> Bot has been running for more than {runtime.int()} seconds.  Not restarting monitor.")
 
 
 @bot.command()
