@@ -630,11 +630,12 @@ async def spsub(ctx, service = "NONE"):
                 if service.lower() == service_toremove.lower():
                     found_service = True
                     found_channel = False
-                    service_toremove = service
                     for channel in spsublist[service]['channels']:
                         if channel == ctx.channel.id:
                             found_channel = True
+                            service_toremove = service
                             spsublist[service]['channels'].remove(channel)
+                            break
 
             if found_service and found_channel:
                 print(">> Saving dictionary to spsublist.dat")
