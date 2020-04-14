@@ -618,7 +618,7 @@ async def spsub(ctx, service = "NONE"):
         elif service.startswith('-del '):
             # Delete the service from this channels subscriptions
             print("placeholder")
-            
+
         # If the service exists, proceed with adding it to the list.
         elif service_state != "service not found":
         
@@ -633,9 +633,10 @@ async def spsub(ctx, service = "NONE"):
             print(f">>    Initial State to set: {currentsub_request[2]}")
 
             # read in data file containing dict of subscriptions
-            print(">> Reading in spsublist.dat")
+            print(">> Checking for spsublist.dat")
             if os.path.exists('spsublist.dat'):
 
+                print(">> Data file exists, reading it in.")
                 # Read in spsublist
                 async with aiof.open('spsublist.dat', 'rb') as datafile:
                     pickled_spsublist = await datafile.read()
