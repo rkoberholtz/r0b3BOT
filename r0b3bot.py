@@ -592,6 +592,11 @@ async def spsub(ctx, service = "NONE"):
 
     # Only work on this if the user has supplied a service name to monitor, a value of NONE
     #  means nothing was specified
+    if service != "NONE" and service != "-list" and not service.startswith('-del '):
+        
+        print(f">> Querying status of '{service}' to see if it exists")
+        service_state = await get_stp_status(service)
+
     if service != "NONE":
 
         if service == "-list":
@@ -612,10 +617,6 @@ async def spsub(ctx, service = "NONE"):
 
         elif service.startswith('-del '):
             # Delete the service from this channels subscriptions
-
-            # Verify that the service name requested acutally exists
-            print(f">> Querying status of '{service}' to see if it exists")
-            service_state = await get_stp_status(service)
 
         # If the service exists, proceed with adding it to the list.
         elif service_state != "service not found":
