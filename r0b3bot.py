@@ -16,23 +16,29 @@ from discord.utils import get
 from discord.voice_client import VoiceClient
 import requests
 import asyncio
+#from aiofile import AIOFile
+import aiofiles as aiof
+import pickle
 
-bot = commands.Bot(command_prefix='$', description='A derpy derp of a bot.')
 
 #Record the time the bot started
-start_time = time.time()
+start_time = time.time() 
 
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
 
 # Last error message variable used by $last_error command to display in discord
 global last_error
-last_error = "No errors been recorded."
+last_error = "No errors have been recorded."
 
 try:
     config.read(configFilePath)
 except:
     print("Error loading config!  Please check config file 'bot-config.conf'")
+
+#
+# Read in bot configurations
+#
 
 # Setup HomeAssistant URL and Headers
 HASS_TOKEN = config.get('bot-config', 'hass_token')
@@ -45,14 +51,27 @@ hassHEADERS = {
 }
 
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
-
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+BOT_COMMAND_PREFIX = config.get('bot-config', 'bot_command_prefix')
+STATPING_URL = config.get('bot-config', 'statping_url')
+STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
+statpingURL = STATPING_URL + "/api/services"
+statpingHEADERS = {
+    'Authorization': f"Bearer {STATPING_API_KEY}",
+    'content-type': 'application/json',
+}
+
+# Configure bot
+bot = commands.Bot(command_prefix=BOT_COMMAND_PREFIX, description='A derpy derp of a bot.')
 
 # Printing configuration details to console
 print(f"HomeAssistant URL: {hassURL}")
 print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
 print(f"HomeAssistant Light: {HASS_LIGHT}")
 print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
+print(f"StatPing Server: {STATPING_URL}")
+print(f"StatPing API Key: {STATPING_API_KEY}")
+print(f"StatPing URL Headers: {statpingHEADERS}")
 
 # On Ready
 @bot.event
@@ -61,9 +80,20 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    print("Setting activity to 'Listenting to your commands")
-    activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
+    print("Setting activity to 'Listenting to your commands'")
+    activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
+
+    
+    # If 15 seconds or less have passed since the program was started, start the monitor.
+    runtime = time.time() - start_time
+    if runtime <= 15:
+        #Run StatPing_Monitor
+        print("Starting StatPing Monitor.")
+        await StatPing_Monitor()
+    else:
+        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not restarting monitor.")
+
 
 @bot.command()
 async def greetings(ctx):
@@ -72,6 +102,7 @@ async def greetings(ctx):
 
 @bot.event
 async def on_command_error(ctx, error):
+    global last_error
     if isinstance(error, commands.CommandOnCooldown):
         seconds = round(error.retry_after,1)
         print(f" - Error, user tried to use command while in cooldown (wait is: {seconds}")
@@ -92,21 +123,6 @@ async def on_command_error(ctx, error):
 @bot.command()
 async def last_error(ctx):
     await ctx.send(f"Last error recorded: {last_error}")
-
-@bot.command()
-async def uptime(ctx):
-    # Displays how long the bot has been online
-    second = time.time() - start_time
-    minute, second = divmod(second, 60)
-    hour, minute = divmod(minute, 60)
-    day, hour = divmod(hour, 24)
-    week, day = divmod(day, 7)
-    week = int(week)
-    day = int(day)
-    hour = int(hour)
-    minute = int(minute)
-    second = int(second)
-    await ctx.send(f"Uptime [WW:DD:HH:MM:SS]: {week:02d}:{day:02d}:{hour:02d}:{minute:02d}:{second:02d}")
 
 #
 # Giphy Commands
@@ -199,6 +215,16 @@ async def aww(ctx, member : discord.Member="NONE"):
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def eia(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/awesome.mp3", "$eia", 11)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def yaw(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/yaw.mp3", "$yaw", 6)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def heavy(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/heavy.mp3", "$heavy", 6)
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -511,34 +537,404 @@ async def info(ctx):
     # give users a link to invite thsi bot to their server
     embed.add_field(name="Invite", value="[Invite link](https://discordapp.com/api/oauth2/authorize?client_id=416312716677087233&permissions=51264&scope=bot)")
 
+    # Bot Uptime
+    second = time.time() - start_time
+    minute, second = divmod(second, 60)
+    hour, minute = divmod(minute, 60)
+    day, hour = divmod(hour, 24)
+    week, day = divmod(day, 7)
+    week = int(week)
+    day = int(day)
+    hour = int(hour)
+    minute = int(minute)
+    second = int(second)
+    embed.add_field(name="Uptime [WW:DD:HH:MM:SS]:", value=f"{week:02d}:{day:02d}:{hour:02d}:{minute:02d}:{second:02d}", inline=False)
+
+    print("Getting git describe data to display as version in info embed")
+    bot_version = await run('git describe')
+    embed.add_field(name="Version:", value=f"{bot_version}", inline=False)
+
+    # Gitlab link to source
+    embed.add_field(name="Source Code:", value="[R0b3Bot on Gitlab](https://gitlab.rickelobe.com/Bots/r0b3BOT)", inline=False)
     await ctx.send(embed=embed)
 
 bot.remove_command('help')
+
+@bot.command()
+async def spstatus(ctx, service = "NONE"):
+#async def spalert(ctx, cmd = "NONE", arg = "NONE"):
+
+    # if cmd != "NONE":
+    #    if cmd == "add":
+    #        spalert +=
+    if service != "NONE":
+        
+        #await get_stp_status(ctx, service.lower())
+        result = await get_stp_status(service.lower())
+
+        if result == "service not found":
+            await ctx.send(f"'{service}' was not found")
+        elif result['online']:
+            await ctx.send(f"{result['name']} is Online")
+        elif not result['online']:
+            await ctx.send(f"{result['name']} is Offline")
+        else:
+            await ctx.send(f"Received an unexpected result '{result}' querying '{service}'")
+
+    else:
+        await ctx.send("Please speficy a service name to query.")
+
+    
+
+@bot.command()
+async def spsub(ctx, service = "NONE"):
+
+    spsublist = {} # Statping Subscription list to be read in from file
+    #  Structure of spsublist nested dictionary
+    #   spsublist[service name][list of channel ids][a state value]
+    #   dict = {'Plex': {'state' : 'online', 'channels' : ['1232', '43234']}
+    #           'Space Eingineers' : {'state' : online', 'channels' : ['2343', '54563']}}
+    #
+    currentsub_request = [] # list of elements detailing the current sub request
+    datestring = datetime.now()
+    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+
+    # replace _ with sapces
+    service = service.replace("_"," ")
+
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub '{service}'''")
+
+    # Only work on this if the user has supplied a service name to monitor, a value of NONE
+    #  means nothing was specified
+    if service != "NONE" and service != "-list" and not service.startswith('-del '):
+        
+        print(f">> Querying status of '{service}' to see if it exists")
+        service_state = await get_stp_status(service)
+
+    if service != "NONE":
+
+        if service == "-list":
+            # List the serivces that this channel is subscribed to
+            # Read in spsublist
+            sublist = ''
+            async with aiof.open('spsublist.dat', 'rb') as datafile:
+                pickled_spsublist = await datafile.read()
+                spsublist = pickle.loads(pickled_spsublist)
+            
+            for service in spsublist.keys():
+                    
+                for channel in spsublist[service]['channels']:
+                    if channel == ctx.channel.id:
+                        sublist += f"'{service}' "
+            
+            await ctx.send(f"This channel is subscribed to: {sublist}")
+
+        elif service.startswith('-del:'):
+            # Delete the service from this channels subscriptions
+            service_toremove = service[5:]
+            print(f"{service_toremove}")
+
+            # Open the data file for read in
+            async with aiof.open('spsublist.dat', 'rb') as datafile:
+                pickled_spsublist = await datafile.read()
+                spsublist = pickle.loads(pickled_spsublist)
+            
+            # We haven't found either the channel or servic; mark as false
+            found_service = False
+            found_channel = False
+
+            # Iterate through the service names in the data
+            for service in spsublist.keys():
+                
+                # If the service we want to unsub from is the same as the service in the data, we need to search for the channel
+                if service.lower() == service_toremove.lower():
+
+                    # We've found the service match, mark as true
+                    found_service = True
+                    
+                    # Iterate through the channels that are subbed to this service
+                    for channel in spsublist[service]['channels']:
+
+                        # If a channel listed in the service matches the current users channel id, we've found our match
+                        if channel == ctx.channel.id:
+
+                            # Marking channel as found
+                            found_channel = True
+                            # Get the proper name of the service
+                            service_toremove = service
+                            #Remove the current users channel from this service
+                            spsublist[service]['channels'].remove(ctx.channel.id)
+                            # Break since we're done.
+                            break
+
+                # If we got to the point of finding the channel, we're done.
+                if found_channel:
+                    break
+
+            if found_service and found_channel:
+                print(">> Saving dictionary to spsublist.dat")
+                async with aiof.open('spsublist.dat', 'wb') as datafile:
+                    pickled_spsublist = pickle.dumps(spsublist, protocol=4)
+                    await datafile.write(pickled_spsublist)
+                    #await datafile.fsync()
+                    await datafile.flush()
+                await ctx.send(f"This channel is unsubscribed from '{service}' alerts.")
+            else:
+                await ctx.send(f"This channel is not subscribed to alerts for '{service_toremove}''")
+
+        # If the service exists, proceed with adding it to the list.
+        elif service_state != "service not found":
+        
+            print(f">> '{service}' is a valid service on StatPing.")
+            print(f">>  Checking if it has already been subscribed to")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
+            currentsub_request.append(ctx.channel.id)
+            currentsub_request.append(service_state['name'])
+            currentsub_request.append("online")
+            print(f">>    Channel ID: {currentsub_request[0]}")
+            print(f">>    Service Name: {currentsub_request[1]}")
+            print(f">>    Initial State to set: {currentsub_request[2]}")
+
+            # read in data file containing dict of subscriptions
+            print(">> Checking for spsublist.dat")
+            if os.path.exists('spsublist.dat'):
+
+                print(">> Data file exists, reading it in.")
+                # Read in spsublist
+                async with aiof.open('spsublist.dat', 'rb') as datafile:
+                    pickled_spsublist = await datafile.read()
+                    spsublist = pickle.loads(pickled_spsublist)
+                
+                print(f">> Checking if serivce is already in datafile")
+                found_service = False
+                found_channel = False
+                for service in spsublist.keys():
+                    print(f">>   Does {service.lower()} == {currentsub_request[1].lower()}")
+                    
+                    if service.lower() == currentsub_request[1].lower():
+                        found_service = True
+                        # This service matched what the user is trying to subscribe to
+                        # Now we need to check if this is for the same channel
+                        print(f">> Found {service} in data file, checking for channel")
+                        
+                        for channel in spsublist[service]['channels']:
+                            if channel == currentsub_request[0]:
+                                print(f">> This channel is already subscribed to {service}")
+                                await ctx.send(f"This channel is already subscribed to {service} alerts")
+                                found_channel = True
+                                break
+                        if not found_channel:
+                            # Append the current channel id to the list for this service
+                            print(f">> Adding serivce '{currentsub_request[1]}' to {ctx.channel.id}")
+                            await ctx.send(f"{service} has been added to monitored services for this channel")
+                            spsublist[service]['channels'].append(currentsub_request[0])
+                        break
+                    
+                if not found_service:
+                    # Append the current channel id to the list for this service
+                    print(f">> Adding serivce '{currentsub_request[1]}' to {ctx.channel.id}")
+                    await ctx.send(f"{currentsub_request[1]} has been added to monitored services for this channel")
+                    #newsub = {}
+                    #newsub[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                    spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                    
+            else:
+
+                print(">> spsublist.dat does not exist, new file will be created")
+            
+                # append new subscription to dict
+                print(">> Creating new dictionary")
+                spsublist[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                print(f">> {service} subscription has been saved")
+                await ctx.send(f"{service} has been added to monitored services for this channel")
+
+            #Write updated array to data file
+            print(">> Saving dictionary to spsublist.dat")
+            async with aiof.open('spsublist.dat', 'wb') as datafile:
+                pickled_spsublist = pickle.dumps(spsublist, protocol=4)
+                await datafile.write(pickled_spsublist)
+                #await datafile.fsync()
+                await datafile.flush()
+            
+            print(">> Done")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
+        
+        else:
+            print(f">> '{service}' does not exist, cancelling subscription")
+            await ctx.send(f"{service} was not found")
+
+async def StatPing_Monitor():
+
+    # reads in "spsublist.dat" every 60 seconds then iterates
+    # through to check for service status changes.  This function will need to check
+    # that "spsublist.dat" exists and is not empty.  This function should be called
+    # in bot.on_ready
+
+    #new_spsublist = {}
+
+    # read in data file containing list of subscriptions
+    while True:
+        print("Statping Monitor: Reading in spsublist.dat")
+        if os.path.exists('spsublist.dat'):
+            async with aiof.open('spsublist.dat', 'rb') as datafile:
+                pickled_spsublist = await datafile.read()
+                spsublist = pickle.loads(pickled_spsublist)
+        
+            for service in spsublist.keys():
+                # service used to be subscription
+                status = await get_stp_status(service)
+                print(f">> {service} Online: {status['online']} | Previous state: {spsublist[service]['state']}")
+                if status != 'status not found':
+                    if status['online'] and spsublist[service]['state'] == 'online':
+
+                        # nothing has changed, no alert needed
+                        await asyncio.sleep(1)
+                    elif not status['online'] and spsublist[service]['state'] == "offline":
+
+                        # again, nothing has changed no alert needed
+                        await asyncio.sleep(1)
+                    else:
+                    
+                        print(f">> Status of '{service}' has changed, notifying subscribed channels")
+
+                        if status['online']:
+                            spsublist[service]['state'] = 'online'
+                            for channel in spsublist[service]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {service} is Online")
+                                embed = discord.Embed(title=f"Service Alert", description=f"{service} is Online!", color=0x00ff40)
+                                await ctx.send(embed=embed)
+
+                        elif not status['online']:
+                            spsublist[service]['state'] = 'offline'
+                            for channel in spsublist[service]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {service} is Offline")
+                                embed = discord.Embed(title=f"Service Alert", description=f"{service} is Offline!", color=0xff2200)
+                                await ctx.send(embed=embed)
+
+                        else:
+                            for channel in spsublist[service]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {service} is an Unknown state")
+                                embed = discord.Embed(title=f"Service Alert", description=f"{service} is in an unknown state!", color=0xffff00)
+                                await ctx.send(embed=embed)
+                        print(">> Done")
+                
+                #new_spsublist.append(subscription)
+            
+            # Write status changes to spsublist.dat
+            async with aiof.open('spsublist.dat', 'wb') as datafile:
+                pickled_spsublist = pickle.dumps(spsublist)
+                await datafile.write(pickled_spsublist)
+                #await datafile.fsync()
+                await datafile.flush()
+                    
+        else:
+            print(">> spsublist.dat does not exist, nothing to do.")
+        
+        await asyncio.sleep(60)
+ 
+
+async def sp_monitor(sublist):
+
+    # Checks the services listed in spsublist for status change
+    # Sublist is a list of 3 items:
+    #    - ctx (used to send alert to channel)
+    #    - service (the name of the service to check)
+    #    - status string (last status of the service, either 'online' or 'offline')
+
+    ctx = sublist[0]
+
+
+    while True:
+
+        status = await get_stp_status(spsublist[1])
+        if status['online'] and spsublist[2] == "online":
+            # nothing has changed, no alert needed
+            await asyncio.sleep(1)
+        elif not status['online'] and spsublist[2] == "offline":
+            # again, nothing has changed no alert needed
+            await asyncio.sleep(1)
+        else:
+            print(f"Status of {status['name']}' has changed")
+            if status['online']:
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Online!", color=0x00ff40)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"{spsublist[1]} is Online!")
+                spsublist[2] = "online"
+            elif not status['online']:
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Offline!", color=0xff2200)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"{spsublist[1]} is Offline!")
+                spsublist[2] = "offline"
+            else:
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is in an unknown state!", color=0xffff00)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"Unknown state for service {spsublist[1]}")
+        await asyncio.sleep(60)
+
+async def get_stp_status(service):
+
+    # Get StatPing status via REST API
+    spservice_array = requests.get(statpingURL, headers=statpingHEADERS)
+    found = False
+
+    # spservice_array is json data, need to treat it as such
+    for spservice in spservice_array.json():
+
+        # using lower() to eliminate any case mismatch problems
+        if spservice['name'].lower() == service.lower():
+            
+                found = True
+                return spservice
+
+    # Want to alert user if the service was not found
+    if not found:  
+        return "service not found"  
 
 
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
-    embed.add_field(name="$printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
-    embed.add_field(name="$explain", value="Displays Dalek EXPLAIN gif", inline=False)
-    embed.add_field(name="$holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
-    embed.add_field(name="$greetings", value="Gives a nice greet message", inline=False)
-    embed.add_field(name="$cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
-    embed.add_field(name="$bitch @member", value="Plays clip of BigEric420 saying 'maybe you shouldn't be such a bitch.mp3'", inline=False)
-    embed.add_field(name="$boom @member", value="Plays 'Boom Bitch' sound clip", inline=False)
-    embed.add_field(name="$cowbell @member", value="Plays 'SNL More Cowbell' sound clip", inline=False)
-    embed.add_field(name="$oops @member", value="Plays 'Oops.mp3'", inline=False)
-    embed.add_field(name="$promoted @member", value="Plays Battlefield Friends 'PROMOTED!' sound clip", inline=False)
-    embed.add_field(name="$trololo @member", value="Plays a clip of Trololo song", inline=False)
-    embed.add_field(name="$leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
-    embed.add_field(name="$eia @member", value="Plays 'Everything is Awesome' song clip")
-    embed.add_field(name="$info", value="Gives a little info about the bot", inline=False)
-    embed.add_field(name="$help", value="Gives this message", inline=False)
-    embed.add_field(name="$last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
-    embed.add_field(name="$uptime", value="Displays how long the bot has been up since last service restart")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}explain", value="Displays Dalek EXPLAIN gif", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}greetings", value="Gives a nice greet message", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}bitch @member", value="Plays clip of BigEric420 saying 'maybe you shouldn't be such a bitch.mp3'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}boom @member", value="Plays 'Boom Bitch' sound clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}cowbell @member", value="Plays 'SNL More Cowbell' sound clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}oops @member", value="Plays 'Oops.mp3'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}promoted @member", value="Plays Battlefield Friends 'PROMOTED!' sound clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}trololo @member", value="Plays a clip of Trololo song", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}spstatus servicename", value="Retrieves status of service from StatPing")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}spsub service", value="Allows user to subscribe to service status change alerts for the channel. Can replace <service> with -list and -del:service to manage alerts. NOTICE:Replace spaces in service names w/ '_'!")
     await ctx.send(embed=embed)
 
-    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played voice channels.  If no user is specified when calling the command, the sound will played in the channel the user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
+    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
     await ctx.send(embed=embed)
+
+# Function to run shell command and return stdout or sterr
+async def run(cmd):
+    proc = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE)
+
+    stdout, stderr = await proc.communicate()
+
+    print(f'[{cmd!r} exited with {proc.returncode}]')
+    if stdout:
+        #print(f'[stdout]\n{stdout.decode()}')
+        return stdout.decode()
+    if stderr:
+        #print(f'[stderr]\n{stderr.decode()}')
+        return stderr.decode()
 
 bot.run(DISCORD_AUTH_TOKEN)
