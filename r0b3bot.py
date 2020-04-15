@@ -550,7 +550,7 @@ async def info(ctx):
     second = int(second)
     embed.add_field(name="Uptime [WW:DD:HH:MM:SS]:", value=f"{week:02d}:{day:02d}:{hour:02d}:{minute:02d}:{second:02d}", inline=False)
 
-    print("Getting git describe data to display as version")
+    print("Getting git describe data to display as version in info embed")
     bot_version = await run('git describe')
     embed.add_field(name="Version:", value=f"{bot_version}", inline=False)
 
@@ -917,6 +917,7 @@ async def help(ctx):
     embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
     await ctx.send(embed=embed)
 
+# Function to run shell command and return stdout or sterr
 async def run(cmd):
     proc = await asyncio.create_subprocess_shell(
         cmd,
