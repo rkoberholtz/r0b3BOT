@@ -599,7 +599,10 @@ async def spsub(ctx, service = "NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
 
-    print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub {service}'")
+    # replace _ with sapces
+    service = service.replace("_"," ")
+
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub '{service}'''")
 
     # Only work on this if the user has supplied a service name to monitor, a value of NONE
     #  means nothing was specified
@@ -911,7 +914,7 @@ async def help(ctx):
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}spstatus servicename", value="Retrieves status of service from StatPing")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}spsub service", value="Allows user to subscribe to service status change alerts for the channel. Can replace <service> with -list and -del:service to manage alerts.")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}spsub service", value="Allows user to subscribe to service status change alerts for the channel. Can replace <service> with -list and -del:service to manage alerts. NOTICE:Replace spaces in service names w/ '_'!")
     await ctx.send(embed=embed)
 
     embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
