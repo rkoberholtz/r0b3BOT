@@ -9,7 +9,8 @@ This is R0b3's Discord Bot.  It's creation was basically a challenge posed a cow
 *  Query & Monitor 3D Printer Status using `$printstat` command(Requires that your printer is connected to Octoprint)<br>
 ![](images/Discord_Printstat_Command.png)
 *  Query serivces states on StatPing using the `$spstatus`
-*  Use `$spsub` to "Subscribe" to service change alerts for StatPing services.  Subscribed alerts are persistent and are not lost on bot restart. 
+*  Use `$spsub` to "Subscribe" to service change alerts for StatPing services.  Subscribed alerts are persistent and are not lost on bot restart.<br>
+![Example service alert](images/Service_alert.png)
 *  Play a selection of sound clips to voice channel members using the various commands (`$torololo`, `$oops`, `$promoted`, etc)
 
 # Requirements
