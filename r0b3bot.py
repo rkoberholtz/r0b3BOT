@@ -599,7 +599,9 @@ async def spsub(ctx, service = "NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
 
-    #print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub '{service}'''")
+    service.replace("_"," ")
+
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub '{service}'''")
 
     # Only work on this if the user has supplied a service name to monitor, a value of NONE
     #  means nothing was specified
