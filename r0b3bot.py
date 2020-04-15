@@ -599,7 +599,8 @@ async def spsub(ctx, service = "NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
 
-    service.replace("_"," ")
+    # replace _ with sapces
+    service = service.replace("_"," ")
 
     print(f"[{datestring}]: {ctx.message.author.display_name} called '$spsub '{service}'''")
 
