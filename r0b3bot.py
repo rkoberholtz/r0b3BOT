@@ -552,7 +552,7 @@ async def info(ctx):
 
     print("Getting git describe data to display as version")
     bot_version = await run('git describe')
-    embed.add_field(name="Version:", value=f"bot_version", inline=False)
+    embed.add_field(name="Version:", value=f"{bot_version}", inline=False)
 
     # Gitlab link to source
     embed.add_field(name="Source Code:", value="[R0b3Bot on Gitlab](https://gitlab.rickelobe.com/Bots/r0b3BOT)", inline=False)
