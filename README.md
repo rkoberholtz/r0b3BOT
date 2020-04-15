@@ -13,6 +13,9 @@ This is R0b3's Discord Bot.  It's creation was basically a challenge posed a cow
 ![Example service alert](images/Service_alert.png)
 *  Play a selection of sound clips to voice channel members using the various commands (`$torololo`, `$oops`, `$promoted`, etc)
 
+# Commands
+![Screenshot of $help](images/command_list.png)
+
 # Requirements
 1. discord.py version 1.2.4 or greater<br>
     <code> pip install discord.py </code>
