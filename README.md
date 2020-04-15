@@ -3,7 +3,7 @@
 [![pipeline status](http://gitlab.rickelobe.com/Bots/r0b3BOT/badges/master/pipeline.svg)](http://gitlab.rickelobe.com/Bots/r0b3BOT/commits/master)
 
 # Description
-This is R0b3's Discord Bot.  It's creation was basically a challenge posed a coworker who said "Hey, you can write Discord Bots in Python... Make one to display your 3D printer status!".  But as time went on, a few more features were added.  Aside from being able to query and monitor your 3D printer, it can also fetch the current status of a service monitroed by your StatPing instance.  If you'd like to "subsrcibe"
+This is R0b3's Discord Bot.  It's creation was basically a challenge posed a coworker who said "Hey, you can write Discord Bots in Python... Make one to display your 3D printer status!".  But as time went on, a few more features were added.  Aside from being able to query and monitor your 3D printer, it can also fetch the current status of a service monitroed by your StatPing instance.  In addition to just fetching the current status of a service, you can subscribe to receive alerts for any StatPing service state change.  All subscriptions are persistent and will remain even after the bot is restarted.
 
 # Features
 *  Query & Monitor 3D Printer Status using `$printstat` command(Requires that your printer is connected to Octoprint)<br>
