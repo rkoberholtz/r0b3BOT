@@ -287,7 +287,9 @@ async def play_sound(ctx, member : discord.Member, soundFile, command, playtime)
     print(f" - Playing {soundFile}")
     time.sleep(1)
     voice.play(audio_source, after=None)
-    time.sleep(playtime)
+    while voice.is_playing():
+        await asyncio.sleep(1)
+    #time.sleep(playtime)
     print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
 ###
