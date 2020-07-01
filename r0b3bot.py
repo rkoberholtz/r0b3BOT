@@ -233,6 +233,11 @@ async def iran(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def big(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/big.mp3", "$big", 4)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
@@ -918,7 +923,8 @@ async def help(ctx):
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays 'Trump 'I Ran'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
