@@ -243,7 +243,7 @@ async def rs(ctx, member : discord.Member="NONE"):
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
         soundfiles = ["./sounds/leeroy.mp3","./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
-        await play_sound(ctx, member, random.choice(soundfiles), "$rs")
+        await play_sound(ctx, member, random.choice(soundfiles), "$rs", 6)
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $rs, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
