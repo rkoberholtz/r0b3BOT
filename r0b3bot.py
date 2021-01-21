@@ -228,12 +228,22 @@ async def heavy(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def iran(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/iran.mp3", "$iran", 4)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def big(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/big.mp3", "$big", 4)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
         soundfiles = ["./sounds/leeroy.mp3","./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
-        await play_sound(ctx, member, random.choice(soundfiles), "$rs")
+        await play_sound(ctx, member, random.choice(soundfiles), "$rs", 6)
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $rs, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
@@ -287,7 +297,9 @@ async def play_sound(ctx, member : discord.Member, soundFile, command, playtime)
     print(f" - Playing {soundFile}")
     time.sleep(1)
     voice.play(audio_source, after=None)
-    time.sleep(playtime)
+    while voice.is_playing():
+        await asyncio.sleep(1)
+    #time.sleep(playtime)
     print(f" - Disconnecting from '{channel}'")
     await voice.disconnect()
 ###
@@ -910,6 +922,9 @@ async def help(ctx):
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}trololo @member", value="Plays a clip of Trololo song", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
