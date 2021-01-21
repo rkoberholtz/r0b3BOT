@@ -905,6 +905,245 @@ async def get_stp_status(service):
     if not found:  
         return "service not found"  
 
+#
+# Begin functions for MMR sub/alerts
+#
+@bot.command()
+async def mmrsub(ctx, service = "NONE"):
+
+    mmrsublist = {} # MMR Subscription list to be read in from file
+    #  Structure of spsublist nested dictionary
+    #   spsublist[service name][list of channel ids][a state value]
+    #   dict = {'Plex': {'state' : 'online', 'channels' : ['1232', '43234']}
+    #           'Space Eingineers' : {'state' : online', 'channels' : ['2343', '54563']}}
+    #
+    mmrcurrentsub_request = [] # list of elements detailing the current sub request
+    datestring = datetime.now()
+    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+
+    # replace _ with sapces
+    service = service.replace("_"," ")
+
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$mmrsub '{service}'''")
+
+    # Only work on this if the user has supplied a service name to monitor, a value of NONE
+    #  means nothing was specified
+    if service != "NONE" and service != "-list" and not service.startswith('-del '):
+        
+        print(f">> Querying status of '{service}' to see if it exists")
+        service_state = await get_stp_status(service)
+
+    if service != "NONE":
+
+        if service == "-list":
+            # List the serivces that this channel is subscribed to
+            # Read in mmrsublist
+            mmrsublist = ''
+            async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                pickled_mmrsublist = await datafile.read()
+                mmrsublist = pickle.loads(pickled_mmrsublist)
+            
+            for service in mmrsublist.keys():
+                    
+                for channel in mmrsublist[service]['channels']:
+                    if channel == ctx.channel.id:
+                        mmrsublist += f"'{service}' "
+            
+            await ctx.send(f"This channel is subscribed to: {sublist}")
+
+        elif service.startswith('-del:'):
+            # Delete the service from this channels subscriptions
+            service_toremove = service[5:]
+            print(f"{service_toremove}")
+
+            # Open the data file for read in
+            async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                pickled_mmrsublist = await datafile.read()
+                mmrsublist = pickle.loads(pickled_mmrsublist)
+            
+            # We haven't found either the channel or servic; mark as false
+            found_service = False
+            found_channel = False
+
+            # Iterate through the service names in the data
+            for service in mmrsublist.keys():
+                
+                # If the service we want to unsub from is the same as the service in the data, we need to search for the channel
+                if service.lower() == service_toremove.lower():
+
+                    # We've found the service match, mark as true
+                    found_service = True
+                    
+                    # Iterate through the channels that are subbed to this service
+                    for channel in mmrsublist[service]['channels']:
+
+                        # If a channel listed in the service matches the current users channel id, we've found our match
+                        if channel == ctx.channel.id:
+
+                            # Marking channel as found
+                            found_channel = True
+                            # Get the proper name of the service
+                            service_toremove = service
+                            #Remove the current users channel from this service
+                            mmrsublist[service]['channels'].remove(ctx.channel.id)
+                            # Break since we're done.
+                            break
+
+                # If we got to the point of finding the channel, we're done.
+                if found_channel:
+                    break
+
+            if found_service and found_channel:
+                print(">> Saving dictionary to mmrsublist.dat")
+                async with aiof.open('mmrsublist.dat', 'wb') as datafile:
+                    pickled_mmrsublist = pickle.dumps(mmrsublist, protocol=4)
+                    await datafile.write(pickled_mmrsublist)
+                    #await datafile.fsync()
+                    await datafile.flush()
+                await ctx.send(f"This channel is unsubscribed from '{service}' alerts.")
+            else:
+                await ctx.send(f"This channel is not subscribed to alerts for '{service_toremove}''")
+
+        # If the service exists, proceed with adding it to the list.
+        elif service_state != "service not found":
+        
+            print(f">> '{service}' is a valid Hanlde on Whatismymmr.com.")
+            print(f">>  Checking if it has already been subscribed to")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
+            mmrcurrentsub_request.append(ctx.channel.id)
+            mmrcurrentsub_request.append(service_state['name'])
+            mmrcurrentsub_request.append("online")
+            print(f">>    Channel ID: {mmrcurrentsub_request[0]}")
+            print(f">>    Service Name: {mmrcurrentsub_request[1]}")
+            print(f">>    Initial State to set: {mmrcurrentsub_request[2]}")
+
+            # read in data file containing dict of subscriptions
+            print(">> Checking for mmrsublist.dat")
+            if os.path.exists('mmrsublist.dat'):
+
+                print(">> Data file exists, reading it in.")
+                # Read in mmrsublist
+                async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                    pickled_mmrsublist = await datafile.read()
+                    mmrspsublist = pickle.loads(pickled_mmrsublist)
+                
+                print(f">> Checking if handle is already in datafile")
+                found_service = False
+                found_channel = False
+                for service in mmrsublist.keys():
+                    print(f">>   Does {service.lower()} == {mmrcurrentsub_request[1].lower()}")
+                    
+                    if service.lower() == mmrcurrentsub_request[1].lower():
+                        found_service = True
+                        # This service matched what the user is trying to subscribe to
+                        # Now we need to check if this is for the same channel
+                        print(f">> Found {service} in data file, checking for channel")
+                        
+                        for channel in mmrsublist[service]['channels']:
+                            if channel == mmrcurrentsub_request[0]:
+                                print(f">> This channel is already subscribed to {service}")
+                                await ctx.send(f"This channel is already subscribed to {service} alerts")
+                                found_channel = True
+                                break
+                        if not found_channel:
+                            # Append the current channel id to the list for this service
+                            print(f">> Adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
+                            await ctx.send(f"{service} has been added to monitored handles for this channel")
+                            mmrsublist[service]['channels'].append(mmrcurrentsub_request[0])
+                        break
+                    
+                if not found_service:
+                    # Append the current channel id to the list for this service
+                    print(f">> Adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
+                    await ctx.send(f"{mmrcurrentsub_request[1]} has been added to monitored handle for this channel")
+                    #newsub = {}
+                    #newsub[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                    mmrsublist[mmrcurrentsub_request[1]] = {'state' : 'online', 'channels' : [mmrcurrentsub_request[0]]}
+                    
+            else:
+
+                print(">> mmrsublist.dat does not exist, new file will be created")
+            
+                # append new subscription to dict
+                print(">> Creating new dictionary")
+                mmrsublist[mmrcurrentsub_request[1]] = {'state' : 'online', 'channels' : [mmrcurrentsub_request[0]]}
+                print(f">> {service} subscription has been saved")
+                await ctx.send(f"{service} has been added to monitored handles for this channel")
+
+            #Write updated array to data file
+            print(">> Saving dictionary to mmrsublist.dat")
+            async with aiof.open('mmrsublist.dat', 'wb') as datafile:
+                pickled_mmrsublist = pickle.dumps(mmrsublist, protocol=4)
+                await datafile.write(pickled_mmrsublist)
+                #await datafile.fsync()
+                await datafile.flush()
+            
+            print(">> Done")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
+        
+        else:
+            print(f">> '{service}' does not exist, cancelling subscription")
+            await ctx.send(f"{service} was not found")
+
+async def mmr_monitor(sublist):
+
+    # Checks the services listed in spsublist for status change
+    # Sublist is a list of 3 items:
+    #    - ctx (used to send alert to channel)
+    #    - service (the name of the service to check)
+    #    - status string (last status of the service, either 'online' or 'offline')
+
+    ctx = sublist[0]
+
+
+    while True:
+
+        status = await get_stp_status(spsublist[1])
+        if status['online'] and spsublist[2] == "online":
+            # nothing has changed, no alert needed
+            await asyncio.sleep(1)
+        elif not status['online'] and spsublist[2] == "offline":
+            # again, nothing has changed no alert needed
+            await asyncio.sleep(1)
+        else:
+            print(f"Status of {status['name']}' has changed")
+            if status['online']:
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Online!", color=0x00ff40)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"{spsublist[1]} is Online!")
+                spsublist[2] = "online"
+            elif not status['online']:
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Offline!", color=0xff2200)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"{spsublist[1]} is Offline!")
+                spsublist[2] = "offline"
+            else:
+                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is in an unknown state!", color=0xffff00)
+                await ctx.send(embed=embed)
+                #await ctx.send(f"Unknown state for service {spsublist[1]}")
+        await asyncio.sleep(60)
+
+async def get_mmr_status(mmrhandle):
+
+    # Get StatPing status via REST API
+    mmrhandle_array = requests.get(mmrURL, headers=mmrHEADERS)
+    found = False
+
+    # spservice_array is json data, need to treat it as such
+    for handle in mmrhandle_array.json():
+
+        # using lower() to eliminate any case mismatch problems
+        if mmrhandle['name'].lower() == handle.lower():
+            
+                found = True
+                return mmrhandle
+
+    # Want to alert user if the service was not found
+    if not found:  
+        return "Handle not found"  
+#
+#
+#
 
 @bot.command()
 async def help(ctx):
