@@ -1141,6 +1141,78 @@ async def get_mmr_status(mmrhandle):
     # Want to alert user if the service was not found
     if not found:  
         return "Handle not found"  
+
+async def MMR_Monitor():
+
+    # reads in "mmrsublist.dat" every 3 hours then iterates
+    # through to check for mmr status changes.  This function will need to check
+    # that "spsublist.dat" exists and is not empty.  This function should be called
+    # in bot.on_ready
+
+    # read in data file containing list of subscriptions
+    while True:
+        print("MMR Monitor: Reading in mmrsublist.dat")
+        if os.path.exists('mmrsublist.dat'):
+            async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                pickled_mmrsublist = await datafile.read()
+                mmrsublist = pickle.loads(pickled_mmrsublist)
+        
+            for handle in mmrsublist.keys():
+                # service used to be subscription
+                status = await get_mmr_status(handle)
+                print(f">> {handle} Online: {handle['online']} | Previous state: {mmrsublist[handle]['state']}")
+                if status != 'handle not found':
+                    if status['online'] and mmrsublist[handle]['state'] == 'online':
+
+                        # nothing has changed, no alert needed
+                        await asyncio.sleep(1)
+                    elif not status['online'] and mmrsublist[handle]['state'] == "offline":
+
+                        # again, nothing has changed no alert needed
+                        await asyncio.sleep(1)
+                    else:
+                    
+                        print(f">> Status of '{handle}' has changed, notifying subscribed channels")
+
+                        if status['online']:
+                            mmrsublist[handle]['state'] = 'online'
+                            for channel in mmrsublist[handle]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {handle} is Online")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle} is Online!", color=0x00ff40)
+                                await ctx.send(embed=embed)
+
+                        elif not status['online']:
+                            mmrsublist[handle]['state'] = 'offline'
+                            for channel in mmrsublist[handle]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {handle} is Offline")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle} is Offline!", color=0xff2200)
+                                await ctx.send(embed=embed)
+
+                        else:
+                            for channel in mmrsublist[handle]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {handle} is an Unknown state")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle} is in an unknown state!", color=0xffff00)
+                                await ctx.send(embed=embed)
+                        print(">> Done")
+                
+                #new_spsublist.append(subscription)
+            
+            # Write status changes to spsublist.dat
+            async with aiof.open('mmrsublist.dat', 'wb') as datafile:
+                pickled_mmrsublist = pickle.dumps(mmrsublist)
+                await datafile.write(pickled_mmrsublist)
+                #await datafile.fsync()
+                await datafile.flush()
+                    
+        else:
+            print(">> mmrsublist.dat does not exist, nothing to do.")
+        
+        # 10800 seconds == 3 hours :)
+        await asyncio.sleep(10800)
+
 #
 #
 #
