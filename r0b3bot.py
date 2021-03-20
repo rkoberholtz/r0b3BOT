@@ -88,15 +88,16 @@ print("=== MMR Checker Config ===")
 print(f"   Enabled: {mmr_checker_enable}")
 print(f"   Checker Interval: {mmr_checker_interval}")
 print(f"   API URL BASE: {mmrURLBASE}")
+
 # On Ready
 @bot.event
 async def on_ready():
     print('Logged in as')
-    print(bot.user.name)
-    print(bot.user.id)
-    print('------')
-    print("Setting activity to 'Listenting to your commands'")
-    activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
+    print(f"   User: {bot.user.name}")
+    print(f"   ID: {bot.user.id}")
+    print(f"------\n")
+    print(f"Setting activity to 'Listenting to your {BOT_COMMAND_PREFIX}commands'")
+    activity = discord.Activity(name=f"your {BOT_COMMAND_PREFIX}commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
     
