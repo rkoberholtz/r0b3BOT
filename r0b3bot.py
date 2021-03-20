@@ -1243,7 +1243,13 @@ async def MMR_Monitor():
 
 @bot.command()
 async def help(ctx):
-    embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
+    embed = discord.Embed(title='R0b3BOT Core & Debug Commands:', description="Core commands for info and debug", color=0xeee657)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="R0b3BOT Sound Commands", description="To play a sound in a chat channel, use one of the following:", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}explain", value="Displays Dalek EXPLAIN gif", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
@@ -1260,14 +1266,19 @@ async def help(ctx):
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="StatPing Service Monitor Commands", description="Commands for managing the StatPing Service Monitor", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}spstatus servicename", value="Retrieves status of service from StatPing")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}spsub service", value="Allows user to subscribe to service status change alerts for the channel. Can replace <service> with -list and -del:service to manage alerts. NOTICE:Replace spaces in service names w/ '_'!")
     await ctx.send(embed=embed)
 
-    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
+    embed = discord.Embed(title="MMR Monitor Commands", description="Commands for managing the MMR Checker", color=0xeee657)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrstatus handle", value="Queries the MMR API for the handle specified and returns the current Ranked Average")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrsub handle", value="Subscribe to receive alerts of ranked average changes for the specified handle")
     await ctx.send(embed=embed)
 
 # Function to run shell command and return stdout or sterr
