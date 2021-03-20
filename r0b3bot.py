@@ -954,7 +954,6 @@ async def mmrstatus(ctx, handle = "NONE"):
     else:
         await ctx.send("Please speficy a service name to query.")
 
-
 @bot.command()
 async def mmrsub(ctx, handle = "NONE"):
 
@@ -1173,12 +1172,16 @@ async def mmr_monitor(sublist):
 
 async def get_mmr_status(mmrhandle):
 
-    # Get StatPing status via REST API
+    # Get MMR status status via API
     #need to replace spaces with %20 before just inserting into URL
     mmrhandle.replace(" ", "%20")
     mmrURL = ''.join(mmrURLBASE) + mmrhandle
     response = requests.get(mmrURL, headers=mmrHEADERS)
     mmr_stats = json.loads(response.text)
+
+    if int(response.find("No MMR data")) < 0:
+        mmr_stats = "handle not found"
+
     
     return mmr_stats['ranked']['avg']
  
