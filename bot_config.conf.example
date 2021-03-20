@@ -19,3 +19,4 @@ hass_light = <Entity_ID of the light @ your printer>
 octoprint_ip_address = <OctoPrint IP Address>
 statping_url = <Statping URL>
 statping_api_key = <Statping API Key>
+mmr_api_url = <MMR API URL>
