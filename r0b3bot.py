@@ -1203,7 +1203,7 @@ async def MMR_Monitor():
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
                                 print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Increased!")
-                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status['AvgRank']}", color=0x00ff40)
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status}", color=0x00ff40)
                                 await ctx.send(embed=embed)
 
                         elif status < mmrsublist[handle]['AvgRank']:
@@ -1211,7 +1211,7 @@ async def MMR_Monitor():
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
                                 print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Decreased!")
-                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status['AvgRank']}", color=0xff2200)
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status}", color=0xff2200)
                                 await ctx.send(embed=embed)
 
                         else:
