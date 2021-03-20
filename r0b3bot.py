@@ -63,6 +63,7 @@ statpingHEADERS = {
 }
 
 mmr_checker_enable = config.get('bot-config', 'mmr_checker_enable')
+mmr_checker_interval = config.get('bot-config', 'mmr_checker_interval')
 mmrURLBASE = config.get('bot-config', 'mmr_api_url')
 mmrHEADERS = {
     'User-Agent': 'Linux:com.r0b3bot:v.01a',
@@ -73,16 +74,20 @@ mmrHEADERS = {
 bot = commands.Bot(command_prefix=BOT_COMMAND_PREFIX, description='A derpy derp of a bot.')
 
 # Printing configuration details to console
-print(f"HomeAssistant URL: {hassURL}")
-print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
-print(f"HomeAssistant Light: {HASS_LIGHT}")
-print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
-print(f"StatPing Monitor Enabled: {statping_enable}")
-print(f"StatPing Server: {STATPING_URL}")
-print(f"StatPing API Key: {STATPING_API_KEY}")
-print(f"StatPing URL Headers: {statpingHEADERS}")
-print(f"MMR Checker Enabled: {mmr_checker_enable}")
-print(f"MMR Checker URL BASE: {mmrURLBASE}")
+print("=== 3D Printer Status config ===")
+print(f"   HomeAssistant URL: {hassURL}")
+print(f"   HomeAssistant URL HEADERS: {hassHEADERS}")
+print(f"   HomeAssistant Light: {HASS_LIGHT}")
+print(f"   OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
+print("=== StatPing Monitor Config ===")
+print(f"   Enabled: {statping_enable}")
+print(f"   SServer: {STATPING_URL}")
+print(f"   API Key: {STATPING_API_KEY}")
+print(f"   URL Headers: {statpingHEADERS}")
+print("=== MMR Checker Config ===")
+print(f"   Enabled: {mmr_checker_enable}")
+print(f"   Checker Interval: {mmr_checker_interval}")
+print(f"   API URL BASE: {mmrURLBASE}")
 # On Ready
 @bot.event
 async def on_ready():
@@ -1228,7 +1233,7 @@ async def MMR_Monitor():
             print(">> mmrsublist.dat does not exist, nothing to do.")
         
         # 10800 seconds == 3 hours :)
-        await asyncio.sleep(10800)
+        await asyncio.sleep(mmr_checker_interval)
 
 #
 #

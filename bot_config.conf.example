@@ -21,4 +21,5 @@ statping_enable = <trues/false>
 statping_url = <Statping URL>
 statping_api_key = <Statping API Key>
 mmr_checker_enable = <true/false>
+mmr_checker_interval = <number of seconds between checks>
 mmr_api_url = <MMR API URL>
