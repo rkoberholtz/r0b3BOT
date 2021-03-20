@@ -1181,6 +1181,7 @@ async def get_mmr_status(mmrhandle):
 
     if int(str(response).find("No MMR data")) < 0:
         mmr_stats = "handle not found"
+        return mmr_stats
 
     
     return mmr_stats['ranked']['avg']
