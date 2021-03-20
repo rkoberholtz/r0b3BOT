@@ -937,6 +937,24 @@ async def get_stp_status(service):
 #
 # Begin functions for MMR sub/alerts
 #
+
+@bot.command()
+async def mmrstatus(ctx, handle = "NONE"):
+
+    if handle != "NONE":
+        
+        #await get_stp_status(ctx, service.lower())
+        result = await get_mmr_status(handle)
+
+        if result == "handle not found":
+            await ctx.send(f"'{service}' was not found")
+        else:
+            await ctx.send(f"'{handle}'s Ranked Average is: {result}")
+
+    else:
+        await ctx.send("Please speficy a service name to query.")
+
+
 @bot.command()
 async def mmrsub(ctx, handle = "NONE"):
 
