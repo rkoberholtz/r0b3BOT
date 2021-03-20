@@ -65,8 +65,8 @@ statpingHEADERS = {
 mmr_checker_enable = config.get('bot-config', 'mmr_checker_enable')
 mmrURLBASE = ('bot-config', 'mmr_api_url')
 mmrHEADERS = {
-    'User-Agent': 'Linux:com.r0b3bot:v.01a'
-    'content-type': 'application/json'
+    'User-Agent': 'Linux:com.r0b3bot:v.01a',
+    'content-type': 'application/json',
 }
 
 # Configure bot
