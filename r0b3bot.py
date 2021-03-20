@@ -92,6 +92,7 @@ print(f"   API URL BASE: {mmrURLBASE}")
 # On Ready
 @bot.event
 async def on_ready():
+    print(":::: Config Loaded ::::\n")
     print('Logged in as')
     print(f"   User: {bot.user.name}")
     print(f"   ID: {bot.user.id}")
