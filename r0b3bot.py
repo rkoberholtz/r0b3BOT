@@ -1182,7 +1182,7 @@ async def MMR_Monitor():
                 # service used to be subscription
                 status = await get_mmr_status(handle)
                 print(f"{handle} | {mmrsublist[handle]}")
-                print(f">> {handle} Average Rank: {status} | Previous state: {mmrsublist[handle]['AvgRank']}")
+                print(f">> '{handle}'s Average Rank: {status} | Previous state: {mmrsublist[handle]['AvgRank']}")
                 if status != 'handle not found':
                     if status == mmrsublist[handle]['AvgRank']:
 
@@ -1200,7 +1200,7 @@ async def MMR_Monitor():
                             mmrsublist[handle]['AvgRank'] = status['AvgRank']
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx} that {handle} Average Rank has Increased!")
+                                print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Increased!")
                                 embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status['AvgRank']}", color=0x00ff40)
                                 await ctx.send(embed=embed)
 
@@ -1208,7 +1208,7 @@ async def MMR_Monitor():
                             mmrsublist[handle]['state'] = status['AvgRank']
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx} that {handle}'s Average Rank has Decreased!")
+                                print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Decreased!")
                                 embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status['AvgRank']}", color=0xff2200)
                                 await ctx.send(embed=embed)
 
