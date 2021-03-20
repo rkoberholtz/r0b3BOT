@@ -1233,7 +1233,7 @@ async def MMR_Monitor():
             print(">> mmrsublist.dat does not exist, nothing to do.")
         
         # 10800 seconds == 3 hours :)
-        await asyncio.sleep(mmr_checker_interval)
+        await asyncio.sleep(int(mmr_checker_interval))
 
 #
 #
