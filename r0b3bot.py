@@ -1179,7 +1179,8 @@ async def get_mmr_status(mmrhandle):
     response = requests.get(mmrURL, headers=mmrHEADERS)
     mmr_stats = json.loads(response.text)
 
-    if int(str(response).find("No MMR data")) < 0:
+    print(f"{str(response).find("No MMR data")}")
+    if str(response).find("No MMR data") < 0:
         mmr_stats = "handle not found"
         return mmr_stats
 
