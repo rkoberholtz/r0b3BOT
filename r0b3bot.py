@@ -941,6 +941,8 @@ async def get_stp_status(service):
 @bot.command()
 async def mmrstatus(ctx, handle = "NONE"):
 
+    print(f">> {BOT_COMMAND_PREFIX}mmrstatus was called for {handle}")
+
     if handle != "NONE":
         
         #await get_stp_status(ctx, service.lower())
@@ -1179,9 +1181,9 @@ async def get_mmr_status(mmrhandle):
     response = requests.get(mmrURL, headers=mmrHEADERS)
     mmr_stats = json.loads(response.text)
 
-    checked = str(response).find("No MMR data")
+    checked = str(response).find("error")
     print(f"{checked}")
-    if checked > 0:
+    if checked == -1:
         mmr_stats = "handle not found"
         return mmr_stats
 
