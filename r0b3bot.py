@@ -1181,7 +1181,7 @@ async def get_mmr_status(mmrhandle):
 
     checked = str(response).find("No MMR data")
     print(f"{checked}")
-    if checked < 0:
+    if checked > 0:
         mmr_stats = "handle not found"
         return mmr_stats
 
