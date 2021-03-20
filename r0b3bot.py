@@ -1181,13 +1181,9 @@ async def get_mmr_status(mmrhandle):
     response = requests.get(mmrURL, headers=mmrHEADERS)
     mmr_stats = json.loads(response.text)
 
-    checked = str(response).find("error")
-    print(f"{checked}")
-    if checked == -1:
-        mmr_stats = "handle not found"
-        return mmr_stats
+    if "error" in mmr_status:
+        return "handle not found"
 
-    
     return mmr_stats['ranked']['avg']
  
 
