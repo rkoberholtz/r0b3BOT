@@ -53,6 +53,7 @@ hassHEADERS = {
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
 DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
 BOT_COMMAND_PREFIX = config.get('bot-config', 'bot_command_prefix')
+statping_enable = config.get('bot-config', 'statping_enable')
 STATPING_URL = config.get('bot-config', 'statping_url')
 STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
 statpingURL = STATPING_URL + "/api/services"
@@ -61,6 +62,7 @@ statpingHEADERS = {
     'content-type': 'application/json',
 }
 
+mmr_checker_enable = config.get('bot-config', 'mmr_checker_enable')
 mmrURLBASE = ('bot-config', 'mmr_api_url')
 mmrHEADERS = {
     'User-Agent': 'Linux:com.r0b3bot:v.01a'
@@ -95,8 +97,12 @@ async def on_ready():
     runtime = time.time() - start_time
     if runtime <= 15:
         #Run StatPing_Monitor
-        print("Starting StatPing Monitor.")
-        await StatPing_Monitor()
+        if statping_enable:
+            print("Statping Monitor enabled, starting StatPing Monitor.")
+            await StatPing_Monitor()
+        if mmr_checker_enable:
+            print("MMR Checker enables, starting MMR Checker.")
+            await MMR_Monitor() 
     else:
         print(f">> Bot has been running for more than {int(runtime)} seconds.  Not restarting monitor.")
 
