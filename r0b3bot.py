@@ -1207,7 +1207,7 @@ async def MMR_Monitor():
                                 await ctx.send(embed=embed)
 
                         elif status < mmrsublist[handle]['AvgRank']:
-                            mmrsublist[handle]['state'] = status['AvgRank']
+                            mmrsublist[handle]['AvgRank'] = status['AvgRank']
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
                                 print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Decreased!")
