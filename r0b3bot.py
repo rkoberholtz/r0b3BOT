@@ -61,6 +61,12 @@ statpingHEADERS = {
     'content-type': 'application/json',
 }
 
+mmrURLBASE = ('bot-config', 'mmr_api_url')
+mmrHEADERS = {
+    'User-Agent': 'Linux:com.r0b3bot:v.01a'
+    'content-type': 'application/json'
+}
+
 # Configure bot
 bot = commands.Bot(command_prefix=BOT_COMMAND_PREFIX, description='A derpy derp of a bot.')
 
@@ -914,7 +920,7 @@ async def mmrsub(ctx, service = "NONE"):
     mmrsublist = {} # MMR Subscription list to be read in from file
     #  Structure of spsublist nested dictionary
     #   spsublist[service name][list of channel ids][a state value]
-    #   dict = {'Plex': {'state' : 'online', 'channels' : ['1232', '43234']}
+    #   dict = {'Handle': {'AvgRank' : 'value', 'channels' : ['1232', '43234']}
     #           'Space Eingineers' : {'state' : online', 'channels' : ['2343', '54563']}}
     #
     mmrcurrentsub_request = [] # list of elements detailing the current sub request
@@ -922,20 +928,20 @@ async def mmrsub(ctx, service = "NONE"):
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
 
     # replace _ with sapces
-    service = service.replace("_"," ")
+    handle = handle.replace("_"," ")
 
-    print(f"[{datestring}]: {ctx.message.author.display_name} called '$mmrsub '{service}'''")
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$mmrsub '{handle}'''")
 
     # Only work on this if the user has supplied a service name to monitor, a value of NONE
     #  means nothing was specified
-    if service != "NONE" and service != "-list" and not service.startswith('-del '):
+    if handle != "NONE" and handle != "-list" and not handle.startswith('-del '):
         
-        print(f">> Querying status of '{service}' to see if it exists")
-        service_state = await get_stp_status(service)
+        print(f">> Querying status of '{handle}' to see if it exists")
+        service_state = await get_stp_status(handle)
 
-    if service != "NONE":
+    if handle != "NONE":
 
-        if service == "-list":
+        if handle == "-list":
             # List the serivces that this channel is subscribed to
             # Read in mmrsublist
             mmrsublist = ''
@@ -943,18 +949,18 @@ async def mmrsub(ctx, service = "NONE"):
                 pickled_mmrsublist = await datafile.read()
                 mmrsublist = pickle.loads(pickled_mmrsublist)
             
-            for service in mmrsublist.keys():
+            for handle in mmrsublist.keys():
                     
-                for channel in mmrsublist[service]['channels']:
+                for channel in mmrsublist[handle]['channels']:
                     if channel == ctx.channel.id:
-                        mmrsublist += f"'{service}' "
+                        mmrsublist += f"'{handle}' "
             
-            await ctx.send(f"This channel is subscribed to: {sublist}")
+            await ctx.send(f"This channel is subscribed to: {mmrsublist}")
 
-        elif service.startswith('-del:'):
+        elif handle.startswith('-del:'):
             # Delete the service from this channels subscriptions
-            service_toremove = service[5:]
-            print(f"{service_toremove}")
+            handle_toremove = handle[5:]
+            print(f"{handle_toremove}")
 
             # Open the data file for read in
             async with aiof.open('mmrsublist.dat', 'rb') as datafile:
@@ -962,20 +968,20 @@ async def mmrsub(ctx, service = "NONE"):
                 mmrsublist = pickle.loads(pickled_mmrsublist)
             
             # We haven't found either the channel or servic; mark as false
-            found_service = False
+            found_handle = False
             found_channel = False
 
             # Iterate through the service names in the data
-            for service in mmrsublist.keys():
+            for handle in mmrsublist.keys():
                 
                 # If the service we want to unsub from is the same as the service in the data, we need to search for the channel
-                if service.lower() == service_toremove.lower():
+                if handle.lower() == handle_toremove.lower():
 
                     # We've found the service match, mark as true
-                    found_service = True
+                    found_handle = True
                     
                     # Iterate through the channels that are subbed to this service
-                    for channel in mmrsublist[service]['channels']:
+                    for channel in mmrsublist[handle]['channels']:
 
                         # If a channel listed in the service matches the current users channel id, we've found our match
                         if channel == ctx.channel.id:
@@ -983,9 +989,9 @@ async def mmrsub(ctx, service = "NONE"):
                             # Marking channel as found
                             found_channel = True
                             # Get the proper name of the service
-                            service_toremove = service
+                            handle_toremove = service
                             #Remove the current users channel from this service
-                            mmrsublist[service]['channels'].remove(ctx.channel.id)
+                            mmrsublist[handle]['channels'].remove(ctx.channel.id)
                             # Break since we're done.
                             break
 
@@ -993,21 +999,21 @@ async def mmrsub(ctx, service = "NONE"):
                 if found_channel:
                     break
 
-            if found_service and found_channel:
+            if found_handle and found_channel:
                 print(">> Saving dictionary to mmrsublist.dat")
                 async with aiof.open('mmrsublist.dat', 'wb') as datafile:
                     pickled_mmrsublist = pickle.dumps(mmrsublist, protocol=4)
                     await datafile.write(pickled_mmrsublist)
                     #await datafile.fsync()
                     await datafile.flush()
-                await ctx.send(f"This channel is unsubscribed from '{service}' alerts.")
+                await ctx.send(f"This channel is unsubscribed from '{handle}' alerts.")
             else:
-                await ctx.send(f"This channel is not subscribed to alerts for '{service_toremove}''")
+                await ctx.send(f"This channel is not subscribed to alerts for '{handle_toremove}''")
 
         # If the service exists, proceed with adding it to the list.
-        elif service_state != "service not found":
+        elif handle_state != "service not found":
         
-            print(f">> '{service}' is a valid Hanlde on Whatismymmr.com.")
+            print(f">> '{handle}' is a valid Hanlde on Whatismymmr.com.")
             print(f">>  Checking if it has already been subscribed to")
             #await ctx.send(f"'{service_state['name']}' added to monitored services")
             mmrcurrentsub_request.append(ctx.channel.id)
@@ -1028,31 +1034,31 @@ async def mmrsub(ctx, service = "NONE"):
                     mmrspsublist = pickle.loads(pickled_mmrsublist)
                 
                 print(f">> Checking if handle is already in datafile")
-                found_service = False
+                found_handle = False
                 found_channel = False
                 for service in mmrsublist.keys():
-                    print(f">>   Does {service.lower()} == {mmrcurrentsub_request[1].lower()}")
+                    print(f">>   Does {handle.lower()} == {mmrcurrentsub_request[1].lower()}")
                     
-                    if service.lower() == mmrcurrentsub_request[1].lower():
-                        found_service = True
+                    if handle.lower() == mmrcurrentsub_request[1].lower():
+                        found_handle = True
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
-                        print(f">> Found {service} in data file, checking for channel")
+                        print(f">> Found {handle} in data file, checking for channel")
                         
-                        for channel in mmrsublist[service]['channels']:
+                        for channel in mmrsublist[handle]['channels']:
                             if channel == mmrcurrentsub_request[0]:
-                                print(f">> This channel is already subscribed to {service}")
-                                await ctx.send(f"This channel is already subscribed to {service} alerts")
+                                print(f">> This channel is already subscribed to {handle}")
+                                await ctx.send(f"This channel is already subscribed to {handle} alerts")
                                 found_channel = True
                                 break
                         if not found_channel:
                             # Append the current channel id to the list for this service
                             print(f">> Adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
-                            await ctx.send(f"{service} has been added to monitored handles for this channel")
+                            await ctx.send(f"{handle} has been added to monitored handles for this channel")
                             mmrsublist[service]['channels'].append(mmrcurrentsub_request[0])
                         break
                     
-                if not found_service:
+                if not found_handle:
                     # Append the current channel id to the list for this service
                     print(f">> Adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
                     await ctx.send(f"{mmrcurrentsub_request[1]} has been added to monitored handle for this channel")
@@ -1067,8 +1073,8 @@ async def mmrsub(ctx, service = "NONE"):
                 # append new subscription to dict
                 print(">> Creating new dictionary")
                 mmrsublist[mmrcurrentsub_request[1]] = {'state' : 'online', 'channels' : [mmrcurrentsub_request[0]]}
-                print(f">> {service} subscription has been saved")
-                await ctx.send(f"{service} has been added to monitored handles for this channel")
+                print(f">> {handle} subscription has been saved")
+                await ctx.send(f"{handle} has been added to monitored handles for this channel")
 
             #Write updated array to data file
             print(">> Saving dictionary to mmrsublist.dat")
@@ -1082,8 +1088,8 @@ async def mmrsub(ctx, service = "NONE"):
             #await ctx.send(f"'{service_state['name']}' added to monitored services")
         
         else:
-            print(f">> '{service}' does not exist, cancelling subscription")
-            await ctx.send(f"{service} was not found")
+            print(f">> '{handle}' does not exist, cancelling subscription")
+            await ctx.send(f"{handle} was not found")
 
 async def mmr_monitor(sublist):
 
@@ -1126,21 +1132,14 @@ async def mmr_monitor(sublist):
 async def get_mmr_status(mmrhandle):
 
     # Get StatPing status via REST API
-    mmrhandle_array = requests.get(mmrURL, headers=mmrHEADERS)
-    found = False
-
-    # spservice_array is json data, need to treat it as such
-    for handle in mmrhandle_array.json():
-
-        # using lower() to eliminate any case mismatch problems
-        if mmrhandle['name'].lower() == handle.lower():
-            
-                found = True
-                return mmrhandle
-
-    # Want to alert user if the service was not found
-    if not found:  
-        return "Handle not found"  
+    #need to replace spaces with %20 before just inserting into URL
+    mmrhandle.replace(" ", "%20")
+    mmrURL = mmrURLBASE + mmrhandle
+    response = requests.get(mmrURL, headers=mmrHEADERS)
+    mmr_stats = json.loads(response.text)
+    
+    return mmr_stats['ranked']['avg']
+ 
 
 async def MMR_Monitor():
 
@@ -1160,13 +1159,13 @@ async def MMR_Monitor():
             for handle in mmrsublist.keys():
                 # service used to be subscription
                 status = await get_mmr_status(handle)
-                print(f">> {handle} Online: {handle['online']} | Previous state: {mmrsublist[handle]['state']}")
+                print(f">> {handle} Average Rank: {handle['AvgRank']} | Previous state: {mmrsublist[handle]['AvgRank']}")
                 if status != 'handle not found':
-                    if status['online'] and mmrsublist[handle]['state'] == 'online':
+                    if status['AvgRank'] == mmrsublist[handle]['AvgTank']:
 
                         # nothing has changed, no alert needed
                         await asyncio.sleep(1)
-                    elif not status['online'] and mmrsublist[handle]['state'] == "offline":
+                    elif not status['AvgRank'] != mmrsublist[handle]['AvgRank']:
 
                         # again, nothing has changed no alert needed
                         await asyncio.sleep(1)
@@ -1174,27 +1173,27 @@ async def MMR_Monitor():
                     
                         print(f">> Status of '{handle}' has changed, notifying subscribed channels")
 
-                        if status['online']:
-                            mmrsublist[handle]['state'] = 'online'
+                        if status['AvgRank'] > mmrsublist[handle]['AvgRank']:
+                            mmrsublist[handle]['AvgRank'] = status['AvgRank']
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx} that {handle} is Online")
-                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle} is Online!", color=0x00ff40)
+                                print(f">>  Alerting {ctx} that {handle} Average Rank has Increased!")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status['AvgRank']}", color=0x00ff40)
                                 await ctx.send(embed=embed)
 
-                        elif not status['online']:
-                            mmrsublist[handle]['state'] = 'offline'
+                        elif status['AvgRank'] < mmrsublist[handle]['AvgRank']:
+                            mmrsublist[handle]['state'] = status['AvgRank']
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx} that {handle} is Offline")
-                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle} is Offline!", color=0xff2200)
+                                print(f">>  Alerting {ctx} that {handle}'s Average Rank has Decreased!")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status['AvgRank']}", color=0xff2200)
                                 await ctx.send(embed=embed)
 
                         else:
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
-                                print(f">>  Alerting {ctx} that {handle} is an Unknown state")
-                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle} is in an unknown state!", color=0xffff00)
+                                print(f">>  Alerting {ctx} that {handle}'s rank is an unknown state")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is in an unknown state!", color=0xffff00)
                                 await ctx.send(embed=embed)
                         print(">> Done")
                 
