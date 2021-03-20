@@ -92,11 +92,11 @@ print(f"   API URL BASE: {mmrURLBASE}")
 # On Ready
 @bot.event
 async def on_ready():
-    print(":::: Config Loaded ::::\n")
+    print("\n:::: Config Loaded ::::\n")
     print('Logged in as')
     print(f"   User: {bot.user.name}")
     print(f"   ID: {bot.user.id}")
-    print(f"------\n")
+    print(f"\n\n")
     print(f"Setting activity to 'Listenting to your {BOT_COMMAND_PREFIX}commands'")
     activity = discord.Activity(name=f"your {BOT_COMMAND_PREFIX}commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
