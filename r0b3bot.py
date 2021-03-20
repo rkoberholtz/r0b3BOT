@@ -63,7 +63,7 @@ statpingHEADERS = {
 }
 
 mmr_checker_enable = config.get('bot-config', 'mmr_checker_enable')
-mmrURLBASE = ('bot-config', 'mmr_api_url')
+mmrURLBASE = config.get('bot-config', 'mmr_api_url')
 mmrHEADERS = {
     'User-Agent': 'Linux:com.r0b3bot:v.01a',
     'content-type': 'application/json',
@@ -77,10 +77,12 @@ print(f"HomeAssistant URL: {hassURL}")
 print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
 print(f"HomeAssistant Light: {HASS_LIGHT}")
 print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
+print(f"StatPing Monitor Enabled: {statping_enable}")
 print(f"StatPing Server: {STATPING_URL}")
 print(f"StatPing API Key: {STATPING_API_KEY}")
 print(f"StatPing URL Headers: {statpingHEADERS}")
-
+print(f"MMR Checker Enabled: {mmr_checker_enable}")
+print(f"MMR Checker URL BASE: {mmrURLBASE}")
 # On Ready
 @bot.event
 async def on_ready():
@@ -97,15 +99,23 @@ async def on_ready():
     runtime = time.time() - start_time
     if runtime <= 15:
         #Run StatPing_Monitor
-        if statping_enable:
+        if statping_enable == 'True':
             print("Statping Monitor enabled, starting StatPing Monitor.")
             await StatPing_Monitor()
-        if mmr_checker_enable:
-            print("MMR Checker enables, starting MMR Checker.")
-            await MMR_Monitor() 
+        
+        
     else:
-        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not restarting monitor.")
+        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not starting StatPing Monitor.")
+    
+    #Run MMR Montor
+    if runtime <= 15:
+        if mmr_checker_enable == 'True':
+            print("MMR Checker enabled, starting MMR Checker.")
+            await MMR_Monitor()
+    else:
+        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not starting MMR Checker.")
 
+    print(">> Startup complete.")
 
 @bot.command()
 async def greetings(ctx):
@@ -921,7 +931,7 @@ async def get_stp_status(service):
 # Begin functions for MMR sub/alerts
 #
 @bot.command()
-async def mmrsub(ctx, service = "NONE"):
+async def mmrsub(ctx, handle = "NONE"):
 
     mmrsublist = {} # MMR Subscription list to be read in from file
     #  Structure of spsublist nested dictionary
@@ -943,7 +953,7 @@ async def mmrsub(ctx, service = "NONE"):
     if handle != "NONE" and handle != "-list" and not handle.startswith('-del '):
         
         print(f">> Querying status of '{handle}' to see if it exists")
-        service_state = await get_stp_status(handle)
+        handle_state = await get_mmr_status(handle)
 
     if handle != "NONE":
 
@@ -1023,11 +1033,11 @@ async def mmrsub(ctx, service = "NONE"):
             print(f">>  Checking if it has already been subscribed to")
             #await ctx.send(f"'{service_state['name']}' added to monitored services")
             mmrcurrentsub_request.append(ctx.channel.id)
-            mmrcurrentsub_request.append(service_state['name'])
-            mmrcurrentsub_request.append("online")
+            mmrcurrentsub_request.append(handle)
+            mmrcurrentsub_request.append(handle_state)
             print(f">>    Channel ID: {mmrcurrentsub_request[0]}")
-            print(f">>    Service Name: {mmrcurrentsub_request[1]}")
-            print(f">>    Initial State to set: {mmrcurrentsub_request[2]}")
+            print(f">>    Handle: {mmrcurrentsub_request[1]}")
+            print(f">>    Current Ranked Average: {mmrcurrentsub_request[2]}")
 
             # read in data file containing dict of subscriptions
             print(">> Checking for mmrsublist.dat")
@@ -1042,7 +1052,7 @@ async def mmrsub(ctx, service = "NONE"):
                 print(f">> Checking if handle is already in datafile")
                 found_handle = False
                 found_channel = False
-                for service in mmrsublist.keys():
+                for handle in mmrsublist.keys():
                     print(f">>   Does {handle.lower()} == {mmrcurrentsub_request[1].lower()}")
                     
                     if handle.lower() == mmrcurrentsub_request[1].lower():
@@ -1070,7 +1080,7 @@ async def mmrsub(ctx, service = "NONE"):
                     await ctx.send(f"{mmrcurrentsub_request[1]} has been added to monitored handle for this channel")
                     #newsub = {}
                     #newsub[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
-                    mmrsublist[mmrcurrentsub_request[1]] = {'state' : 'online', 'channels' : [mmrcurrentsub_request[0]]}
+                    mmrsublist[mmrcurrentsub_request[1]] = {'AvgRank' : mmrcurrentsub_request[2], 'channels' : [mmrcurrentsub_request[0]]}
                     
             else:
 
@@ -1078,7 +1088,7 @@ async def mmrsub(ctx, service = "NONE"):
             
                 # append new subscription to dict
                 print(">> Creating new dictionary")
-                mmrsublist[mmrcurrentsub_request[1]] = {'state' : 'online', 'channels' : [mmrcurrentsub_request[0]]}
+                mmrsublist[mmrcurrentsub_request[1]] = {'AvgRank' : mmrcurrentsub_request[2], 'channels' : [mmrcurrentsub_request[0]]}
                 print(f">> {handle} subscription has been saved")
                 await ctx.send(f"{handle} has been added to monitored handles for this channel")
 
@@ -1133,14 +1143,15 @@ async def mmr_monitor(sublist):
                 embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is in an unknown state!", color=0xffff00)
                 await ctx.send(embed=embed)
                 #await ctx.send(f"Unknown state for service {spsublist[1]}")
-        await asyncio.sleep(60)
+        #Sleep for 3 hours
+        await asyncio.sleep(10800)
 
 async def get_mmr_status(mmrhandle):
 
     # Get StatPing status via REST API
     #need to replace spaces with %20 before just inserting into URL
     mmrhandle.replace(" ", "%20")
-    mmrURL = mmrURLBASE + mmrhandle
+    mmrURL = ''.join(mmrURLBASE) + mmrhandle
     response = requests.get(mmrURL, headers=mmrHEADERS)
     mmr_stats = json.loads(response.text)
     
@@ -1165,13 +1176,14 @@ async def MMR_Monitor():
             for handle in mmrsublist.keys():
                 # service used to be subscription
                 status = await get_mmr_status(handle)
-                print(f">> {handle} Average Rank: {handle['AvgRank']} | Previous state: {mmrsublist[handle]['AvgRank']}")
+                print(f"{handle} | {mmrsublist[handle]}")
+                print(f">> {handle} Average Rank: {status} | Previous state: {mmrsublist[handle]['AvgRank']}")
                 if status != 'handle not found':
-                    if status['AvgRank'] == mmrsublist[handle]['AvgTank']:
+                    if status == mmrsublist[handle]['AvgRank']:
 
                         # nothing has changed, no alert needed
                         await asyncio.sleep(1)
-                    elif not status['AvgRank'] != mmrsublist[handle]['AvgRank']:
+                    elif not status != mmrsublist[handle]['AvgRank']:
 
                         # again, nothing has changed no alert needed
                         await asyncio.sleep(1)
@@ -1179,7 +1191,7 @@ async def MMR_Monitor():
                     
                         print(f">> Status of '{handle}' has changed, notifying subscribed channels")
 
-                        if status['AvgRank'] > mmrsublist[handle]['AvgRank']:
+                        if status > mmrsublist[handle]['AvgRank']:
                             mmrsublist[handle]['AvgRank'] = status['AvgRank']
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
@@ -1187,7 +1199,7 @@ async def MMR_Monitor():
                                 embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is {status['AvgRank']}", color=0x00ff40)
                                 await ctx.send(embed=embed)
 
-                        elif status['AvgRank'] < mmrsublist[handle]['AvgRank']:
+                        elif status < mmrsublist[handle]['AvgRank']:
                             mmrsublist[handle]['state'] = status['AvgRank']
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
