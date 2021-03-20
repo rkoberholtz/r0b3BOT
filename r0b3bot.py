@@ -947,7 +947,7 @@ async def mmrstatus(ctx, handle = "NONE"):
         result = await get_mmr_status(handle)
 
         if result == "handle not found":
-            await ctx.send(f"'{service}' was not found")
+            await ctx.send(f"'{handle}' was not found")
         else:
             await ctx.send(f"'{handle}'s Ranked Average is: {result}")
 
