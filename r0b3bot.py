@@ -985,15 +985,15 @@ async def mmrsub(ctx, handle = "NONE"):
             mmrsublist = ''
             async with aiof.open('mmrsublist.dat', 'rb') as datafile:
                 pickled_mmrsublist = await datafile.read()
-                mmrsublist = pickle.loads(pickled_mmrsublist)
+                sublist = pickle.loads(pickled_mmrsublist)
             
-            for handle in mmrsublist.keys():
+            for handle in sublist.keys():
                 print(f"current handle: {handle}")
                 for channel in mmrsublist[handle]['channels']:
                     print(f">> {channel}")
                     if channel == ctx.channel.id:
                         print(f">>>> {channel} == {ctx.channel.id}")
-                        mmrsublist += f"'{handle}'"
+                        mmrsublist += f"'{handle}' "
             
             await ctx.send(f"This channel is subscribed to: {mmrsublist}")
 
