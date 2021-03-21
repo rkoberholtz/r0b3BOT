@@ -1029,7 +1029,7 @@ async def mmrsub(ctx, handle = "NONE"):
                             # Marking channel as found
                             found_channel = True
                             # Get the proper name of the service
-                            handle_toremove = service
+                            handle_toremove = handle
                             #Remove the current users channel from this service
                             mmrsublist[handle]['channels'].remove(ctx.channel.id)
                             # Break since we're done.
@@ -1051,7 +1051,7 @@ async def mmrsub(ctx, handle = "NONE"):
                 await ctx.send(f"This channel is not subscribed to alerts for '{handle_toremove}''")
 
         # If the service exists, proceed with adding it to the list.
-        elif handle_state != "service not found":
+        elif handle_state != "handle not found":
         
             print(f">> '{handle}' is a valid Hanlde on Whatismymmr.com.")
             print(f">>  Checking if it has already been subscribed to")
@@ -1095,7 +1095,7 @@ async def mmrsub(ctx, handle = "NONE"):
                             # Append the current channel id to the list for this service
                             print(f">> Adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
                             await ctx.send(f"{handle} has been added to monitored handles for this channel")
-                            mmrsublist[service]['channels'].append(mmrcurrentsub_request[0])
+                            mmrsublist[handle]['channels'].append(mmrcurrentsub_request[0])
                         break
                     
                 if not found_handle:
