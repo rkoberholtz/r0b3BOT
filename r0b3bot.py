@@ -989,7 +989,7 @@ async def mmrsub(ctx, handle = "NONE"):
             
             for handle in sublist.keys():
                 print(f"current handle: {handle}")
-                for channel in mmrsublist[handle]['channels']:
+                for channel in sublist[handle]['channels']:
                     print(f">> {channel}")
                     if channel == ctx.channel.id:
                         print(f">>>> {channel} == {ctx.channel.id}")
