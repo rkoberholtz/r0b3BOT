@@ -946,7 +946,7 @@ async def mmrstatus(ctx, handle = "NONE"):
 
         if result == "handle not found":
             print(f">>   {handle} was not found")
-            await ctx.send(f"'{handle}' was not found")
+            await ctx.send(f"'{handle}' was not found.  Try wrapping handle in double quotes")
         else:
             print(f">>    {handle} found!")
             await ctx.send(f"'{handle}'s Ranked Average is: {result}")
