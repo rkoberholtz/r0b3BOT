@@ -603,11 +603,7 @@ bot.remove_command('help')
 
 @bot.command()
 async def spstatus(ctx, service = "NONE"):
-#async def spalert(ctx, cmd = "NONE", arg = "NONE"):
 
-    # if cmd != "NONE":
-    #    if cmd == "add":
-    #        spalert +=
     if service != "NONE":
         
         #await get_stp_status(ctx, service.lower())
@@ -963,7 +959,7 @@ async def mmrsub(ctx, handle = "NONE"):
     #  Structure of spsublist nested dictionary
     #   spsublist[service name][list of channel ids][a state value]
     #   dict = {'Handle': {'AvgRank' : 'value', 'channels' : ['1232', '43234']}
-    #           'Space Eingineers' : {'state' : online', 'channels' : ['2343', '54563']}}
+    #           'twtv iddosu2x' : {'AvgRank' : '1082', 'channels' : ['2343', '54563']}}
     #
     mmrcurrentsub_request = [] # list of elements detailing the current sub request
     datestring = datetime.now()
@@ -992,10 +988,11 @@ async def mmrsub(ctx, handle = "NONE"):
                 mmrsublist = pickle.loads(pickled_mmrsublist)
             
             for handle in mmrsublist.keys():
-                    
+                print{f"current handle: {handle}")
                 for channel in mmrsublist[handle]['channels']:
+                    print(f">> {channel}")
                     if channel == ctx.channel.id:
-                        mmrsublist += f"'{handle}' "
+                        mmrsublist += f"'{handle}'"
             
             await ctx.send(f"This channel is subscribed to: {mmrsublist}")
 
