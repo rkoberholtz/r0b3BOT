@@ -74,6 +74,7 @@ mmrHEADERS = {
 
 # Configure bot 
 bot = commands.Bot(command_prefix=BOT_COMMAND_PREFIX, description='A derpy derp of a bot.')
+bot.remove_command('help')
 
 # Printing configuration details to console
 print("=== 3D Printer Status config ===")
