@@ -1071,7 +1071,7 @@ async def mmrsub(ctx, handle = "NONE"):
                 # Read in mmrsublist
                 async with aiof.open('mmrsublist.dat', 'rb') as datafile:
                     pickled_mmrsublist = await datafile.read()
-                    mmrspsublist = pickle.loads(pickled_mmrsublist)
+                    mmrsublist = pickle.loads(pickled_mmrsublist)
                 
                 print(f">> Checking if handle is already in datafile")
                 found_handle = False
