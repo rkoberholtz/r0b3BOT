@@ -2,24 +2,22 @@
 
 import discord
 from discord.ext import commands
+from discord import FFmpegPCMAudio
+from discord.utils import get
+from discord.voice_client import VoiceClient
+from datetime import datetime
 import urllib.request
 import random
 import os
 import sys
 import octoapi
 import time
-from datetime import datetime
 import configparser
 import json
-from discord import FFmpegPCMAudio
-from discord.utils import get
-from discord.voice_client import VoiceClient
 import requests
 import asyncio
-#from aiofile import AIOFile
 import aiofiles as aiof
 import pickle
-
 
 #Record the time the bot started
 start_time = time.time() 
@@ -27,20 +25,24 @@ start_time = time.time()
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
 
-# Last error message variable used by $last_error command to display in discord
-global last_error
-last_error = "No errors have been recorded."
-
 try:
     config.read(configFilePath)
 except:
     print("Error loading config!  Please check config file 'bot-config.conf'")
 
+# Last error message variable used by $last_error command to display in discord
+global last_error
+last_error = "No errors have been recorded."
+
 #
-# Read in bot configurations
+# Assign bot config from setting in config file
 #
 
-# Setup HomeAssistant URL and Headers
+# Assign Bot core settings
+DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+BOT_COMMAND_PREFIX = config.get('bot-config', 'bot_command_prefix')
+
+# 3D Printer Setup - HomeAssistant URL and Headers & OctoPrint
 HASS_TOKEN = config.get('bot-config', 'hass_token')
 HASS_URL = config.get('bot-config', 'hass_url')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
@@ -49,10 +51,10 @@ hassHEADERS = {
     'Authorization': f"Bearer {HASS_TOKEN}",
     'content-type': 'application/json',
 }
-
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
-DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
-BOT_COMMAND_PREFIX = config.get('bot-config', 'bot_command_prefix')
+
+# StatPing Monitor Settings
+statping_enable = config.get('bot-config', 'statping_enable')
 STATPING_URL = config.get('bot-config', 'statping_url')
 STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
 statpingURL = STATPING_URL + "/api/services"
@@ -61,27 +63,45 @@ statpingHEADERS = {
     'content-type': 'application/json',
 }
 
-# Configure bot
+#MMR Checker Settings
+mmr_checker_enable = config.get('bot-config', 'mmr_checker_enable')
+mmr_checker_interval = config.get('bot-config', 'mmr_checker_interval')
+mmrURLBASE = config.get('bot-config', 'mmr_api_url')
+mmrHEADERS = {
+    'User-Agent': 'Linux:com.r0b3bot:v.01a',
+    'content-type': 'application/json',
+}
+
+# Configure bot 
 bot = commands.Bot(command_prefix=BOT_COMMAND_PREFIX, description='A derpy derp of a bot.')
+bot.remove_command('help')
 
 # Printing configuration details to console
-print(f"HomeAssistant URL: {hassURL}")
-print(f"HomeAssistant URL HEADERS: {hassHEADERS}")
-print(f"HomeAssistant Light: {HASS_LIGHT}")
-print(f"OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
-print(f"StatPing Server: {STATPING_URL}")
-print(f"StatPing API Key: {STATPING_API_KEY}")
-print(f"StatPing URL Headers: {statpingHEADERS}")
+print("=== 3D Printer Status config ===")
+print(f"   HomeAssistant URL: {hassURL}")
+print(f"   HomeAssistant URL HEADERS: {hassHEADERS}")
+print(f"   HomeAssistant Light: {HASS_LIGHT}")
+print(f"   OctoPrint IP Address: {OCTOPRINT_IP_ADDRESS}")
+print("\n=== StatPing Monitor Config ===")
+print(f"   Enabled: {statping_enable}")
+print(f"   Server: {STATPING_URL}")
+print(f"   API Key: {STATPING_API_KEY}")
+print(f"   URL Headers: {statpingHEADERS}")
+print("\n=== MMR Checker Config ===")
+print(f"   Enabled: {mmr_checker_enable}")
+print(f"   Checker Interval: {mmr_checker_interval}")
+print(f"   API URL BASE: {mmrURLBASE}")
 
 # On Ready
 @bot.event
 async def on_ready():
+    print("\n:::: Config Loaded ::::\n")
     print('Logged in as')
-    print(bot.user.name)
-    print(bot.user.id)
-    print('------')
-    print("Setting activity to 'Listenting to your commands'")
-    activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
+    print(f"   User: {bot.user.name}")
+    print(f"   ID: {bot.user.id}")
+    print(f"\n\n")
+    print(f"Setting activity to 'Listenting to your {BOT_COMMAND_PREFIX}commands'")
+    activity = discord.Activity(name=f"your {BOT_COMMAND_PREFIX}commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
     
@@ -89,11 +109,23 @@ async def on_ready():
     runtime = time.time() - start_time
     if runtime <= 15:
         #Run StatPing_Monitor
-        print("Starting StatPing Monitor.")
-        await StatPing_Monitor()
+        if statping_enable == 'True':
+            print("Statping Monitor enabled, starting StatPing Monitor.")
+            await StatPing_Monitor()
+        
+        
     else:
-        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not restarting monitor.")
+        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not starting StatPing Monitor.")
+    
+    #Run MMR Montor
+    if runtime <= 15:
+        if mmr_checker_enable == 'True':
+            print("MMR Checker enabled, starting MMR Checker.")
+            await MMR_Monitor()
+    else:
+        print(f">> Bot has been running for more than {int(runtime)} seconds.  Not starting MMR Checker.")
 
+    print(">> Startup complete.")
 
 @bot.command()
 async def greetings(ctx):
@@ -228,12 +260,22 @@ async def heavy(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def iran(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/iran.mp3", "$iran", 4)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def big(ctx, member : discord.Member="NONE"):
+    await play_sound(ctx, member, "./sounds/big.mp3", "$big", 4)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
     if ctx.message.channel.is_nsfw():
         soundfiles = ["./sounds/leeroy.mp3","./sounds/monkey_bitch.mp3","./sounds/More_cowbell.mp3","./sounds/BoomBitch.mp3","./sounds/Promoted.mp3","./sounds/Trololo.mp3","./sounds/Oops.mp3"]
-        await play_sound(ctx, member, random.choice(soundfiles), "$rs")
+        await play_sound(ctx, member, random.choice(soundfiles), "$rs", 6)
     else:
         print(f"[{datestring}]: {ctx.message.author.display_name} called $rs, but is not in a NSFW channel")
         await ctx.send("This command is too explicit for you!")
@@ -525,7 +567,6 @@ async def updateStatus():
     activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
-
 @bot.command()
 async def info(ctx):
     embed = discord.Embed(title="R0b3BOT", description="Derpy Derp of a Bot :P", color=0xeee657)
@@ -560,15 +601,9 @@ async def info(ctx):
     embed.add_field(name="Source Code:", value="[R0b3Bot on Gitlab](https://gitlab.rickelobe.com/Bots/r0b3BOT)", inline=False)
     await ctx.send(embed=embed)
 
-bot.remove_command('help')
-
 @bot.command()
 async def spstatus(ctx, service = "NONE"):
-#async def spalert(ctx, cmd = "NONE", arg = "NONE"):
 
-    # if cmd != "NONE":
-    #    if cmd == "add":
-    #        spalert +=
     if service != "NONE":
         
         #await get_stp_status(ctx, service.lower())
@@ -585,8 +620,6 @@ async def spstatus(ctx, service = "NONE"):
 
     else:
         await ctx.send("Please speficy a service name to query.")
-
-    
 
 @bot.command()
 async def spsub(ctx, service = "NONE"):
@@ -836,45 +869,6 @@ async def StatPing_Monitor():
             print(">> spsublist.dat does not exist, nothing to do.")
         
         await asyncio.sleep(60)
- 
-
-async def sp_monitor(sublist):
-
-    # Checks the services listed in spsublist for status change
-    # Sublist is a list of 3 items:
-    #    - ctx (used to send alert to channel)
-    #    - service (the name of the service to check)
-    #    - status string (last status of the service, either 'online' or 'offline')
-
-    ctx = sublist[0]
-
-
-    while True:
-
-        status = await get_stp_status(spsublist[1])
-        if status['online'] and spsublist[2] == "online":
-            # nothing has changed, no alert needed
-            await asyncio.sleep(1)
-        elif not status['online'] and spsublist[2] == "offline":
-            # again, nothing has changed no alert needed
-            await asyncio.sleep(1)
-        else:
-            print(f"Status of {status['name']}' has changed")
-            if status['online']:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Online!", color=0x00ff40)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"{spsublist[1]} is Online!")
-                spsublist[2] = "online"
-            elif not status['online']:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Offline!", color=0xff2200)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"{spsublist[1]} is Offline!")
-                spsublist[2] = "offline"
-            else:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is in an unknown state!", color=0xffff00)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"Unknown state for service {spsublist[1]}")
-        await asyncio.sleep(60)
 
 async def get_stp_status(service):
 
@@ -895,10 +889,309 @@ async def get_stp_status(service):
     if not found:  
         return "service not found"  
 
+#
+# Begin functions for MMR sub/alerts
+#
+
+@bot.command()
+async def mmrstatus(ctx, handle = "NONE"):
+
+    print(f">> {BOT_COMMAND_PREFIX}mmrstatus was called for {handle}")
+
+    if handle != "NONE":
+        
+        #await get_stp_status(ctx, service.lower())
+        result = await get_mmr_status(handle)
+
+        if result == "handle not found":
+            print(f">>   {handle} was not found")
+            await ctx.send(f"'{handle}' was not found.  Try wrapping handle in double quotes")
+        else:
+            print(f">>    {handle} found!")
+            await ctx.send(f"'{handle}'s Ranked Average is: {result}")
+
+    else:
+        print(f">>    User did not speficy handle")
+        await ctx.send("Please speficy a service name to query.")
+
+@bot.command()
+async def mmrsub(ctx, handle = "NONE"):
+
+    mmrsublist = {} # MMR Subscription list to be read in from file
+    #  Structure of spsublist nested dictionary
+    #   spsublist[service name][list of channel ids][a state value]
+    #   dict = {'Handle': {'AvgRank' : 'value', 'channels' : ['1232', '43234']}
+    #           'twtv iddosu2x' : {'AvgRank' : '1082', 'channels' : ['2343', '54563']}}
+    #
+    mmrcurrentsub_request = [] # list of elements detailing the current sub request
+    datestring = datetime.now()
+    datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
+
+    # replace _ with sapces
+    handle = handle.replace("_"," ")
+
+    print(f"[{datestring}]: {ctx.message.author.display_name} called '$mmrsub '{handle}'''")
+
+    # Only work on this if the user has supplied a service name to monitor, a value of NONE
+    #  means nothing was specified
+    if handle != "NONE" and handle != "-list" and not handle.startswith('-del '):
+        
+        print(f">> Querying status of '{handle}' to see if it exists")
+        handle_state = await get_mmr_status(handle)
+
+    if handle != "NONE":
+
+        if handle == "-list":
+            # List the serivces that this channel is subscribed to
+            # Read in mmrsublist
+            mmrsublist = ''
+            async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                pickled_mmrsublist = await datafile.read()
+                sublist = pickle.loads(pickled_mmrsublist)
+            
+            for handle in sublist.keys():
+                print(f"current handle: {handle}")
+                for channel in sublist[handle]['channels']:
+                    print(f">> {channel}")
+                    if channel == ctx.channel.id:
+                        print(f">>>> {channel} == {ctx.channel.id}")
+                        mmrsublist += f"'{handle}' "
+            
+            await ctx.send(f"This channel is subscribed to: {mmrsublist}")
+
+        elif handle.startswith('-del:'):
+            # Delete the service from this channels subscriptions
+            handle_toremove = handle[5:]
+            print(f"{handle_toremove}")
+
+            # Open the data file for read in
+            async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                pickled_mmrsublist = await datafile.read()
+                mmrsublist = pickle.loads(pickled_mmrsublist)
+            
+            # We haven't found either the channel or servic; mark as false
+            found_handle = False
+            found_channel = False
+
+            # Iterate through the service names in the data
+            for handle in mmrsublist.keys():
+                
+                # If the service we want to unsub from is the same as the service in the data, we need to search for the channel
+                if handle.lower() == handle_toremove.lower():
+
+                    # We've found the service match, mark as true
+                    found_handle = True
+                    
+                    # Iterate through the channels that are subbed to this service
+                    for channel in mmrsublist[handle]['channels']:
+
+                        # If a channel listed in the service matches the current users channel id, we've found our match
+                        if channel == ctx.channel.id:
+
+                            # Marking channel as found
+                            found_channel = True
+                            # Get the proper name of the service
+                            handle_toremove = handle
+                            #Remove the current users channel from this service
+                            mmrsublist[handle]['channels'].remove(ctx.channel.id)
+                            # Break since we're done.
+                            break
+
+                # If we got to the point of finding the channel, we're done.
+                if found_channel:
+                    break
+
+            if found_handle and found_channel:
+                print(">> Saving dictionary to mmrsublist.dat")
+                async with aiof.open('mmrsublist.dat', 'wb') as datafile:
+                    pickled_mmrsublist = pickle.dumps(mmrsublist, protocol=4)
+                    await datafile.write(pickled_mmrsublist)
+                    #await datafile.fsync()
+                    await datafile.flush()
+                await ctx.send(f"This channel is unsubscribed from '{handle}' alerts.")
+            else:
+                await ctx.send(f"This channel is not subscribed to alerts for '{handle_toremove}''")
+
+        # If the service exists, proceed with adding it to the list.
+        elif handle_state != "handle not found":
+        
+            print(f">> '{handle}' is a valid Hanlde on Whatismymmr.com.")
+            print(f">>  Checking if it has already been subscribed to")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
+            mmrcurrentsub_request.append(ctx.channel.id)
+            mmrcurrentsub_request.append(handle)
+            mmrcurrentsub_request.append(handle_state)
+            print(f">>    Channel ID: {mmrcurrentsub_request[0]}")
+            print(f">>    Handle: {mmrcurrentsub_request[1]}")
+            print(f">>    Current Ranked Average: {mmrcurrentsub_request[2]}")
+
+            # read in data file containing dict of subscriptions
+            print(">> Checking for mmrsublist.dat")
+            if os.path.exists('mmrsublist.dat'):
+
+                print(">> Data file exists, reading it in.")
+                # Read in mmrsublist
+                async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                    pickled_mmrsublist = await datafile.read()
+                    mmrsublist = pickle.loads(pickled_mmrsublist)
+                
+                print(f">> Checking if handle is already in datafile")
+                found_handle = False
+                found_channel = False
+                for handle in mmrsublist.keys():
+                    print(f">>   Does '{handle}'' == '{mmrcurrentsub_request[1]}'?")
+                    
+                    if handle == mmrcurrentsub_request[1]:
+                        found_handle = True
+                        # This service matched what the user is trying to subscribe to
+                        # Now we need to check if this is for the same channel
+                        print(f">>   Yes, checking if channel {mmrcurrentsub_request[0]} is already subscribed")
+                        
+                        for channel in mmrsublist[handle]['channels']:
+                            if channel == mmrcurrentsub_request[0]:
+                                print(f">>   Channel ({mmrcurrentsub_request[0]}) is already subscribed to {handle}")
+                                await ctx.send(f"This channel is already subscribed to {handle} alerts")
+                                found_channel = True
+                                break
+                        if not found_channel:
+                            # Append the current channel id to the list for this service
+                            print(f">> Handle exists, channel not subbed, adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
+                            await ctx.send(f"{handle} has been added to monitored handles for this channel")
+                            mmrsublist[handle]['channels'].append(mmrcurrentsub_request[0])
+                        break
+                    
+                if not found_handle:
+                    # Append the current channel id to the list for this service
+                    print(f">> Handle does not exist, adding new entry for '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
+                    await ctx.send(f"{mmrcurrentsub_request[1]} has been added to monitored handle for this channel")
+                    #newsub = {}
+                    #newsub[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
+                    mmrsublist[mmrcurrentsub_request[1]] = {'AvgRank' : mmrcurrentsub_request[2], 'channels' : [mmrcurrentsub_request[0]]}
+                    
+            else:
+
+                print(">> mmrsublist.dat does not exist, new file will be created")
+            
+                # append new subscription to dict
+                print(">> Creating new dictionary")
+                mmrsublist[mmrcurrentsub_request[1]] = {'AvgRank' : mmrcurrentsub_request[2], 'channels' : [mmrcurrentsub_request[0]]}
+                print(f">> {handle} subscription has been saved")
+                await ctx.send(f"{handle} has been added to monitored handles for this channel")
+
+            #Write updated array to data file
+            print(">> Saving dictionary to mmrsublist.dat")
+            async with aiof.open('mmrsublist.dat', 'wb') as datafile:
+                pickled_mmrsublist = pickle.dumps(mmrsublist, protocol=4)
+                await datafile.write(pickled_mmrsublist)
+                #await datafile.fsync()
+                await datafile.flush()
+            
+            print(">> Done")
+            #await ctx.send(f"'{service_state['name']}' added to monitored services")
+        
+        else:
+            print(f">> '{handle}' does not exist, cancelling subscription")
+            await ctx.send(f"{handle} was not found")
+
+async def get_mmr_status(mmrhandle):
+
+    # Get MMR status status via API
+    #need to replace spaces with %20 before just inserting into URL
+    mmrhandle.replace(" ", "%20")
+    mmrURL = ''.join(mmrURLBASE) + mmrhandle
+    response = requests.get(mmrURL, headers=mmrHEADERS)
+    mmr_stats = json.loads(response.text)
+
+    if "error" in mmr_stats:
+        return "handle not found"
+
+    return mmr_stats['ranked']['avg']
+ 
+async def MMR_Monitor():
+
+    # reads in "mmrsublist.dat" every 3 hours then iterates
+    # through to check for mmr status changes.  This function will need to check
+    # that "spsublist.dat" exists and is not empty.  This function should be called
+    # in bot.on_ready
+
+    # read in data file containing list of subscriptions
+    while True:
+        print("MMR Monitor: Reading in mmrsublist.dat")
+        if os.path.exists('mmrsublist.dat'):
+            async with aiof.open('mmrsublist.dat', 'rb') as datafile:
+                pickled_mmrsublist = await datafile.read()
+                mmrsublist = pickle.loads(pickled_mmrsublist)
+        
+            for handle in mmrsublist.keys():
+                # service used to be subscription
+                status = await get_mmr_status(handle)
+                print(f"{handle} | {mmrsublist[handle]}")
+                print(f">> '{handle}'s Average Rank: {status} | Previous state: {mmrsublist[handle]['AvgRank']}")
+                if status != 'handle not found':
+                    if status == mmrsublist[handle]['AvgRank']:
+
+                        # nothing has changed, no alert needed
+                        await asyncio.sleep(1)
+                    elif not status != mmrsublist[handle]['AvgRank']:
+
+                        # again, nothing has changed no alert needed
+                        await asyncio.sleep(1)
+                    else:
+                    
+                        print(f">> Status of '{handle}' has changed, notifying subscribed channels")
+
+                        if status > mmrsublist[handle]['AvgRank']:
+                            mmrsublist[handle]['AvgRank'] = status
+                            for channel in mmrsublist[handle]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Increased!")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s ranked average increased to {status}!", color=0x00ff40)
+                                await ctx.send(embed=embed)
+
+                        elif status < mmrsublist[handle]['AvgRank']:
+                            mmrsublist[handle]['AvgRank'] = status
+                            for channel in mmrsublist[handle]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Decreased!")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s ranked average decreased to {status}!", color=0xff2200)
+                                await ctx.send(embed=embed)
+
+                        else:
+                            for channel in mmrsublist[handle]['channels']:
+                                ctx = bot.get_channel(channel)
+                                print(f">>  Alerting {ctx} that {handle}'s rank is an unknown state")
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank is in an unknown state!", color=0xffff00)
+                                await ctx.send(embed=embed)
+                        print(">> Done")
+                
+                #new_spsublist.append(subscription)
+            
+            # Write status changes to spsublist.dat
+            async with aiof.open('mmrsublist.dat', 'wb') as datafile:
+                pickled_mmrsublist = pickle.dumps(mmrsublist)
+                await datafile.write(pickled_mmrsublist)
+                #await datafile.fsync()
+                await datafile.flush()
+                    
+        else:
+            print(">> mmrsublist.dat does not exist, nothing to do.")
+        
+        # 10800 seconds == 3 hours :)
+        await asyncio.sleep(int(mmr_checker_interval))
+
+#
+#
+#
 
 @bot.command()
 async def help(ctx):
-    embed = discord.Embed(title="R0b3BOT", description="List of commands are:", color=0xeee657)
+    embed = discord.Embed(title='R0b3BOT Core & Debug Commands:', description="Core commands for info and debug", color=0xeee657)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="R0b3BOT Sound Commands", description="To play a sound in a chat channel, use one of the following:", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}explain", value="Displays Dalek EXPLAIN gif", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
@@ -912,14 +1205,22 @@ async def help(ctx):
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}trololo @member", value="Plays a clip of Trololo song", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'")
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="StatPing Service Monitor Commands", description="Commands for managing the StatPing Service Monitor", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}spstatus servicename", value="Retrieves status of service from StatPing")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}spsub service", value="Allows user to subscribe to service status change alerts for the channel. Can replace <service> with -list and -del:service to manage alerts. NOTICE:Replace spaces in service names w/ '_'!")
     await ctx.send(embed=embed)
 
-    embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
+    embed = discord.Embed(title="MMR Monitor Commands", description="Commands for managing the MMR Checker", color=0xeee657)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrstatus handle", value="Queries the MMR API for the handle specified and returns the current Ranked Average")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrsub handle", value="Subscribe to receive alerts of ranked average changes for the specified handle.  Can run command with just '-list' to list handle the current channel is subbed to.  Use -del:service to unsub from a handle. NOTICE:Replace spaces in service names w/ '_'!")
     await ctx.send(embed=embed)
 
 # Function to run shell command and return stdout or sterr
