@@ -992,6 +992,7 @@ async def mmrsub(ctx, handle = "NONE"):
                 for channel in mmrsublist[handle]['channels']:
                     print(f">> {channel}")
                     if channel == ctx.channel.id:
+                        print(f">>>> {channel} == {ctx.channel.id}")
                         mmrsublist += f"'{handle}'"
             
             await ctx.send(f"This channel is subscribed to: {mmrsublist}")
