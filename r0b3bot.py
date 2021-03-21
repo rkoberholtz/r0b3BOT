@@ -2,24 +2,22 @@
 
 import discord
 from discord.ext import commands
+from discord import FFmpegPCMAudio
+from discord.utils import get
+from discord.voice_client import VoiceClient
+from datetime import datetime
 import urllib.request
 import random
 import os
 import sys
 import octoapi
 import time
-from datetime import datetime
 import configparser
 import json
-from discord import FFmpegPCMAudio
-from discord.utils import get
-from discord.voice_client import VoiceClient
 import requests
 import asyncio
-#from aiofile import AIOFile
 import aiofiles as aiof
 import pickle
-
 
 #Record the time the bot started
 start_time = time.time() 
@@ -27,20 +25,24 @@ start_time = time.time()
 config = configparser.RawConfigParser()
 configFilePath = r'bot_config.conf'
 
-# Last error message variable used by $last_error command to display in discord
-global last_error
-last_error = "No errors have been recorded."
-
 try:
     config.read(configFilePath)
 except:
     print("Error loading config!  Please check config file 'bot-config.conf'")
 
+# Last error message variable used by $last_error command to display in discord
+global last_error
+last_error = "No errors have been recorded."
+
 #
-# Read in bot configurations
+# Assign bot config from setting in config file
 #
 
-# Setup HomeAssistant URL and Headers
+# Assign Bot core settings
+DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
+BOT_COMMAND_PREFIX = config.get('bot-config', 'bot_command_prefix')
+
+# 3D Printer Setup - HomeAssistant URL and Headers & OctoPrint
 HASS_TOKEN = config.get('bot-config', 'hass_token')
 HASS_URL = config.get('bot-config', 'hass_url')
 HASS_LIGHT = config.get('bot-config', 'hass_light')
@@ -49,10 +51,9 @@ hassHEADERS = {
     'Authorization': f"Bearer {HASS_TOKEN}",
     'content-type': 'application/json',
 }
-
 OCTOPRINT_IP_ADDRESS = config.get('bot-config', 'octoprint_ip_address')
-DISCORD_AUTH_TOKEN = config.get('bot-config', 'discord_auth_token')
-BOT_COMMAND_PREFIX = config.get('bot-config', 'bot_command_prefix')
+
+# StatPing Monitor Settings
 statping_enable = config.get('bot-config', 'statping_enable')
 STATPING_URL = config.get('bot-config', 'statping_url')
 STATPING_API_KEY = config.get('bot-config', 'statping_api_key')
@@ -62,6 +63,7 @@ statpingHEADERS = {
     'content-type': 'application/json',
 }
 
+#MMR Checker Settings
 mmr_checker_enable = config.get('bot-config', 'mmr_checker_enable')
 mmr_checker_interval = config.get('bot-config', 'mmr_checker_interval')
 mmrURLBASE = config.get('bot-config', 'mmr_api_url')
@@ -70,7 +72,7 @@ mmrHEADERS = {
     'content-type': 'application/json',
 }
 
-# Configure bot
+# Configure bot 
 bot = commands.Bot(command_prefix=BOT_COMMAND_PREFIX, description='A derpy derp of a bot.')
 
 # Printing configuration details to console
