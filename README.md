@@ -11,6 +11,7 @@ This is R0b3's Discord Bot.  It's creation was basically a challenge posed a cow
 *  Query serivces states on StatPing using the `$spstatus`
 *  Use `$spsub` to "Subscribe" to service change alerts for StatPing services.  Subscribed alerts are persistent and are not lost on bot restart.<br>
 ![Example service alert](images/Service_alert.png)
+*  Use `$mmrsub` to "Subscribe" to a League of Legends handle's Ranked Average.  As with the StatPing feature, the subscriptions are persistent.
 *  Play a selection of sound clips to voice channel members using the various commands (`$torololo`, `$oops`, `$promoted`, etc)
 
 # Commands
@@ -24,4 +25,4 @@ This is R0b3's Discord Bot.  It's creation was basically a challenge posed a cow
 1. Create a Discord Bot via Developer tools<br>
 2. Enter configuration parameters in bot_config.conf.example<br>
 3. Enter OctoPrint config parameters in octoapi.conf.example<br>
-4. Rename *.example files as *.conf<br>
+4. Rename *.example files as *.conf and setup your config<br>
