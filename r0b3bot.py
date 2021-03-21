@@ -945,11 +945,14 @@ async def mmrstatus(ctx, handle = "NONE"):
         result = await get_mmr_status(handle)
 
         if result == "handle not found":
+            print(f">>   {handle} was not found")
             await ctx.send(f"'{handle}' was not found")
         else:
+            print(f">>    {handle} found!")
             await ctx.send(f"'{handle}'s Ranked Average is: {result}")
 
     else:
+        print(f">>    User did not speficy handle")
         await ctx.send("Please speficy a service name to query.")
 
 @bot.command()
