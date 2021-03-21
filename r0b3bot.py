@@ -566,7 +566,6 @@ async def updateStatus():
     activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
-
 @bot.command()
 async def info(ctx):
     embed = discord.Embed(title="R0b3BOT", description="Derpy Derp of a Bot :P", color=0xeee657)
@@ -601,8 +600,6 @@ async def info(ctx):
     embed.add_field(name="Source Code:", value="[R0b3Bot on Gitlab](https://gitlab.rickelobe.com/Bots/r0b3BOT)", inline=False)
     await ctx.send(embed=embed)
 
-bot.remove_command('help')
-
 @bot.command()
 async def spstatus(ctx, service = "NONE"):
 
@@ -622,8 +619,6 @@ async def spstatus(ctx, service = "NONE"):
 
     else:
         await ctx.send("Please speficy a service name to query.")
-
-    
 
 @bot.command()
 async def spsub(ctx, service = "NONE"):
@@ -873,45 +868,6 @@ async def StatPing_Monitor():
             print(">> spsublist.dat does not exist, nothing to do.")
         
         await asyncio.sleep(60)
- 
-
-async def sp_monitor(sublist):
-
-    # Checks the services listed in spsublist for status change
-    # Sublist is a list of 3 items:
-    #    - ctx (used to send alert to channel)
-    #    - service (the name of the service to check)
-    #    - status string (last status of the service, either 'online' or 'offline')
-
-    ctx = sublist[0]
-
-
-    while True:
-
-        status = await get_stp_status(spsublist[1])
-        if status['online'] and spsublist[2] == "online":
-            # nothing has changed, no alert needed
-            await asyncio.sleep(1)
-        elif not status['online'] and spsublist[2] == "offline":
-            # again, nothing has changed no alert needed
-            await asyncio.sleep(1)
-        else:
-            print(f"Status of {status['name']}' has changed")
-            if status['online']:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Online!", color=0x00ff40)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"{spsublist[1]} is Online!")
-                spsublist[2] = "online"
-            elif not status['online']:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Offline!", color=0xff2200)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"{spsublist[1]} is Offline!")
-                spsublist[2] = "offline"
-            else:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is in an unknown state!", color=0xffff00)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"Unknown state for service {spsublist[1]}")
-        await asyncio.sleep(60)
 
 async def get_stp_status(service):
 
@@ -1136,45 +1092,6 @@ async def mmrsub(ctx, handle = "NONE"):
             print(f">> '{handle}' does not exist, cancelling subscription")
             await ctx.send(f"{handle} was not found")
 
-async def mmr_monitor(sublist):
-
-    # Checks the services listed in spsublist for status change
-    # Sublist is a list of 3 items:
-    #    - ctx (used to send alert to channel)
-    #    - service (the name of the service to check)
-    #    - status string (last status of the service, either 'online' or 'offline')
-
-    ctx = sublist[0]
-
-
-    while True:
-
-        status = await get_stp_status(spsublist[1])
-        if status['online'] and spsublist[2] == "online":
-            # nothing has changed, no alert needed
-            await asyncio.sleep(1)
-        elif not status['online'] and spsublist[2] == "offline":
-            # again, nothing has changed no alert needed
-            await asyncio.sleep(1)
-        else:
-            print(f"Status of {status['name']}' has changed")
-            if status['online']:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Online!", color=0x00ff40)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"{spsublist[1]} is Online!")
-                spsublist[2] = "online"
-            elif not status['online']:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is Offline!", color=0xff2200)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"{spsublist[1]} is Offline!")
-                spsublist[2] = "offline"
-            else:
-                embed = discord.Embed(title=f"{status['name']} Service Alert", description=f"{spsublist[1]} is in an unknown state!", color=0xffff00)
-                await ctx.send(embed=embed)
-                #await ctx.send(f"Unknown state for service {spsublist[1]}")
-        #Sleep for 3 hours
-        await asyncio.sleep(10800)
-
 async def get_mmr_status(mmrhandle):
 
     # Get MMR status status via API
@@ -1189,7 +1106,6 @@ async def get_mmr_status(mmrhandle):
 
     return mmr_stats['ranked']['avg']
  
-
 async def MMR_Monitor():
 
     # reads in "mmrsublist.dat" every 3 hours then iterates
@@ -1228,7 +1144,7 @@ async def MMR_Monitor():
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
                                 print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Increased!")
-                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank increased to {status}!", color=0x00ff40)
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s ranked average increased to {status}!", color=0x00ff40)
                                 await ctx.send(embed=embed)
 
                         elif status < mmrsublist[handle]['AvgRank']:
@@ -1236,7 +1152,7 @@ async def MMR_Monitor():
                             for channel in mmrsublist[handle]['channels']:
                                 ctx = bot.get_channel(channel)
                                 print(f">>  Alerting {ctx} that '{handle}'s Average Rank has Decreased!")
-                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s rank decreased to {status}!", color=0xff2200)
+                                embed = discord.Embed(title=f"MMR Alert", description=f"{handle}'s ranked average decreased to {status}!", color=0xff2200)
                                 await ctx.send(embed=embed)
 
                         else:
