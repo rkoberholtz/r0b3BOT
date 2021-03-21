@@ -1301,7 +1301,7 @@ async def help(ctx):
 
     embed = discord.Embed(title="MMR Monitor Commands", description="Commands for managing the MMR Checker", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrstatus handle", value="Queries the MMR API for the handle specified and returns the current Ranked Average")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrsub handle", value="Subscribe to receive alerts of ranked average changes for the specified handle")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrsub handle", value="Subscribe to receive alerts of ranked average changes for the specified handle.  Can run command with just '-list' to list handle the current channel is subbed to.  Use -del:service to unsub from a handle. NOTICE:Replace spaces in service names w/ '_'!"")
     await ctx.send(embed=embed)
 
 # Function to run shell command and return stdout or sterr
