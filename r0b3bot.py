@@ -988,7 +988,7 @@ async def mmrsub(ctx, handle = "NONE"):
                 mmrsublist = pickle.loads(pickled_mmrsublist)
             
             for handle in mmrsublist.keys():
-                print{f"current handle: {handle}")
+                print(f"current handle: {handle}")
                 for channel in mmrsublist[handle]['channels']:
                     print(f">> {channel}")
                     if channel == ctx.channel.id:
