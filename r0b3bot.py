@@ -1077,9 +1077,9 @@ async def mmrsub(ctx, handle = "NONE"):
                 found_handle = False
                 found_channel = False
                 for handle in mmrsublist.keys():
-                    print(f">>   Does {handle.lower()} == {mmrcurrentsub_request[1].lower()}")
+                    print(f">>   Does {handle} == {mmrcurrentsub_request[1]}")
                     
-                    if handle.lower() == mmrcurrentsub_request[1].lower():
+                    if handle == mmrcurrentsub_request[1]:
                         found_handle = True
                         # This service matched what the user is trying to subscribe to
                         # Now we need to check if this is for the same channel
@@ -1087,20 +1087,20 @@ async def mmrsub(ctx, handle = "NONE"):
                         
                         for channel in mmrsublist[handle]['channels']:
                             if channel == mmrcurrentsub_request[0]:
-                                print(f">> This channel is already subscribed to {handle}")
+                                print(f">> Handle exists, channel ({mmrcurrentsub_request[0]}) is already subscribed to {handle}")
                                 await ctx.send(f"This channel is already subscribed to {handle} alerts")
                                 found_channel = True
                                 break
                         if not found_channel:
                             # Append the current channel id to the list for this service
-                            print(f">> Adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
+                            print(f">> Handle exists, channel not subbed, adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
                             await ctx.send(f"{handle} has been added to monitored handles for this channel")
                             mmrsublist[handle]['channels'].append(mmrcurrentsub_request[0])
                         break
                     
                 if not found_handle:
                     # Append the current channel id to the list for this service
-                    print(f">> Adding handle '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
+                    print(f">> Handle does not exist, adding new entry for '{mmrcurrentsub_request[1]}' to {ctx.channel.id}")
                     await ctx.send(f"{mmrcurrentsub_request[1]} has been added to monitored handle for this channel")
                     #newsub = {}
                     #newsub[currentsub_request[1]] = {'state' : 'online', 'channels' : [currentsub_request[0]]}
