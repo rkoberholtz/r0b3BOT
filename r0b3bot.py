@@ -595,8 +595,6 @@ async def info(ctx):
 
     print("Getting git describe data to display as version in info embed")
     bot_version = await run('git describe --tags')
-    bot_commit = await run ('git rev-parse --short HEAD')
-    bot_version = f"{bot_version}-{bot_commit}"
     embed.add_field(name="Version:", value=f"{bot_version}", inline=False)
 
     # Gitlab link to source
