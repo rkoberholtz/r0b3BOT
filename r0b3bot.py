@@ -594,7 +594,7 @@ async def info(ctx):
     embed.add_field(name="Uptime [WW:DD:HH:MM:SS]:", value=f"{week:02d}:{day:02d}:{hour:02d}:{minute:02d}:{second:02d}", inline=False)
 
     print("Getting git describe data to display as version in info embed")
-    bot_version = await run('git describe')
+    bot_version = await run('git describe --tags')
     embed.add_field(name="Version:", value=f"{bot_version}", inline=False)
 
     # Gitlab link to source
