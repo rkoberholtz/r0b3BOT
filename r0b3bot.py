@@ -1104,8 +1104,8 @@ async def get_mmr_status(mmrhandle):
     try:
     	mmr_stats = json.loads(response.text)
     except ValueError as e:
-	return "handle not found"
-
+	    return "handle not found"
+        
     return mmr_stats['ranked']['avg']
  
 async def MMR_Monitor():
