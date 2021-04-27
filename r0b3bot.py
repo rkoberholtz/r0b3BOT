@@ -1100,11 +1100,12 @@ async def get_mmr_status(mmrhandle):
     mmrhandle.replace(" ", "%20")
     mmrURL = ''.join(mmrURLBASE) + mmrhandle
     response = requests.get(mmrURL, headers=mmrHEADERS)
-    mmr_stats = json.loads(response.text)
-
-    if "error" in mmr_stats:
-        return "handle not found"
-
+    
+    try:
+    	mmr_stats = json.loads(response.text)
+    except ValueError as e:
+	    return "handle not found"
+        
     return mmr_stats['ranked']['avg']
  
 async def MMR_Monitor():
