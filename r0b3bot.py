@@ -272,6 +272,8 @@ async def big(ctx, member : discord.Member="NONE"):
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def breee(ctx, member : discord.Member="NONE"):
     await play_sound(ctx, member, "./sounds/wbbwb_metal.mp3", "$breee", 4)
+    await ctx.send(f"\m/  (　ﾟДﾟ)＜!!  \m/")
+
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
