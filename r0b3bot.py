@@ -274,6 +274,12 @@ async def breee(ctx, member : discord.Member="NONE"):
     await ctx.send(f"\m/  (　ﾟДﾟ)＜BREEEEE!!  \m/")
     await play_sound(ctx, member, "./sounds/wbbwb_metal.mp3", "$breee", 4)
 
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def nice(ctx, member : discord.Member="NONE"):
+    await ctx.send(f"\m/  (　ﾟДﾟ)＜N!CE!  \m/")
+    await play_sound(ctx, member, "./sounds/wbtbwb-nice.mp3", "$nice", 4)
+
 
 
 @bot.command()
