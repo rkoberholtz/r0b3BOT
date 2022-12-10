@@ -270,6 +270,20 @@ async def big(ctx, member : discord.Member="NONE"):
 
 @bot.command()
 @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def breee(ctx, member : discord.Member="NONE"):
+    await ctx.send(f"\m/  (　ﾟДﾟ)＜BREEEEE!!  \m/")
+    await play_sound(ctx, member, "./sounds/wbbwb_metal.mp3", "$breee", 4)
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+async def nice(ctx, member : discord.Member="NONE"):
+    await ctx.send(f"\m/  (　ﾟДﾟ)＜N!CE!  \m/")
+    await play_sound(ctx, member, "./sounds/wbtbwb-nice.mp3", "$nice", 4)
+
+
+
+@bot.command()
+@commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
 async def rs(ctx, member : discord.Member="NONE"):
     datestring = datetime.now()
     datestring = datestring.strftime("%m/%d/%Y-%H:%M:%S")
@@ -1100,11 +1114,12 @@ async def get_mmr_status(mmrhandle):
     mmrhandle.replace(" ", "%20")
     mmrURL = ''.join(mmrURLBASE) + mmrhandle
     response = requests.get(mmrURL, headers=mmrHEADERS)
-    mmr_stats = json.loads(response.text)
-
-    if "error" in mmr_stats:
-        return "handle not found"
-
+    
+    try:
+    	mmr_stats = json.loads(response.text)
+    except ValueError as e:
+	    return "handle not found"
+        
     return mmr_stats['ranked']['avg']
  
 async def MMR_Monitor():
@@ -1184,30 +1199,43 @@ async def MMR_Monitor():
 #
 
 @bot.command()
+async def commands(ctx):
+    # Redirect to the 'help' command
+    await help(ctx)
+
+@bot.command()
 async def help(ctx):
-    embed = discord.Embed(title='R0b3BOT Core & Debug Commands:', description="Core commands for info and debug", color=0xeee657)
+    embed = discord.Embed(title='Core & Debug Commands:', description="Core commands for info and debug", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}info", value="Gives a little info about the bot", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}help", value="Gives this message", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}last_error", value="Will display the real error message the bot has last encountered for additional debugging info")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}greetings", value="Gives a nice greeting message", inline=False)
     await ctx.send(embed=embed)
 
-    embed = discord.Embed(title="R0b3BOT Sound Commands", description="To play a sound in a chat channel, use one of the following:", color=0xeee657)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
+    embed = discord.Embed(title="GIF Commands", description="Commands to call up a GIF image", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}explain", value="Displays Dalek EXPLAIN gif", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}holyshit", value="Displays Marty McFly HOLY SHIT gif", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}greetings", value="Gives a nice greet message", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}cat", value="Gives a cute cat gif to lighten up the mood.", inline=False)
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="Sound Commands", description="To play a sound in a chat channel, use one of the following:", color=0xeee657)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}aww @member", value="Plays Rick & Morty clip 'Awww bitch'", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}bitch @member", value="Plays clip of BigEric420 saying 'maybe you shouldn't be such a bitch.mp3'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}bitch @member", value="Plays sound clip of @BigEric420", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}boom @member", value="Plays 'Boom Bitch' sound clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}breee @member", value="Plays 'BREEEEE' clip from a WBTBWB song", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}cowbell @member", value="Plays 'SNL More Cowbell' sound clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}nice @member", value="Plays clip from WBTBWB - Nice!", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}oops @member", value="Plays 'Oops.mp3'", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}promoted @member", value="Plays Battlefield Friends 'PROMOTED!' sound clip", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}trololo @member", value="Plays a clip of Trololo song", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}wow @member", value="Plays clip of Owen Wilson saying 'Woooow'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}yaw @member", value="Plays clip of Busta Ryhmes 'Yaw Yaw Yaw'", inline=False)
     await ctx.send(embed=embed)
 
     embed = discord.Embed(title="A note about sound clips:", description="Sound clips are only played in voice channels.  If a user is not specified when calling the command, the sound will played in the channel of that issuing user is currently joined to.  When a username is specified, the bot will play the sound in the channel that user is currently in.")
@@ -1221,6 +1249,10 @@ async def help(ctx):
     embed = discord.Embed(title="MMR Monitor Commands", description="Commands for managing the MMR Checker", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrstatus handle", value="Queries the MMR API for the handle specified and returns the current Ranked Average")
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}mmrsub handle", value="Subscribe to receive alerts of ranked average changes for the specified handle.  Can run command with just '-list' to list handle the current channel is subbed to.  Use -del:service to unsub from a handle. NOTICE:Replace spaces in service names w/ '_'!")
+    await ctx.send(embed=embed)
+
+    embed = discord.Embed(title="3D Printer Status", color=0xeee657)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}printstat", value="Uploads a snapshot of Rich's 3D printer and current stats", inline=False)
     await ctx.send(embed=embed)
 
 # Function to run shell command and return stdout or sterr
