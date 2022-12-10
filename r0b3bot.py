@@ -1201,7 +1201,7 @@ async def MMR_Monitor():
 @bot.command()
 async def commands(ctx):
     # Redirect to the 'help' command
-    help(ctx)
+    await help(ctx)
 
 @bot.command()
 async def help(ctx):
@@ -1221,14 +1221,14 @@ async def help(ctx):
     embed = discord.Embed(title="Sound Commands", description="To play a sound in a chat channel, use one of the following:", color=0xeee657)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}aww @member", value="Plays Rick & Morty clip 'Awww bitch'", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}bitch @member", value="Plays clip of BigEric420 saying 'maybe you shouldn't be such a bitch.mp3'", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}big @member", value="Plays 'Wiz Khalifa clip'", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}bitch @member", value="Plays sound clip of @BigEric420", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}boom @member", value="Plays 'Boom Bitch' sound clip", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}breee @member", value="Plays 'BREEEEE' clip from a WBTBWB song", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}cowbell @member", value="Plays 'SNL More Cowbell' sound clip", inline=False)
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'")
-    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'")
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}eia @member", value="Plays 'Everything is Awesome' song clip", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}heavy @member", value="Plays 'Poppy ooo heavy'", inline=False)
+    embed.add_field(name=f"{BOT_COMMAND_PREFIX}iran @member", value="Plays Trump 'I Ran'", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}leeroy @member", value="Plays Leeeerrroooyyy Jenkins clip", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}nice @member", value="Plays clip from WBTBWB - Nice!", inline=False)
     embed.add_field(name=f"{BOT_COMMAND_PREFIX}oops @member", value="Plays 'Oops.mp3'", inline=False)
