@@ -17,7 +17,6 @@ import json
 import requests
 import asyncio
 import aiofiles as aiof
-import pickle
 
 #Record the time the bot started
 start_time = time.time() 
