@@ -87,7 +87,7 @@ async def on_ready():
             print_completion = "Unknown"
         if print_completion != "Unknown":
             await updateStatus()
-        sleep(120)
+        await asyncio.sleep(120)
 
 
 @bot.command()
