@@ -80,12 +80,14 @@ async def on_ready():
 
     while True:
         try:
-            print("  - Getting % Completion")
+            print(">> Checking 3D Printer Status")
             # Try to get the % of Completion
             print_completion = round(octoapi.get_completion(), 2)
         except:
             print_completion = "Unknown"
+            print(">>>>  Nothing Printing.")
         if print_completion != "Unknown":
+            print(">>>> Something is printing, calling UpdateStatus")
             await updateStatus()
         await asyncio.sleep(120)
 
