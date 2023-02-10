@@ -79,7 +79,14 @@ async def on_ready():
     print(">> Startup complete.")
 
     while True:
-        await updateStatus()
+        try:
+            print("  - Getting % Completion")
+            # Try to get the % of Completion
+            print_completion = round(octoapi.get_completion(), 2)
+        except:
+            print_completion = "Unknown"
+        if print_completion != "Unknown":
+            await updateStatus()
         sleep(120)
 
 
@@ -533,7 +540,7 @@ async def updateStatus():
 
     print(" - Done watching 3D Printer status")
     await asyncio.sleep(3)
-    activity = discord.Activity(name="your commands",type=discord.ActivityType.listening)
+    activity = discord.Activity(name="your $commands",type=discord.ActivityType.listening)
     await bot.change_presence(activity=activity)
 
 @bot.command()
