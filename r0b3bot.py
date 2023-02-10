@@ -89,6 +89,9 @@ async def on_ready():
         if print_completion != "Unknown" and print_completion < 100:
             print(">>>> Something is printing, calling UpdateStatus")
             await updateStatus()
+        else:
+            # Will hit this if the last print job completed and is sitting at 100%
+            print(">>>> Nothing Printing.")
         await asyncio.sleep(120)
 
 
