@@ -510,6 +510,7 @@ async def printstat(ctx):
 async def updateStatus():
 
     # Initialize variables
+    # Unknowns is present to handle issues like print paused or cancelled
     print_completion = 0
     unknowns = 0
     #While the print status is less than 100 % complete, keep updating
@@ -527,7 +528,7 @@ async def updateStatus():
             activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
         else:
             unknowns += 1
-            print(f"  - Error getting print status ({unknowns}/5 Errors")
+            print(f"  - Error getting print status ({unknowns}/5 Errors)")
             activity = discord.Activity(name=f"3D Print @ ERROR",type=discord.ActivityType.watching)
 
         await bot.change_presence(activity=activity)
