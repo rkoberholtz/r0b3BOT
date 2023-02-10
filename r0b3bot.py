@@ -78,6 +78,11 @@ async def on_ready():
 
     print(">> Startup complete.")
 
+    while True:
+        await updateStatus()
+        sleep(120)
+
+
 @bot.command()
 async def greetings(ctx):
     await ctx.send(":smiley: :wave: Hello there!")
