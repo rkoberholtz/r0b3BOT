@@ -516,7 +516,7 @@ async def updateStatus():
     while print_completion < 100:
         try:
             # Try to get the % of Completion
-            print_completion = round(octoapi.get_completion(), 2)
+            print_completion = round(octoapi.get_completion(), 0)
         except:
             print_completion = 999
 
