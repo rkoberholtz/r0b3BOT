@@ -520,11 +520,28 @@ async def updateStatus():
         except:
             print_completion = 999
 
+        try:
+            print_secondsleft = octoapi.get_printTimeLeft()
+        except:
+            print("  ! Unable to get Seconds Left from OctoPrint")
+
+        try:
+            # Try to convert seconds left to hours left
+            print_hoursleft = int(((print_secondsleft / 60) / 60))
+        except:
+            print_hoursleft = "Unknown"
+    
+        try:
+            # Same as above but for the minutes left in print job
+            print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
+        except:
+            print_minleft = "Unknown"
+
         #Set the activity to the new percent complete value
         if print_completion != 999:
             unknowns = 0
             print(f"  - Print job is at {print_completion}%")
-            activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%",type=discord.ActivityType.watching)
+            activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%, Time Remaining: {print_hoursleft}:{print_minleft}",type=discord.ActivityType.watching)
         else:
             unknowns += 1
             print(f"  - Error getting print status ({unknowns}/5 Errors)")
