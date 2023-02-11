@@ -541,7 +541,7 @@ async def updateStatus():
         if print_completion != 999:
             unknowns = 0
             print(f"  - Print job is at {print_completion}%")
-            activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%, Time Remaining: {print_hoursleft}:{print_minleft}",type=discord.ActivityType.watching)
+            activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%, {print_hoursleft}:{print_minleft} to go",type=discord.ActivityType.watching)
         else:
             unknowns += 1
             print(f"  - Error getting print status ({unknowns}/5 Errors)")
