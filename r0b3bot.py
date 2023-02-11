@@ -528,12 +528,14 @@ async def updateStatus():
         try:
             # Try to convert seconds left to hours left
             print_hoursleft = int(((print_secondsleft / 60) / 60))
+            print_hoursleft = print_hoursleft.zfill(2)
         except:
             print_hoursleft = "Unknown"
     
         try:
             # Same as above but for the minutes left in print job
             print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
+            print_minleft = print_minleft.zfill(2)
         except:
             print_minleft = "Unknown"
 
