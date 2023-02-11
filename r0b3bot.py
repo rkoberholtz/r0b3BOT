@@ -529,13 +529,13 @@ async def updateStatus():
             # Try to convert seconds left to hours left
             print_hoursleft = int(((print_secondsleft / 60) / 60))
         except:
-            print_hoursleft = "Unknown"
+            print_hoursleft = 999
     
         try:
             # Same as above but for the minutes left in print job
             print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
         except:
-            print_minleft = "Unknown"
+            print_minleft = 999
 
         #Set the activity to the new percent complete value
         if print_completion != 999:
