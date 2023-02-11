@@ -537,7 +537,7 @@ async def updateStatus():
         except:
             print_minleft = "Unknown"
 
-        if print_minleft = "Unknown" or print_hoursleft = "Unknown":
+        if print_minleft == "Unknown" or print_hoursleft == "Unknown":
             time_left = "Unknown"
         else:
             time_left = f"{print_hoursleft:02d}:{print_minleft:02d}"
