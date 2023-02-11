@@ -528,22 +528,20 @@ async def updateStatus():
         try:
             # Try to convert seconds left to hours left
             print_hoursleft = int(((print_secondsleft / 60) / 60))
-            print_hoursleft = print_hoursleft.zfill(2)
         except:
             print_hoursleft = "Unknown"
     
         try:
             # Same as above but for the minutes left in print job
             print_minleft = int(((print_secondsleft / 60) - (print_hoursleft * 60)))
-            print_minleft = print_minleft.zfill(2)
         except:
             print_minleft = "Unknown"
 
         #Set the activity to the new percent complete value
         if print_completion != 999:
             unknowns = 0
-            print(f"  - Print job is at {print_completion}%, with {print_hoursleft}:{print_minleft} to go")
-            activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%, {print_hoursleft}:{print_minleft} to go",type=discord.ActivityType.watching)
+            print(f"  - Print job is at {print_completion}%, with {print_hoursleft:02d}:{print_minleft:02d} to go")
+            activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%, {print_hoursleft:02d}:{print_minleft:02d} to go",type=discord.ActivityType.watching)
         else:
             unknowns += 1
             print(f"  - Error getting print status ({unknowns}/5 Errors)")
