@@ -545,7 +545,7 @@ async def updateStatus():
         #Set the activity to the new percent complete value
         if print_completion != 999:
             unknowns = 0
-            print(f"  - Print job is at {print_completion}%, with {print_hoursleft:02d}:{print_minleft:02d} to go")
+            print(f"  - Print job is at {print_completion}%, with {time_left} to go")
             activity = discord.Activity(name=f"3D Print @ {str(print_completion)}%, {time_left} to go",type=discord.ActivityType.watching)
         else:
             unknowns += 1
