@@ -492,6 +492,7 @@ async def printstat(ctx):
         embed.add_field(name="Time Remaining: ", value=time_remaining)
         embed.add_field(name="Bed Temp.: ", value=printer_bed)
         embed.add_field(name="Hotend Temp.: ", value=printer_hotend)
+        embed.add_field(name="Livestream URL: ",value="https://rickelobe.com/printer/?action=stream")
         print(" - Sending details to chat channel")
         await ctx.send(embed=embed)
 
